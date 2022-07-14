@@ -3,12 +3,12 @@
 #include "PQ.h"
 struct pqueue
 {
-  int *A;
-  double *qp;
+  int *A; // index of nodes
+  int *qp; // nodes prioriy ?
   int heapsize;
 };
 static void Swap(PQ pq, int n1, int n2);
-static void Heapify(PQ pq, int *mindist, int i);
+static void Heapify(PQ pq, double *mindist, int i);
 static int LEFT(int i);
 static int RIGHT(int i);
 static int PARENT(int i);
@@ -29,7 +29,7 @@ PQ PQinit(int maxN)
   int i;
   PQ pq = malloc(sizeof(*pq));
   pq->A = malloc(maxN * sizeof(int));
-  pq->qp = malloc(maxN * sizeof(double));
+  pq->qp = malloc(maxN * sizeof(int));
   for (i = 0; i < maxN; i++)
     pq->qp[i] = -1;
   pq->heapsize = 0;
@@ -73,7 +73,7 @@ static void Swap(PQ pq, int n1, int n2)
   pq->qp[n2] = temp;
   return;
 }
-static void Heapify(PQ pq, int *mindist, int i)
+static void Heapify(PQ pq, double *mindist, int i)
 {
   int l, r, smallest;
   l = LEFT(i);

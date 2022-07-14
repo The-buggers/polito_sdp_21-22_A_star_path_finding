@@ -7,7 +7,6 @@
 #include "Position.h"
 #define maxWT INT_MAX
 #define MAXC 10
-typedef struct node *link;
 struct node
 {
     int v;
@@ -237,6 +236,21 @@ int GRAPHget_num_nodes(Graph G){
 }
 Position GRAPHget_node_position(Graph G, int id){
     return STsearchByIndex(G->tab, id);
+}
+link GRAPHget_list_node_head(Graph G, int v){
+    return G->ladj[v];
+}
+link GRAPHget_list_node_tail(Graph G, int v){
+    return G->z;
+}
+link LINKget_next(link t){
+    return t->next;
+}
+double LINKget_wt(link t){
+    return t->wt;
+}
+int LINKget_node(link t){
+    return t->v;
 }
 /*
 void GRAPHshortest_path_astar(Graph G, int source, int dest){

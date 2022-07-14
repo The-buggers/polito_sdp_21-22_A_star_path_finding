@@ -10,6 +10,7 @@ typedef struct edge
     double wt;
 } Edge;
 typedef struct graph *Graph;
+typedef struct node *link;
 Graph GRAPHinit(int V);
 void GRAPHfree(Graph G);
 Graph GRAPHload(FILE *fin);
@@ -22,4 +23,9 @@ void GRAPHspD(Graph G, int id);
 void GRAPHshortest_path_astar(Graph G, int source, int dest);
 Position GRAPHget_node_position(Graph G, int id);
 int GRAPHget_num_nodes(Graph G);
+link GRAPHget_list_node_head(Graph G, int v);
+link GRAPHget_list_node_tail(Graph G, int v);
+link LINKget_next(link t);
+double LINKget_wt(link t);
+int LINKget_node(link t);
 #endif
