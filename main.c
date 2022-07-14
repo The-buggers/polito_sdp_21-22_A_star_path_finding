@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     exit(-1);
   G = GRAPHload(fin);
   GRAPHstore(G, stdout);
-  GRAPHspD(G, 0);
+  // GRAPHspD(G, 0);
   ASTARshortest_path(G, 0, 1);
   GRAPHfree(G);
   return 0;

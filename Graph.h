@@ -20,4 +20,6 @@ void GRAPHremoveE(Graph G, int id1, int id2);
 void GRAPHedges(Graph G, Edge *a);
 void GRAPHspD(Graph G, int id);
 void GRAPHshortest_path_astar(Graph G, int source, int dest);
+Position GRAPHget_node_position(Graph G, int id);
+int GRAPHget_num_nodes(Graph G);
 #endif

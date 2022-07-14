@@ -232,6 +232,12 @@ void GRAPHspD(Graph G, int id)
         printf("mindist[%d] = %d \n", v, mindist[v]);
     PQfree(pq);
 }
+int GRAPHget_num_nodes(Graph G){
+    return G->V;
+}
+Position GRAPHget_node_position(Graph G, int id){
+    return STsearchByIndex(G->tab, id);
+}
 /*
 void GRAPHshortest_path_astar(Graph G, int source, int dest){
     int v;

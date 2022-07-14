@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "Position.h"
 struct position
 {
     int x;
     int y;
 };
-float compute_euclidean_distance(Position p1, Position p2){
-    return 0;
+double POSITIONcompute_euclidean_distance(Position p1, Position p2){
+    return sqrt(pow(p1->x-p2->x, 2) + pow(p1->y-p2->y, 2));
 }
 int POSITIONcmp(Position p1, Position p2){
     return (p1->x == p2->x && p1->y == p2->y);
