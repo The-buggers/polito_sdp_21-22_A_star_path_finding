@@ -4,7 +4,7 @@
 struct pqueue
 {
   int *A; // index of nodes
-  int *qp; // nodes prioriy ?
+  int *qp; // position of the nodes inside PQ
   int heapsize;
 };
 static void Swap(PQ pq, int n1, int n2);
@@ -99,6 +99,12 @@ int PQextractMin(PQ pq, double *mindist)
   pq->heapsize--;
   Heapify(pq, mindist, 0);
   return k;
+}
+int PQshowMin(PQ pq){
+  return pq->A[0];
+}
+int PQsearch(PQ pq, int k){
+  return pq->qp[k];
 }
 void PQchange(PQ pq, double *mindist, int k)
 {

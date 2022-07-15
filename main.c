@@ -14,7 +14,8 @@ int main(int argc, char* argv[]) {
   G = GRAPHload(fin);
   GRAPHstore(G, stdout);
   // GRAPHspD(G, 0);
-  ASTARshortest_path(G, 0, 1);
+  // ASTARshortest_path(G, 0, 1);
+  ASTARshortest_path(G, 1, 2);
   GRAPHfree(G);
   return 0;
 }

@@ -7,4 +7,6 @@ int     PQempty(PQ pq);
 void    PQinsert(PQ pq, double *mindist, int node);
 int     PQextractMin(PQ pq, double *mindist);
 void    PQchange (PQ pq, double *mindist, int k);
+int     PQshowMin(PQ pq);
+int     PQsearch(PQ pq, int k);
 #endif
