@@ -15,7 +15,8 @@ int main(int argc, char* argv[]) {
   GRAPHstore(G, stdout);
   // GRAPHspD(G, 0);
   // ASTARshortest_path(G, 0, 1);
-  ASTARshortest_path(G, 1, 2);
+  ASTARshortest_path(G, 2, 0);
+  // TODO: add check on input nodes
   GRAPHfree(G);
   return 0;
 }

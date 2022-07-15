@@ -7,9 +7,10 @@
 #define maxWT DBL_MAX
 static double heuristic_euclidean(Position source, Position dest);
 static double compute_f(double h, double g);
+static void reconstruct_path(int* previos, int source, int dest);
 void ASTARshortest_path(Graph G, int source, int dest)
 {
-    printf("A star algorithm on graph from %d to %d\n", 42, source, dest);
+    printf("A star algorithm on graph from %d to %d\n", source, dest);
     int V = GRAPHget_num_nodes(G);
     int v, a, b;
     double f_extracted_node, g_b, f_b, a_b_wt;
@@ -77,7 +78,7 @@ void ASTARshortest_path(Graph G, int source, int dest)
         if (a == dest)
         {   
             found = 1;
-            printf("Path found\n");
+            reconstruct_path(previous, source, dest);
             break;
         }
 
@@ -107,11 +108,13 @@ void ASTARshortest_path(Graph G, int source, int dest)
             }
         }
     }
-#if DEBUG_ASTAR
     if(!found){
+        printf("+-----------------------------------+\n");
         printf("Path not found\n");
+        printf("+-----------------------------------+\n\n");
         return;
     }
+#if DEBUG_ASTAR
     printf("Previuos array:\n");
     for (v = 0; v < V; v++)
     {
@@ -121,12 +124,25 @@ void ASTARshortest_path(Graph G, int source, int dest)
     printf("stop");
 }
 
-double heuristic_euclidean(Position source, Position dest)
+static double heuristic_euclidean(Position source, Position dest)
 {
     return POSITIONcompute_euclidean_distance(source, dest);
 }
 
-double compute_f(double h, double g)
+static double compute_f(double h, double g)
 {
     return h + g;
+}
+static void reconstruct_path(int* previous, int source, int dest){
+    int i;
+    printf("+-----------------------------------+");
+    printf("\nPath found\n");
+    printf("Reverse path from %d to %d: [ %d ", dest, source, dest);
+    for(i=dest; previous[i] != -1; i=previous[i]){
+        printf("%d ", previous[i]);
+    }
+    printf("]");
+
+    printf("\nCost: \n");
+    printf("+-----------------------------------+\n\n");
 }

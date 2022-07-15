@@ -7,7 +7,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/build/graphtest",
-            "args": ["prova.txt"],
+            "args": ["provaf3.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
