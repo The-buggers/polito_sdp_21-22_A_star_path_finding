@@ -7,7 +7,8 @@
 #define maxWT DBL_MAX
 static double heuristic_euclidean(Position source, Position dest);
 static double compute_f(double h, double g);
-static void reconstruct_path(int* previos, int source, int dest);
+static void reconstruct_path(int* previous, int source, int dest, double *cost, double* tot_cost);
+static void reconstruct_path_r(int* previous, int j, double* cost, double* tot_cost);
 void ASTARshortest_path(Graph G, int source, int dest)
 {
     printf("A star algorithm on graph from %d to %d\n", source, dest);
@@ -15,7 +16,8 @@ void ASTARshortest_path(Graph G, int source, int dest)
     int v, a, b;
     double f_extracted_node, g_b, f_b, a_b_wt;
     int *previous;
-    double *fvalues, *hvalues, *gvalues; // f(n) for each node n
+    double *fvalues, *hvalues, *gvalues, *cost; // f(n) for each node n
+    double tot_cost = 0;
     int *closed_list;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
@@ -28,11 +30,13 @@ void ASTARshortest_path(Graph G, int source, int dest)
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
     closed_list = (int *)malloc(V * sizeof(int));
+    cost = (double *)malloc(V * sizeof(double));
     if ((previous == NULL) ||
         (fvalues == NULL) ||
         (hvalues == NULL) ||
         (gvalues == NULL) ||
-        (closed_list == NULL))
+        (closed_list == NULL) ||
+        (cost == NULL))
         return;
 
     // - Insert all the nodes in the priority queue
@@ -78,7 +82,7 @@ void ASTARshortest_path(Graph G, int source, int dest)
         if (a == dest)
         {   
             found = 1;
-            reconstruct_path(previous, source, dest);
+            reconstruct_path(previous, source, dest, cost, &tot_cost);
             break;
         }
 
@@ -98,6 +102,7 @@ void ASTARshortest_path(Graph G, int source, int dest)
             if (g_b < gvalues[b])
             {
                 previous[b] = a;
+                cost[b] = a_b_wt;
                 gvalues[b] = g_b;
                 fvalues[b] = f_b;
                 if(PQsearch(open_list, b) == -1){
@@ -120,8 +125,12 @@ void ASTARshortest_path(Graph G, int source, int dest)
     {
         printf("Previous[%d] = %d\n", v, previous[v]);
     }
+    printf("Cost array:\n");
+    for (v = 0; v < V; v++)
+    {
+        printf("Cost[%d] = %lf\n", v, cost[v]);
+    }
 #endif
-    printf("stop");
 }
 
 static double heuristic_euclidean(Position source, Position dest)
@@ -133,16 +142,28 @@ static double compute_f(double h, double g)
 {
     return h + g;
 }
-static void reconstruct_path(int* previous, int source, int dest){
+static void reconstruct_path(int* previous, int source, int dest, double *cost, double* tot_cost){
     int i;
     printf("+-----------------------------------+");
     printf("\nPath found\n");
-    printf("Reverse path from %d to %d: [ %d ", dest, source, dest);
-    for(i=dest; previous[i] != -1; i=previous[i]){
-        printf("%d ", previous[i]);
-    }
+    printf("Path from %d to %d: [ ", source, dest);
+    reconstruct_path_r(previous, dest, cost, tot_cost);
     printf("]");
 
-    printf("\nCost: \n");
+    printf("\nCost: %.2lf\n", *tot_cost);
     printf("+-----------------------------------+\n\n");
+}
+
+static void reconstruct_path_r(int* previous, int j, double* cost, double* tot_cost){
+    if(previous[j] == -1){
+        return;
+    }else{
+        reconstruct_path_r(previous, previous[j], cost, tot_cost);
+        if(previous[previous[j]] == -1){
+            printf("%d ", previous[j]);
+            *tot_cost = *tot_cost + cost[previous[j]];
+        }
+        printf("%d ", j);
+        *tot_cost = *tot_cost + cost[j];
+    }
 }
