@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
   double elapsed = seconds + nanoseconds*1e-9;
   printf("Time measured: %.9f seconds.\n", elapsed);
   // TODO: add check on input nodes
-  GRAPHstore(G, stdout);
+  //GRAPHstore(G, stdout);
   GRAPHfree(G);
   return 0;
 }
