@@ -1,10 +1,10 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #define DEBUGPRINT 0
-#include "ST.h"
 #include <stdio.h>
-typedef struct edge
-{
+
+#include "ST.h"
+typedef struct edge {
     int v;
     int w;
     double wt;
@@ -28,4 +28,8 @@ link GRAPHget_list_node_tail(Graph G, int v);
 link LINKget_next(link t);
 double LINKget_wt(link t);
 int LINKget_node(link t);
+// Parallel read
+Graph GRAPHload_sequential(char *filepath);  // binary version of GRAPHload
+Graph GRAPHload_parallel3(char *filepath, int num_partitions,
+                          int num_threads_nodes, int num_threads_edges);
 #endif

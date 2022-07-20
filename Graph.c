@@ -1,20 +1,22 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
 #include "Graph.h"
+
+#include <fcntl.h>
+#include <limits.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "PQ.h"
 #include "Position.h"
 #define maxWT INT_MAX
 #define MAXC 10
-struct node
-{
+struct node {
     int v;
     double wt;
     link next;
 };
-struct graph
-{
+struct graph {
     int V;
     int E;
     link *ladj;
@@ -25,52 +27,41 @@ static Edge EDGEcreate(int v, int w, double wt);
 static link NEW(int v, double wt, link next);
 static void insertE(Graph G, Edge e);
 static void removeE(Graph G, Edge e);
-static Edge EDGEcreate(int v, int w, double wt)
-{
+static Edge EDGEcreate(int v, int w, double wt) {
     Edge e;
     e.v = v;
     e.w = w;
     e.wt = wt;
     return e;
 }
-static link NEW(int v, double wt, link next)
-{
+static link NEW(int v, double wt, link next) {
     link x = malloc(sizeof *x);
-    if (x == NULL)
-        return NULL;
+    if (x == NULL) return NULL;
     x->v = v;
     x->wt = wt;
     x->next = next;
     return x;
 }
-Graph GRAPHinit(int V)
-{
+Graph GRAPHinit(int V) {
     int v;
     Graph G = malloc(sizeof *G);
-    if (G == NULL)
-        return NULL;
+    if (G == NULL) return NULL;
     G->V = V;
     G->E = 0;
     G->z = NEW(-1, 0, NULL);
-    if (G->z == NULL)
-        return NULL;
+    if (G->z == NULL) return NULL;
     G->ladj = malloc(G->V * sizeof(link));
-    if (G->ladj == NULL)
-        return NULL;
-    for (v = 0; v < G->V; v++)
-        G->ladj[v] = G->z;
+    if (G->ladj == NULL) return NULL;
+    for (v = 0; v < G->V; v++) G->ladj[v] = G->z;
     G->tab = STinit(V);
-    if (G->tab == NULL)
-        return NULL;
+    if (G->tab == NULL) return NULL;
     return G;
 }
-void GRAPHfree(Graph G)
-{
+void GRAPHfree(Graph G) {
     int v;
     link t, next;
     for (v = 0; v < G->V; v++)
-        for (t = G->ladj[v]; t != G->z; t = next)
-        {
+        for (t = G->ladj[v]; t != G->z; t = next) {
             next = t->next;
             free(t);
         }
@@ -79,8 +70,7 @@ void GRAPHfree(Graph G)
     free(G->z);
     free(G);
 }
-Graph GRAPHload(FILE *fin)
-{
+Graph GRAPHload(FILE *fin) {
     int V, i, id1, id2;
     char label1[MAXC], label2[MAXC];
     int node_index, node_x, node_y;
@@ -93,12 +83,10 @@ Graph GRAPHload(FILE *fin)
 
     // Initialize the Graph ADT
     G = GRAPHinit(V);
-    if (G == NULL)
-        return NULL;
+    if (G == NULL) return NULL;
 
     // Read the nodes name(index 0-V) and the coordinates of each node
-    for (i = 0; i < V; i++)
-    {
+    for (i = 0; i < V; i++) {
         fscanf(fin, "%d %d %d", &node_index, &node_x, &node_y);
 
         p = POSITIONinit(node_x, node_y);
@@ -108,101 +96,84 @@ Graph GRAPHload(FILE *fin)
 
 #if DEBUGPRINT
     // Print nodes coordinates
-    for (i = 0; i < G->V; i++)
-    {
+    for (i = 0; i < G->V; i++) {
         POSITIONprint(STsearchByIndex(G->tab, i));
     }
 #endif
 
-    while (fscanf(fin, "%d %d %lf", &id1, &id2, &wt) == 3)
-    {
-        if (id1 >= 0 && id2 >= 0)
-            GRAPHinsertE(G, id1, id2, wt);
+    while (fscanf(fin, "%d %d %lf", &id1, &id2, &wt) == 3) {
+        if (id1 >= 0 && id2 >= 0) GRAPHinsertE(G, id1, id2, wt);
     }
     return G;
 }
-void GRAPHedges(Graph G, Edge *a)
-{
+void GRAPHedges(Graph G, Edge *a) {
     int v, E = 0;
     link t;
     for (v = 0; v < G->V; v++)
         for (t = G->ladj[v]; t != G->z; t = t->next)
             a[E++] = EDGEcreate(v, t->v, t->wt);
 }
-void GRAPHstore(Graph G, FILE *fout)
-{
+void GRAPHstore(Graph G, FILE *fout) {
     int i;
     Edge *a;
     a = malloc(G->E * sizeof(Edge));
-    if (a == NULL)
-        return;
+    if (a == NULL) return;
     GRAPHedges(G, a);
     fprintf(fout, "Number of nodes: %d\n", G->V);
-    for (i = 0; i < G->V; i++){
+    for (i = 0; i < G->V; i++) {
         fprintf(fout, "Node %d: ", i);
         POSITIONprint(STsearchByIndex(G->tab, i), fout);
     }
-    for (i = 0; i < G->E; i++){
-        fprintf(fout, "Edge %d -> %d - Weight: %.1lf\n", a[i].v, a[i].w, a[i].wt);
+    for (i = 0; i < G->E; i++) {
+        fprintf(fout, "Edge %d -> %d - Weight: %.1lf\n", a[i].v, a[i].w,
+                a[i].wt);
     }
 }
-int GRAPHgetIndex(Graph G, char *label)
-{
+int GRAPHgetIndex(Graph G, char *label) {
     int id;
     id = STsearch(G->tab, label);
-    if (id == -1)
-    {
+    if (id == -1) {
         id = STsize(G->tab);
         STinsert(G->tab, label, id);
     }
     return id;
 }
-void GRAPHinsertE(Graph G, int id1, int id2, double wt)
-{
+void GRAPHinsertE(Graph G, int id1, int id2, double wt) {
     insertE(G, EDGEcreate(id1, id2, wt));
 }
-void GRAPHremoveE(Graph G, int id1, int id2)
-{
+void GRAPHremoveE(Graph G, int id1, int id2) {
     removeE(G, EDGEcreate(id1, id2, 0));
 }
-static void insertE(Graph G, Edge e)
-{
+static void insertE(Graph G, Edge e) {
     int v = e.v, w = e.w;
     double wt = e.wt;
     G->ladj[v] = NEW(w, wt, G->ladj[v]);
     G->E++;
 }
-static void removeE(Graph G, Edge e)
-{
+static void removeE(Graph G, Edge e) {
     int v = e.v, w = e.w;
     link x;
-    if (G->ladj[v]->v == w)
-    {
+    if (G->ladj[v]->v == w) {
         G->ladj[v] = G->ladj[v]->next;
         G->E--;
-    }
-    else
+    } else
         for (x = G->ladj[v]; x != G->z; x = x->next)
-            if (x->next->v == w)
-            {
+            if (x->next->v == w) {
                 x->next = x->next->next;
                 G->E--;
             }
 }
 
 // Test: Djkstra algorithm
-void GRAPHspD(Graph G, int id)
-{
+void GRAPHspD(Graph G, int id) {
     int v;
     link t;
     PQ pq = PQinit(G->V);
     int *st, *mindist;
     st = malloc(G->V * sizeof(int));
     mindist = malloc(G->V * sizeof(int));
-    if ((st == NULL) || (mindist == NULL))
-        return;
-    for (v = 0; v < G->V; v++)
-    {
+    if ((st == NULL) || (mindist == NULL)) return;
+    for (v = 0; v < G->V; v++) {
         st[v] = -1;
         mindist[v] = maxWT;
         PQinsert(pq, mindist, v);
@@ -210,13 +181,10 @@ void GRAPHspD(Graph G, int id)
     mindist[id] = 0;
     st[id] = id;
     PQchange(pq, mindist, id);
-    while (!PQempty(pq))
-    {
-        if (mindist[v = PQextractMin(pq, mindist)] != maxWT)
-        {
+    while (!PQempty(pq)) {
+        if (mindist[v = PQextractMin(pq, mindist)] != maxWT) {
             for (t = G->ladj[v]; t != G->z; t = t->next)
-                if (mindist[v] + t->wt < mindist[t->v])
-                {
+                if (mindist[v] + t->wt < mindist[t->v]) {
                     mindist[t->v] = mindist[v] + t->wt;
                     PQchange(pq, mindist, t->v);
                     st[t->v] = v;
@@ -224,34 +192,20 @@ void GRAPHspD(Graph G, int id)
         }
     }
     printf("\n Shortest path tree\n");
-    for (v = 0; v < G->V; v++)
-        printf("parent of %d is %d \n", v, st[v]);
+    for (v = 0; v < G->V; v++) printf("parent of %d is %d \n", v, st[v]);
     printf("\n Minimum distances from node %d\n", id);
-    for (v = 0; v < G->V; v++)
-        printf("mindist[%d] = %d \n", v, mindist[v]);
+    for (v = 0; v < G->V; v++) printf("mindist[%d] = %d \n", v, mindist[v]);
     PQfree(pq);
 }
-int GRAPHget_num_nodes(Graph G){
-    return G->V;
-}
-Position GRAPHget_node_position(Graph G, int id){
+int GRAPHget_num_nodes(Graph G) { return G->V; }
+Position GRAPHget_node_position(Graph G, int id) {
     return STsearchByIndex(G->tab, id);
 }
-link GRAPHget_list_node_head(Graph G, int v){
-    return G->ladj[v];
-}
-link GRAPHget_list_node_tail(Graph G, int v){
-    return G->z;
-}
-link LINKget_next(link t){
-    return t->next;
-}
-double LINKget_wt(link t){
-    return t->wt;
-}
-int LINKget_node(link t){
-    return t->v;
-}
+link GRAPHget_list_node_head(Graph G, int v) { return G->ladj[v]; }
+link GRAPHget_list_node_tail(Graph G, int v) { return G->z; }
+link LINKget_next(link t) { return t->next; }
+double LINKget_wt(link t) { return t->wt; }
+int LINKget_node(link t) { return t->v; }
 /*
 void GRAPHshortest_path_astar(Graph G, int source, int dest){
     int v;
@@ -263,8 +217,9 @@ void GRAPHshortest_path_astar(Graph G, int source, int dest){
     mindist = malloc(G->V * sizeof(int));
     if ((st == NULL) || (mindist == NULL))
         return;
-    
-    // Compute Heuristic function for each node [Euclidean distance from node N to node dest]
+
+    // Compute Heuristic function for each node [Euclidean distance from node N
+to node dest]
 
     // Add all the nodes inside the priority queue
     for (v = 0; v < G->V; v++)
@@ -299,3 +254,246 @@ void GRAPHshortest_path_astar(Graph G, int source, int dest){
     PQfree(pq);
 }*/
 // ^(\s)*$\n
+
+// PARALLEL READ
+struct node_line_s {
+    int index;
+    int x;
+    int y;
+};
+
+struct edge_line_s {
+    int id1;
+    int id2;
+    double wt;
+};
+
+struct thread_arg_s {
+    char filepath[50];
+    int num_threads;
+    int num_partitions;
+    ssize_t filesize;
+    ssize_t regionsize;
+    int index;
+};
+
+struct read_block_s {
+    off_t start;
+    off_t end;
+    off_t cur;
+    ssize_t size;
+};
+static void *thread_read_nodes(void *arg);
+static void *thread_read_edges(void *arg);
+
+Graph GRAPHload_sequential(char *filepath) {
+    int V, i, id1, id2, fd, nR;
+    char label1[MAXC], label2[MAXC];
+    int node_index, node_x, node_y;
+    double wt;
+    Graph G;
+    Position p;
+    struct node_line_s nl;
+    struct edge_line_s el;
+
+    fd = open(filepath, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
+    for (i = 0; i < V; i++) {
+        read(fd, &nl, sizeof(struct node_line_s));
+        p = POSITIONinit(nl.x, nl.y);
+        STinsert(G->tab, p, nl.index);
+        POSITIONfree(p);
+    }
+    while ((nR = read(fd, &el, sizeof(struct edge_line_s))) > 0) {
+        if (el.id1 >= 0 && el.id2 >= 0) GRAPHinsertE(G, el.id1, el.id2, el.wt);
+    }
+
+    return G;
+}
+Graph GRAPHload_parallel3(char *filepath, int num_partitions,
+                          int num_threads_nodes, int num_threads_edges) {
+    int fd;
+    int n_nodes;
+    int i;
+    pthread_t *threads_nodes, *threads_edges;
+    struct thread_arg_s *threads_arg;
+    struct stat stat_buf;
+    ssize_t filesize, filesize_nodes_region, filesize_edges_region;
+
+    // Allocate array of threads
+    threads_nodes = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
+    threads_edges = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
+    threads_arg = (struct thread_arg_s *)malloc(
+        (num_threads_edges + num_threads_nodes) * sizeof(struct thread_arg_s));
+    if (threads_nodes == NULL || threads_edges == NULL || threads_arg == NULL) {
+        return NULL;
+    }
+
+    // Open the file
+    fd = open(filepath, O_RDONLY);
+    fstat(fd, &stat_buf);
+    filesize = stat_buf.st_size;
+
+    // Read first line of the file and get size information
+    read(fd, &n_nodes, sizeof(int));
+    filesize_nodes_region = n_nodes * sizeof(struct node_line_s);
+    filesize_edges_region = filesize - filesize_nodes_region - sizeof(int);
+    close(fd);
+    printf(
+        "[INFO SIZE: NODE LINE=%ld, EDGE LINE=%ld, NODES REGION=%ld, EDGES "
+        "REGION=%ld]\n",
+        sizeof(struct node_line_s), sizeof(struct edge_line_s),
+        filesize_nodes_region, filesize_edges_region);
+    /*
+    struct node_line_s nl;
+    struct edge_line_s el;
+    lseek(fd, n_nodes * sizeof(struct node_line_s), SEEK_CUR);
+    read(fd, &el, sizeof(struct edge_line_s));
+    printf("Edge %d -> %d wt=%lf\n", el.id1, el.id2, el.wt);
+    */
+
+    // Create threads for reading nodes and edges
+    for (i = 0; i < num_threads_nodes + num_threads_edges; i++) {
+        strcpy(threads_arg[i].filepath, filepath);
+        threads_arg[i].num_partitions = num_partitions;
+        threads_arg[i].filesize = filesize;
+        if (i < num_threads_nodes) {
+            threads_arg[i].num_threads = num_threads_nodes;
+            threads_arg[i].regionsize = filesize_nodes_region;
+            threads_arg[i].index = i;
+            pthread_create(&threads_nodes[i], NULL, thread_read_nodes,
+                           (void *)&threads_arg[i]);
+        } else {
+            threads_arg[i].num_threads = num_threads_edges;
+            threads_arg[i].regionsize = filesize_edges_region;
+            threads_arg[i].index = i - num_threads_nodes;
+            pthread_create(&threads_edges[i], NULL, thread_read_edges,
+                           (void *)&threads_arg[i]);
+        }
+    }
+
+    // Join threads
+    for (i = 0; i < num_threads_nodes; i++) {
+        pthread_join(threads_nodes[i], NULL);
+    }
+    for (i = 0; i < num_threads_edges; i++) {
+        pthread_join(threads_edges[i], NULL);
+    }
+}
+
+static void *thread_read_nodes(void *arg) {
+    struct thread_arg_s *targ = (struct thread_arg_s *)arg;
+    int index = targ->index;
+    int fd;
+    ssize_t filesize = targ->filesize;
+    ssize_t regionsize = targ->regionsize;
+    int num_threads_nodes = targ->num_threads;
+    struct read_block_s rb;
+    off_t nodes_file_region_end;
+    struct node_line_s nl;
+    struct edge_line_s el;
+
+    // Open the file (each thread works on its own file descriptor)
+    fd = open(targ->filepath, O_RDONLY);
+
+    // Compute (first) portion of file to read
+    rb.size = targ->regionsize / targ->num_partitions;
+    if (rb.size < sizeof(struct node_line_s))
+        rb.size = sizeof(struct node_line_s);
+    else
+        rb.size = rb.size - (rb.size % sizeof(struct node_line_s));
+    rb.start = index * rb.size;
+    rb.cur = rb.start;
+    rb.end = rb.start + rb.size;
+
+    // If i have more threads than the number of partitions
+    // other possible check: if(index > num_partitions)
+    if (rb.start > regionsize ||
+        rb.start + sizeof(struct node_line_s) > regionsize)
+        pthread_exit(NULL);
+
+    // Read
+    do {
+        printf(
+            "\nT NODE %d reads: offset start: %ld, offset end: %ld, size: "
+            "%ld\n",
+            index, rb.start, rb.end, rb.size);
+
+        // Move the cursor on offset_start
+        lseek(fd, rb.start + sizeof(int), SEEK_SET);
+
+        // Read the assigned portion of the file
+        do {
+            read(fd, &nl, sizeof(struct node_line_s));
+            printf("[T NODE %d] Node: %d - [%d; %d] - Cur: %ld\n", index,
+                   nl.index, nl.x, nl.y, rb.cur);
+            rb.cur += sizeof(struct node_line_s);
+        } while (rb.cur < rb.end);
+
+        // Compute next region to read
+        rb.start += rb.size * (index + num_threads_nodes);
+        rb.end = rb.start + rb.size;
+        rb.cur = rb.start;
+    } while (rb.start < regionsize);
+
+    pthread_exit(NULL);
+}
+
+static void *thread_read_edges(void *arg) {
+    struct thread_arg_s *targ = (struct thread_arg_s *)arg;
+    int index = targ->index;
+    int fd;
+    ssize_t filesize = targ->filesize;
+    ssize_t regionsize = targ->regionsize;
+    int num_threads_edges = targ->num_threads;
+    struct read_block_s rb;
+    off_t nodes_file_region_end;
+    struct edge_line_s el;
+
+    // Open the file (each thread works on its own file descriptor)
+    fd = open(targ->filepath, O_RDONLY);
+
+    // Compute (first) portion of file to read
+    rb.size = targ->regionsize / targ->num_partitions;
+    if (rb.size < sizeof(struct edge_line_s))
+        rb.size = sizeof(struct edge_line_s);
+    else
+        rb.size = rb.size - (rb.size % sizeof(struct edge_line_s));
+    rb.start = index * rb.size + 120 + sizeof(int);
+    rb.cur = rb.start;
+    rb.end = rb.start + rb.size;
+
+    // If i have more threads than the number of partitions
+    // other possible check: if(index > num_partitions)
+    if (rb.start > filesize)
+        pthread_exit(NULL);
+
+    // Read
+    do {
+        printf(
+            "\nT EDGE %d reads: offset start: %ld, offset end: %ld, size: "
+            "%ld\n",
+            index, rb.start, rb.end, rb.size);
+
+        // Move the cursor on offset_start
+        lseek(fd, rb.start, SEEK_SET);
+
+        // Read the assigned portion of the file
+        do {
+            read(fd, &el, sizeof(struct edge_line_s));
+            printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index, el.id1,
+                   el.id2, el.wt);
+            rb.cur += sizeof(struct edge_line_s);
+        } while (rb.cur < rb.end);
+
+        // Compute next region to read
+        rb.start += rb.size * num_threads_edges;
+        rb.end = rb.start + rb.size;
+        rb.cur = rb.start;
+
+    } while (rb.start < filesize);
+
+    pthread_exit(NULL);
+}
