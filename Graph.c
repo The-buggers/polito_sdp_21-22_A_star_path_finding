@@ -79,6 +79,10 @@ void GRAPHfree(Graph G)
     free(G->z);
     free(G);
 }
+
+Graph GRAPHloadParallel(FILE *fin){
+
+}
 Graph GRAPHload(FILE *fin)
 {
     int V, i, id1, id2;
