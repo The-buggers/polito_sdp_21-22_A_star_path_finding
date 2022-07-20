@@ -3,6 +3,8 @@
 #define DEBUGPRINT 0
 #include "ST.h"
 #include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
 typedef struct edge
 {
     int v;

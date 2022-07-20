@@ -21,6 +21,32 @@ struct graph
     ST tab;
     link z;
 };
+
+struct threadData {
+    pthread_t threadId;
+    FILE *fd;
+    int id;
+    Graph G;
+    int V;
+};
+
+struct V_data {
+    int n;
+    int lat;
+    int lon;
+};
+
+struct E_data {
+    int n1;
+    int n2;
+    double e;
+};
+
+int len;
+sem_t sem;
+struct V_data v;
+struct E_data e;
+
 static Edge EDGEcreate(int v, int w, double wt);
 static link NEW(int v, double wt, link next);
 static void insertE(Graph G, Edge e);
@@ -80,33 +106,23 @@ void GRAPHfree(Graph G)
     free(G);
 }
 
-Graph GRAPHloadParallel(FILE *fin){
-
-}
-Graph GRAPHload(FILE *fin)
-{
-    int V, i, id1, id2;
+Graph GRAPHloadParallel(void *arg){
+    int i, id1, id2;
     char label1[MAXC], label2[MAXC];
     int node_index, node_x, node_y;
     double wt;
-    Graph G;
     Position p;
 
-    // Read the first line: number of nodes
-    fscanf(fin, "%d", &V);
-
-    // Initialize the Graph ADT
-    G = GRAPHinit(V);
-    if (G == NULL)
-        return NULL;
+    struct threadData *td;
+    td = (struct threadData *)arg;
 
     // Read the nodes name(index 0-V) and the coordinates of each node
-    for (i = 0; i < V; i++)
+    while(len < td->V)
     {
-        fscanf(fin, "%d %d %d", &node_index, &node_x, &node_y);
-
+        fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
+        len++;
         p = POSITIONinit(node_x, node_y);
-        STinsert(G->tab, p, node_index);
+        STinsert(td->G->tab, p, node_index);
         POSITIONfree(p);
     }
 
@@ -118,12 +134,43 @@ Graph GRAPHload(FILE *fin)
     }
 #endif
 
-    while (fscanf(fin, "%d %d %lf", &id1, &id2, &wt) == 3)
+    while (fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt) == 3)
     {
         if (id1 >= 0 && id2 >= 0)
-            GRAPHinsertE(G, id1, id2, wt);
+            GRAPHinsertE(td->G, id1, id2, wt);
     }
-    return G;
+    return td->G;
+}
+Graph GRAPHload(FILE *fin)
+{
+    int V, i;
+    Graph G;
+    // Read the first line: number of nodes
+    fscanf(fin, "%d", &V);
+
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+    if (G == NULL)
+        return NULL;
+    struct threadData *td;
+    void *retval;
+
+    sem_init(&sem, 0, 1);
+
+    printf("%d\n", V);
+    td = (struct threadData *)malloc(V * sizeof(struct threadData));
+    for (i = 0; i < V; i++) {
+        td[i].fd = fin;
+        td[i].id = i;
+        td[i].G = G;
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+    }
+    for (i = 0; i < V; i++) {
+        pthread_join(td[i].threadId, &retval);
+    }
+
+    sem_destroy(&sem);
+    close(fin);
 }
 void GRAPHedges(Graph G, Edge *a)
 {
