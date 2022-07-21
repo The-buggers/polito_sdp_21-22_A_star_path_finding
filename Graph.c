@@ -149,7 +149,7 @@ static void parallelIo(void *arg) {
         POSITIONfree(p);*/
     }
     printf("Edge starts from %d and stop at %d\n", args->start2, args->stop2);
-    row2_d = args->src + sizeof(int);
+    row2_d = args->src + sizeof(int) + (args->V * sizeof(struct row1_t));
     row2_d += args->start2;
     for (int i = args->start2; i < args->stop2; i++, row2_d++) {
         printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->w);
@@ -181,7 +181,7 @@ Graph GRAPHloadParallel(int fin) {
     copysz = sb.st_size;
     E = (copysz - sizeof(int) - (V * sizeof(struct row1_t))) /
         (sizeof(struct row2_t));
-    src = (struct line_t *)mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
+    src = mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
@@ -195,7 +195,7 @@ Graph GRAPHloadParallel(int fin) {
 
     // pthread_mutex_init(&mutex, NULL);
 
-    for (i = 0, j = 0, k = V, v = V, e = E; i < T; i++) {
+    for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
         args[i].src = src;  // to bypass first number;
         args[i].V = V;
         args[i].G = G;
