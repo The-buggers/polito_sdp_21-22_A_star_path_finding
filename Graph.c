@@ -34,17 +34,18 @@ struct arg_t {
     void *src;
     int V;
     Graph G;
-    pthread_mutex_t *mutex;
+    pthread_mutex_t *node_m;
+    pthread_mutex_t *edge_m;
 };
 struct row1_t {
-    int n;
+    int index;
     int x;
     int y;
 };
 struct row2_t {
     int a;
     int b;
-    double w;
+    double wt;
 };
 static Edge EDGEcreate(int v, int w, double wt);
 static link NEW(int v, double wt, link next);
@@ -130,8 +131,7 @@ Graph GRAPHload(FILE *fin) {
     return G;
 }
 static void parallelIo(void *arg) {
-    int node_index, node_x, node_y;
-    int p;
+    Position p;
     struct row1_t *row1_d;
     struct row2_t *row2_d;
     // Read the nodes name(index 0-V) and the coordinates of each node
@@ -141,20 +141,25 @@ static void parallelIo(void *arg) {
     row1_d += args->start1;
     printf("Thread starts from %d and stop at %d\n", args->start1, args->stop1);
     for (int i = args->start1; i < args->stop1; i++, row1_d++) {
-        printf("%d %d %d\n", row1_d->n, row1_d->x, row1_d->y);
-        /*p = POSITIONinit(node_x, node_y);
-        // pthread_mutex_lock(&(args->mutex));
-        STinsert(args->G->tab, p, node_index);
-        // pthread_mutex_unlock(&(args->mutex));
-        POSITIONfree(p);*/
+        printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
+        p = POSITIONinit(row1_d->x, row1_d->y);
+        pthread_mutex_lock(args->node_m);  // lock
+        STinsert(args->G->tab, p, row1_d->index);
+        pthread_mutex_unlock(args->node_m);  // unlock
+        POSITIONfree(p);
     }
     printf("Edge starts from %d and stop at %d\n", args->start2, args->stop2);
     row2_d = args->src + sizeof(int) + (args->V * sizeof(struct row1_t));
     row2_d += args->start2;
     for (int i = args->start2; i < args->stop2; i++, row2_d++) {
-        printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->w);
-        // if (id1 >= 0 && id2 >= 0) GRAPHinsertE(G, id1, id2, wt);
+        printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
+        if (row2_d->a >= 0 && row2_d->b >= 0) {
+            pthread_mutex_lock(args->edge_m);  // lock
+            GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
+            pthread_mutex_unlock(args->edge_m);  // unlock
+        }
     }
+    pthread_exit(NULL);
 }
 Graph GRAPHloadParallel(int fin) {
     int V, T, E, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
@@ -163,7 +168,8 @@ Graph GRAPHloadParallel(int fin) {
     struct arg_t *args;
     struct stat sb;
     void *src;
-    pthread_mutex_t *mutex;
+    pthread_mutex_t node;
+    pthread_mutex_t edge;
 
     double wt;
     Graph G;
@@ -193,13 +199,15 @@ Graph GRAPHloadParallel(int fin) {
     args = (struct arg_t *)malloc(T * sizeof(struct arg_t));
     if (args == NULL) return NULL;
 
-    // pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&node, NULL);
+    pthread_mutex_init(&edge, NULL);
 
     for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
-        args[i].src = src;  // to bypass first number;
+        args[i].src = src;
         args[i].V = V;
         args[i].G = G;
-        args[i].mutex = mutex;
+        args[i].node_m = &node;
+        args[i].edge_m = &edge;
         args[i].start1 = j;
         if (v >= nodexT) {
             j += nodexT;
@@ -220,6 +228,8 @@ Graph GRAPHloadParallel(int fin) {
         args[i].stop2 = k;
         pthread_create(&threads[i], NULL, parallelIo, (void *)&args[i]);
     }
+
+    for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
 
     munmap(src, copysz);
     free(args);
