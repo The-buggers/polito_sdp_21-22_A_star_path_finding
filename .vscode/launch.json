@@ -7,7 +7,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/build/graphtest",
-            "args": ["./Benchmark/binarygraph_f3.txt"],
+            "args": ["./Benchmark/binaryUSA-road-dBAY"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

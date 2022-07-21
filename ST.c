@@ -59,7 +59,7 @@ void STinsert(ST st, Position *pos, int node_index)
 {
   if (node_index >= st->maxN)
   {
-    st->p = realloc(st->p, (2 * st->maxN) * sizeof(char *));
+    st->p = realloc(st->p, (2 * st->maxN) * sizeof(Position *));
     if (st->p == NULL)
       return;
     st->maxN = 2 * st->maxN;

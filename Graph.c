@@ -275,6 +275,10 @@ struct thread_arg_s {
     ssize_t filesize;
     ssize_t regionsize;
     int index;
+    ssize_t linesize;
+    off_t start_offset;
+    char linetype;
+    Graph *G;
 };
 
 struct read_block_s {
@@ -283,8 +287,8 @@ struct read_block_s {
     off_t cur;
     ssize_t size;
 };
-static void *thread_read_nodes(void *arg);
-static void *thread_read_edges(void *arg);
+
+static void *thread_read(void *arg);
 
 Graph GRAPHload_sequential(char *filepath) {
     int V, i, id1, id2, fd, nR;
@@ -316,11 +320,12 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
                           int num_threads_nodes, int num_threads_edges) {
     int fd;
     int n_nodes;
-    int i;
+    int i, j;
     pthread_t *threads_nodes, *threads_edges;
     struct thread_arg_s *threads_arg;
     struct stat stat_buf;
     ssize_t filesize, filesize_nodes_region, filesize_edges_region;
+    Graph G;
 
     // Allocate array of threads
     threads_nodes = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
@@ -341,39 +346,44 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     filesize_nodes_region = n_nodes * sizeof(struct node_line_s);
     filesize_edges_region = filesize - filesize_nodes_region - sizeof(int);
     close(fd);
+#if DEBUGPARALLELREAD
     printf(
         "[INFO SIZE: NODE LINE=%ld, EDGE LINE=%ld, NODES REGION=%ld, EDGES "
         "REGION=%ld]\n",
         sizeof(struct node_line_s), sizeof(struct edge_line_s),
         filesize_nodes_region, filesize_edges_region);
-    /*
-    struct node_line_s nl;
-    struct edge_line_s el;
-    lseek(fd, n_nodes * sizeof(struct node_line_s), SEEK_CUR);
-    read(fd, &el, sizeof(struct edge_line_s));
-    printf("Edge %d -> %d wt=%lf\n", el.id1, el.id2, el.wt);
-    */
+#endif
+    // Allocate the graph
+    G = GRAPHinit(n_nodes);
+    if(G == NULL) return NULL;
 
     // Create threads for reading nodes and edges
     for (i = 0; i < num_threads_nodes + num_threads_edges; i++) {
         strcpy(threads_arg[i].filepath, filepath);
         threads_arg[i].num_partitions = num_partitions;
         threads_arg[i].filesize = filesize;
+        threads_arg[i].G = &G; // &G
         if (i < num_threads_nodes) {
             threads_arg[i].num_threads = num_threads_nodes;
             threads_arg[i].regionsize = filesize_nodes_region;
             threads_arg[i].index = i;
-            pthread_create(&threads_nodes[i], NULL, thread_read_nodes,
+            threads_arg[i].linetype = 'n';
+            threads_arg[i].start_offset = sizeof(int);
+            threads_arg[i].linesize = sizeof(struct node_line_s);
+            pthread_create(&threads_nodes[i], NULL, thread_read,
                            (void *)&threads_arg[i]);
         } else {
+            j = i - num_threads_nodes;
             threads_arg[i].num_threads = num_threads_edges;
             threads_arg[i].regionsize = filesize_edges_region;
-            threads_arg[i].index = i - num_threads_nodes;
-            pthread_create(&threads_edges[i], NULL, thread_read_edges,
+            threads_arg[i].index = j;
+            threads_arg[i].linetype = 'e';
+            threads_arg[i].start_offset = filesize_nodes_region + sizeof(int);
+            threads_arg[i].linesize = sizeof(struct edge_line_s);
+            pthread_create(&threads_edges[j], NULL, thread_read,
                            (void *)&threads_arg[i]);
         }
     }
-
     // Join threads
     for (i = 0; i < num_threads_nodes; i++) {
         pthread_join(threads_nodes[i], NULL);
@@ -381,119 +391,92 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     for (i = 0; i < num_threads_edges; i++) {
         pthread_join(threads_edges[i], NULL);
     }
+
+    return G;
 }
 
-static void *thread_read_nodes(void *arg) {
+static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
     int index = targ->index;
     int fd;
     ssize_t filesize = targ->filesize;
     ssize_t regionsize = targ->regionsize;
-    int num_threads_nodes = targ->num_threads;
+    ssize_t linesize = targ->linesize;
+    off_t start_offset = targ->start_offset;
+    int num_thread = targ->num_threads;
     struct read_block_s rb;
     off_t nodes_file_region_end;
+    struct edge_line_s el;
     struct node_line_s nl;
-    struct edge_line_s el;
+    char linetype = targ->linetype;
+    Position p;
+    Graph G = *(targ->G);
 
     // Open the file (each thread works on its own file descriptor)
     fd = open(targ->filepath, O_RDONLY);
 
     // Compute (first) portion of file to read
     rb.size = targ->regionsize / targ->num_partitions;
-    if (rb.size < sizeof(struct node_line_s))
-        rb.size = sizeof(struct node_line_s);
+    if (rb.size < linesize)
+        rb.size = linesize;
     else
-        rb.size = rb.size - (rb.size % sizeof(struct node_line_s));
-    rb.start = index * rb.size;
+        rb.size = rb.size - (rb.size % linesize);
+
+    rb.start = index * rb.size + start_offset;
     rb.cur = rb.start;
-    rb.end = rb.start + rb.size;
+    rb.end = rb.start + rb.size < regionsize + start_offset? rb.start + rb.size : regionsize;
 
     // If i have more threads than the number of partitions
     // other possible check: if(index > num_partitions)
-    if (rb.start > regionsize ||
-        rb.start + sizeof(struct node_line_s) > regionsize)
+    // /printf("T %d %c INFO: rb.start: %ld\n", index, linetype, rb.start);
+    if (rb.start > regionsize + start_offset) {
+#if DEBUGPARALLELREAD
+        printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
+#endif
         pthread_exit(NULL);
+    }
 
     // Read
     do {
+#if DEBUGPARALLELREAD
         printf(
-            "\nT NODE %d reads: offset start: %ld, offset end: %ld, size: "
+            "\n[T %c] %d reads: offset start: %ld, offset end: %ld, size: "
             "%ld\n",
-            index, rb.start, rb.end, rb.size);
-
-        // Move the cursor on offset_start
-        lseek(fd, rb.start + sizeof(int), SEEK_SET);
-
-        // Read the assigned portion of the file
-        do {
-            read(fd, &nl, sizeof(struct node_line_s));
-            printf("[T NODE %d] Node: %d - [%d; %d] - Cur: %ld\n", index,
-                   nl.index, nl.x, nl.y, rb.cur);
-            rb.cur += sizeof(struct node_line_s);
-        } while (rb.cur < rb.end);
-
-        // Compute next region to read
-        rb.start += rb.size * (index + num_threads_nodes);
-        rb.end = rb.start + rb.size;
-        rb.cur = rb.start;
-    } while (rb.start < regionsize);
-
-    pthread_exit(NULL);
-}
-
-static void *thread_read_edges(void *arg) {
-    struct thread_arg_s *targ = (struct thread_arg_s *)arg;
-    int index = targ->index;
-    int fd;
-    ssize_t filesize = targ->filesize;
-    ssize_t regionsize = targ->regionsize;
-    int num_threads_edges = targ->num_threads;
-    struct read_block_s rb;
-    off_t nodes_file_region_end;
-    struct edge_line_s el;
-
-    // Open the file (each thread works on its own file descriptor)
-    fd = open(targ->filepath, O_RDONLY);
-
-    // Compute (first) portion of file to read
-    rb.size = targ->regionsize / targ->num_partitions;
-    if (rb.size < sizeof(struct edge_line_s))
-        rb.size = sizeof(struct edge_line_s);
-    else
-        rb.size = rb.size - (rb.size % sizeof(struct edge_line_s));
-    rb.start = index * rb.size + 120 + sizeof(int);
-    rb.cur = rb.start;
-    rb.end = rb.start + rb.size;
-
-    // If i have more threads than the number of partitions
-    // other possible check: if(index > num_partitions)
-    if (rb.start > filesize)
-        pthread_exit(NULL);
-
-    // Read
-    do {
-        printf(
-            "\nT EDGE %d reads: offset start: %ld, offset end: %ld, size: "
-            "%ld\n",
-            index, rb.start, rb.end, rb.size);
-
+            linetype, index, rb.start, rb.end, rb.size);
+#endif
         // Move the cursor on offset_start
         lseek(fd, rb.start, SEEK_SET);
 
         // Read the assigned portion of the file
         do {
-            read(fd, &el, sizeof(struct edge_line_s));
-            printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index, el.id1,
-                   el.id2, el.wt);
-            rb.cur += sizeof(struct edge_line_s);
+            if (linetype == 'n') {
+                read(fd, &nl, linesize);
+#if DEBUGPARALLELREAD
+                printf("[T NODE %d] Node: %d - [%d; %d] - Cur: %ld\n", index,
+                       nl.index, nl.x, nl.y, rb.cur);
+#endif
+                p = POSITIONinit(nl.x, nl.y);
+                STinsert(G->tab, p, nl.index);
+                POSITIONfree(p);
+               
+            } else if (linetype == 'e') {
+                read(fd, &el, linesize);
+#if DEBUGPARALLELREAD
+                printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
+                       el.id1, el.id2, el.wt);
+#endif
+                GRAPHinsertE(G, el.id1, el.id2, el.wt);
+                
+            }
+            rb.cur += linesize;
         } while (rb.cur < rb.end);
 
         // Compute next region to read
-        rb.start += rb.size * num_threads_edges;
+        rb.start += rb.size * num_thread;
         rb.end = rb.start + rb.size;
         rb.cur = rb.start;
 
-    } while (rb.start < filesize);
+    } while (rb.start < start_offset + regionsize);
 
     pthread_exit(NULL);
 }
