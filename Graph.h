@@ -1,10 +1,10 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #define DEBUGPRINT 0
-#include "ST.h"
 #include <stdio.h>
-typedef struct edge
-{
+
+#include "ST.h"
+typedef struct edge {
     int v;
     int w;
     double wt;
@@ -14,6 +14,7 @@ typedef struct node *link;
 Graph GRAPHinit(int V);
 void GRAPHfree(Graph G);
 Graph GRAPHload(FILE *fin);
+Graph GRAPHloadParallel(int fin);
 void GRAPHstore(Graph G, FILE *fin);
 int GRAPHgetIndex(Graph G, char *label);
 void GRAPHinsertE(Graph G, int id1, int id2, double wt);
