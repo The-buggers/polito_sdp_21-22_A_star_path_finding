@@ -45,7 +45,7 @@ struct E_data {
 
 int len = 0;
 int retVal = 1;
-sem_t sem, sem2;
+sem_t sem, sem2, sem3;
 struct V_data v;
 struct E_data e;
 
@@ -117,31 +117,33 @@ static void *GRAPHloadParallel(void *arg)  {
 #endif
 
     while (1) {
+        sem_wait(&sem3);
          if (len < td->V) {
             sem_wait(&sem);
             fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
             len++;
             p = POSITIONinit(node_x, node_y);
             STinsert(td->G->tab, p, node_index);
-            sem_post(&sem);  
+            sem_post(&sem); 
+            sem_post(&sem3); 
             POSITIONfree(p);
-                  
         } else {
             sem_wait(&sem2);
             retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
             if(retVal != 3){
                 sem_post(&sem2);
+                sem_post(&sem3);
                 return td->G;
             }
-                
             if ((id1 >= 0 && id2 >= 0) && (id1 != 0 || id2 != 0)) {
                 //printf("%d %d %lf\n", id1, id2, wt);
                 GRAPHinsertE(td->G, id1, id2, wt);
             }
             sem_post(&sem2);
+            sem_post(&sem3);
         }
-        
     }
+    pthread_exit(NULL);
     return td->G;
 }
 Graph GRAPHload(FILE *fin) {
@@ -160,21 +162,24 @@ Graph GRAPHload(FILE *fin) {
 
     sem_init(&sem, 0, 1);
     sem_init(&sem2, 0, 1);
+    sem_init(&sem3, 0, 1);
 
     printf("%d\n", V);
-    td = (struct threadData *)malloc(1 * sizeof(struct threadData));
-    for (i = 0; i < 1; i++) {
+    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
+    for (i = 0; i < 10; i++) {
         td[i].fd = fin;
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
         pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
     }
-    for(i = 0; i < 1; i++) {
+    for(i = 0; i < 10; i++) {
         pthread_join(td[i].threadId, &retval);
     }
 
     sem_destroy(&sem);
+    sem_destroy(&sem2);
+    sem_destroy(&sem3);
 
     return G;
 }

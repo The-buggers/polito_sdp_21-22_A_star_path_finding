@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
   fin = fopen(argv[1], "r");
   if (fin == NULL)
     exit(-1);
-  G = GRAPHload(fin);
   clock_gettime(CLOCK_REALTIME, &begin);
+  G = GRAPHload(fin);
   ASTARshortest_path(G, 0, 23943);
   clock_gettime(CLOCK_REALTIME, &end);
   long seconds = end.tv_sec - begin.tv_sec;
