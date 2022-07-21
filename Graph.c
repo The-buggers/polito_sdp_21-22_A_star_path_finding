@@ -156,15 +156,13 @@ static void parallelIo(void *arg) {
     for (int i = args->start2; i < args->stop2; i++, row2_d++) {
         // printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
         if (row2_d->a >= 0 && row2_d->b >= 0) {
-            pthread_mutex_lock(args->edge_m);  // lock
             GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
-            pthread_mutex_unlock(args->edge_m);  // unlock
         }
     }
     pthread_exit(NULL);
 }
-Graph GRAPHloadParallel(int fin) {
-    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
+Graph GRAPHloadParallel(int fin, int T) {
+    int V, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
     float E;
     char label1[MAXC], label2[MAXC];
     pthread_t *threads;
@@ -196,7 +194,7 @@ Graph GRAPHloadParallel(int fin) {
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
-    T = 12;
+    // T = 12;
     nodexT = (int)ceil(((float)V) / T);
     edgexT = (int)ceil(E / T);
     threads = (pthread_t *)malloc(T * sizeof(pthread_t));
