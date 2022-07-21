@@ -139,20 +139,22 @@ static void parallelIo(void *arg) {
 
     row1_d = args->src + sizeof(int);
     row1_d += args->start1;
-    printf("Thread starts from %d and stop at %d\n", args->start1, args->stop1);
+    // printf("Thread starts from %d and stop at %d\n", args->start1,
+    // args->stop1);
     for (int i = args->start1; i < args->stop1; i++, row1_d++) {
-        printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
+        // printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
         p = POSITIONinit(row1_d->x, row1_d->y);
         pthread_mutex_lock(args->node_m);  // lock
         STinsert(args->G->tab, p, row1_d->index);
         pthread_mutex_unlock(args->node_m);  // unlock
         POSITIONfree(p);
     }
-    printf("Edge starts from %d and stop at %d\n", args->start2, args->stop2);
+    // printf("Edge starts from %d and stop at %d\n", args->start2,
+    // args->stop2);
     row2_d = args->src + sizeof(int) + (args->V * sizeof(struct row1_t));
     row2_d += args->start2;
     for (int i = args->start2; i < args->stop2; i++, row2_d++) {
-        printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
+        // printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
         if (row2_d->a >= 0 && row2_d->b >= 0) {
             pthread_mutex_lock(args->edge_m);  // lock
             GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
@@ -194,7 +196,7 @@ Graph GRAPHloadParallel(int fin) {
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
-    T = 2;
+    T = 12;
     nodexT = (int)ceil(((float)V) / T);
     edgexT = (int)ceil(E / T);
     threads = (pthread_t *)malloc(T * sizeof(pthread_t));
