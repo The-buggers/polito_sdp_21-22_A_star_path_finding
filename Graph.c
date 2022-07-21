@@ -162,7 +162,8 @@ static void parallelIo(void *arg) {
     pthread_exit(NULL);
 }
 Graph GRAPHloadParallel(int fin) {
-    int V, T, E, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
+    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
+    float E;
     char label1[MAXC], label2[MAXC];
     pthread_t *threads;
     struct arg_t *args;
@@ -185,15 +186,17 @@ Graph GRAPHloadParallel(int fin) {
     // Memory Mapping
     if (fstat(fin, &sb) < 0) return NULL;
     copysz = sb.st_size;
-    E = (copysz - sizeof(int) - (V * sizeof(struct row1_t))) /
+    int a = (copysz - sizeof(int) - (V * sizeof(struct row1_t)));
+    int b = (sizeof(struct row2_t));
+    E = (float)(copysz - sizeof(int) - (V * sizeof(struct row1_t))) /
         (sizeof(struct row2_t));
     src = mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
-    nodexT = 5;
-    T = (int)ceil(V / nodexT);
-    edgexT = E / T;
+    T = 2;
+    nodexT = (int)ceil(((float)V) / T);
+    edgexT = (int)ceil(E / T);
     threads = (pthread_t *)malloc(T * sizeof(pthread_t));
     if (threads == NULL) return NULL;
     args = (struct arg_t *)malloc(T * sizeof(struct arg_t));
