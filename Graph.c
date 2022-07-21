@@ -135,7 +135,7 @@ static void *GRAPHloadParallel(void *arg)  {
             }
                 
             if ((id1 >= 0 && id2 >= 0) && (id1 != 0 || id2 != 0)) {
-                printf("%d %d %lf\n", id1, id2, wt);
+                //printf("%d %d %lf\n", id1, id2, wt);
                 GRAPHinsertE(td->G, id1, id2, wt);
             }
             sem_post(&sem2);
@@ -162,15 +162,15 @@ Graph GRAPHload(FILE *fin) {
     sem_init(&sem2, 0, 1);
 
     printf("%d\n", V);
-    td = (struct threadData *)malloc(V * sizeof(struct threadData));
-    for (i = 0; i < V; i++) {
+    td = (struct threadData *)malloc(1 * sizeof(struct threadData));
+    for (i = 0; i < 1; i++) {
         td[i].fd = fin;
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
         pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
     }
-    for(i = 0; i < V; i++) {
+    for(i = 0; i < 1; i++) {
         pthread_join(td[i].threadId, &retval);
     }
 
