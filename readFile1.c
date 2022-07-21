@@ -57,8 +57,6 @@ static void *readFile(void *arg) {
         
         sleep(1);  // Delay Threads
     }
-
-    fprintf(stdout, "Thread: %d\n", td->id);
     pthread_exit((void *)1);
 }
 

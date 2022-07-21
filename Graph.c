@@ -44,7 +44,8 @@ struct E_data {
 };
 
 int len = 0;
-sem_t sem;
+int retVal = 1;
+sem_t sem, sem2;
 struct V_data v;
 struct E_data e;
 
@@ -100,7 +101,7 @@ static void *GRAPHloadParallel(void *arg)  {
     struct threadData *td;
     td = (struct threadData *)arg;
 
-    int i, id1, id2, retVal = 1;
+    int i, id1, id2;
     char label1[MAXC], label2[MAXC];
     int node_index, node_x, node_y;
     double wt;
@@ -110,29 +111,34 @@ static void *GRAPHloadParallel(void *arg)  {
 
 #if DEBUGPRINT
     // Print nodes coordinates
-    for (i = 0; i < G->V; i++) {
-        POSITIONprint(STsearchByIndex(G->tab, i));
+    for (i = 0; i < td->V; i++) {
+        POSITIONprint(STsearchByIndex(td->G->tab, i), 1);
     }
 #endif
 
-    while (retVal > 0) {
-         if (len < 10) {
+    while (1) {
+         if (len < td->V) {
             sem_wait(&sem);
             fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
-            printf("%d %d %d\n", node_index, node_x, node_y);
             len++;
             p = POSITIONinit(node_x, node_y);
             STinsert(td->G->tab, p, node_index);
+            sem_post(&sem);  
             POSITIONfree(p);
-            sem_post(&sem);        
+                  
         } else {
-            sem_wait(&sem);
+            sem_wait(&sem2);
             retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
+            if(retVal != 3){
+                sem_post(&sem2);
+                return td->G;
+            }
+                
             if ((id1 >= 0 && id2 >= 0) && (id1 != 0 || id2 != 0)) {
                 printf("%d %d %lf\n", id1, id2, wt);
                 GRAPHinsertE(td->G, id1, id2, wt);
             }
-            sem_post(&sem);
+            sem_post(&sem2);
         }
         
     }
@@ -153,6 +159,7 @@ Graph GRAPHload(FILE *fin) {
     if (G == NULL) return NULL;
 
     sem_init(&sem, 0, 1);
+    sem_init(&sem2, 0, 1);
 
     printf("%d\n", V);
     td = (struct threadData *)malloc(V * sizeof(struct threadData));
@@ -163,12 +170,11 @@ Graph GRAPHload(FILE *fin) {
         td[i].G = G;
         pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
     }
-    for (i = 0; i < V; i++) {
+    for(i = 0; i < V; i++) {
         pthread_join(td[i].threadId, &retval);
     }
 
     sem_destroy(&sem);
-    fclose(fin);
 
     return G;
 }

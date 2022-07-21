@@ -3,6 +3,7 @@
 #include "Graph.h"
 #include "Position.h"
 #include <math.h>
+#include <stdlib.h>
 #include <float.h>
 #define maxWT DBL_MAX
 static double heuristic_euclidean(Position source, Position dest);

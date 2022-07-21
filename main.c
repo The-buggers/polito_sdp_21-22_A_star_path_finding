@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
     exit(-1);
   G = GRAPHload(fin);
   clock_gettime(CLOCK_REALTIME, &begin);
-  ASTARshortest_path(G, 0, 23943);
+  ASTARshortest_path(G, 0, 3);
   clock_gettime(CLOCK_REALTIME, &end);
   long seconds = end.tv_sec - begin.tv_sec;
   long nanoseconds = end.tv_nsec - begin.tv_nsec;
