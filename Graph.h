@@ -3,8 +3,6 @@
 #define DEBUGPRINT 0
 #include "ST.h"
 #include <stdio.h>
-#include <pthread.h>
-#include <semaphore.h>
 typedef struct edge
 {
     int v;
@@ -15,7 +13,6 @@ typedef struct graph *Graph;
 typedef struct node *link;
 Graph GRAPHinit(int V);
 void GRAPHfree(Graph G);
-Graph GRAPHloadParallel(FILE *fin);
 Graph GRAPHload(FILE *fin);
 void GRAPHstore(Graph G, FILE *fin);
 int GRAPHgetIndex(Graph G, char *label);

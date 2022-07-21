@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jul 20 19:02:57 2022
+# Make data base, printed on Thu Jul 21 09:01:31 2022
 
 # Variables
 
@@ -65,7 +65,7 @@ VSCODE_CODE_CACHE_PATH = /home/fab/.config/Code/CachedData/3b889b090b5ad5793f524
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.3KMJP1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.J1AUP1
 # default
 .LOADED := 
 # default
@@ -75,7 +75,7 @@ MAKEFLAGS = pqrR
 # makefile
 CURDIR := /home/fab/Desktop/AStar
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # automatic
@@ -101,7 +101,7 @@ SNAP_REEXEC =
 # automatic
 @F = $(notdir $@)
 # environment
-VSCODE_PID = 2330
+VSCODE_PID = 41298
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -109,7 +109,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/fab-virtual-machine:@/tmp/.ICE-unix/1260,unix/fab-virtual-machine:/tmp/.ICE-unix/1260
+SESSION_MANAGER = local/fab-virtual-machine:@/tmp/.ICE-unix/1297,unix/fab-virtual-machine:/tmp/.ICE-unix/1297
 # automatic
 *F = $(notdir $*)
 # environment
@@ -159,7 +159,7 @@ LC_TIME = it_IT.UTF-8
 # environment
 SNAP = /snap/code/102
 # environment
-INVOCATION_ID = 467f59389f914725aafd17aaf712dec9
+INVOCATION_ID = 1a12bfd2605a439b8a87f7e3cabf16f9
 # environment
 SNAP_REVISION = 102
 # environment
@@ -193,10 +193,9 @@ GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.deskto
 # environment
 SNAP_ARCH = amd64
 # makefile
- 
 .DEFAULT_GOAL := target
 # environment
-SYSTEMD_EXEC_PID = 1281
+SYSTEMD_EXEC_PID = 1321
 # environment
 DISPLAY = :0
 # environment
@@ -212,11 +211,11 @@ SNAP_DATA = /var/snap/code/102
 # environment
 SNAP_CONTEXT = 6G9Iv9hnl79ftZRTeB1ptoCSCFX9-4EqBYhBwocPMLUpvzdRqEjo
 # environment
-MANAGERPID = 1123
+MANAGERPID = 1158
 # environment
 LC_MEASUREMENT = it_IT.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2071
+GIO_LAUNCHED_DESKTOP_FILE_PID = 41249
 # environment
 _ = /snap/code/102/usr/share/code/code
 # environment
@@ -226,7 +225,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/fab/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:48750
+JOURNAL_STREAM = 8:49959
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -281,6 +280,7 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 # Load=132/1024=13%, Rehash=0, Collisions=5/162=3%
 
 # Pattern-specific Variable Values
+ 
 
 # No pattern-specific variable values.
 
@@ -307,7 +307,6 @@ Astar.h:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 
 # Not a target:
 Position.c:
@@ -344,7 +343,7 @@ Position.h:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-20 19:01:06.550594369
+#  Last modified 2022-07-21 09:01:29.376925469
 #  File has been updated.
 #  Successfully updated.
 
@@ -360,7 +359,6 @@ clean:
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 29):
 	rm -rf ./build/*
- 
 
 # Not a target:
 PQ.c:
@@ -410,7 +408,6 @@ all:
 # Not a target:
 main.c:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 
@@ -439,7 +436,7 @@ target: main.o Graph.o ST.o PQ.o Position.o Astar.o
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
-	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar.o -lm -pthread
+	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar.o -lm -lpthread
 
 # files hash-table stats:
 # Load=23/1024=2%, Rehash=0, Collisions=0/62=0%
@@ -455,6 +452,6 @@ target: main.o Graph.o ST.o PQ.o Position.o Astar.o
 # strcache performance: lookups = 72 / hit rate = 48%
 # hash-table stats:
 # Load=37/8192=0%, Rehash=0, Collisions=0/72=0%
-# Finished Make data base on Wed Jul 20 19:02:57 2022
+# Finished Make data base on Thu Jul 21 09:01:31 2022
 
  
