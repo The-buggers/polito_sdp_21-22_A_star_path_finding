@@ -120,6 +120,7 @@ void GRAPHstore(Graph G, FILE *fout) {
     if (a == NULL) return;
     GRAPHedges(G, a);
     fprintf(fout, "Number of nodes: %d\n", G->V);
+    Position p = STsearchByIndex(G->tab, 0);
     for (i = 0; i < G->V; i++) {
         fprintf(fout, "Node %d: ", i);
         POSITIONprint(STsearchByIndex(G->tab, i), fout);
@@ -289,6 +290,7 @@ struct read_block_s {
 };
 
 static void *thread_read(void *arg);
+pthread_mutex_t *m;
 
 Graph GRAPHload_sequential(char *filepath) {
     int V, i, id1, id2, fd, nR;
@@ -326,13 +328,16 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     struct stat stat_buf;
     ssize_t filesize, filesize_nodes_region, filesize_edges_region;
     Graph G;
+    struct node_line_s nl;
 
-    // Allocate array of threads
+    // Allocate array of threads and global mutex
+    m = malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(m, NULL);
     threads_nodes = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
     threads_edges = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
     threads_arg = (struct thread_arg_s *)malloc(
         (num_threads_edges + num_threads_nodes) * sizeof(struct thread_arg_s));
-    if (threads_nodes == NULL || threads_edges == NULL || threads_arg == NULL) {
+    if (m == NULL || threads_nodes == NULL || threads_edges == NULL || threads_arg == NULL) {
         return NULL;
     }
 
@@ -355,14 +360,14 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
 #endif
     // Allocate the graph
     G = GRAPHinit(n_nodes);
-    if(G == NULL) return NULL;
+    if (G == NULL) return NULL;
 
     // Create threads for reading nodes and edges
     for (i = 0; i < num_threads_nodes + num_threads_edges; i++) {
         strcpy(threads_arg[i].filepath, filepath);
         threads_arg[i].num_partitions = num_partitions;
         threads_arg[i].filesize = filesize;
-        threads_arg[i].G = &G; // &G
+        threads_arg[i].G = &G;  // &G
         if (i < num_threads_nodes) {
             threads_arg[i].num_threads = num_threads_nodes;
             threads_arg[i].regionsize = filesize_nodes_region;
@@ -424,7 +429,9 @@ static void *thread_read(void *arg) {
 
     rb.start = index * rb.size + start_offset;
     rb.cur = rb.start;
-    rb.end = rb.start + rb.size < regionsize + start_offset? rb.start + rb.size : regionsize;
+    rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
+                 ? (rb.start + rb.size)
+                 : (regionsize + start_offset);
 
     // If i have more threads than the number of partitions
     // other possible check: if(index > num_partitions)
@@ -456,24 +463,29 @@ static void *thread_read(void *arg) {
                        nl.index, nl.x, nl.y, rb.cur);
 #endif
                 p = POSITIONinit(nl.x, nl.y);
+                pthread_mutex_lock(m);
                 STinsert(G->tab, p, nl.index);
+                pthread_mutex_unlock(m);
                 POSITIONfree(p);
-               
+
             } else if (linetype == 'e') {
                 read(fd, &el, linesize);
 #if DEBUGPARALLELREAD
                 printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
                        el.id1, el.id2, el.wt);
 #endif
+                pthread_mutex_lock(m);
                 GRAPHinsertE(G, el.id1, el.id2, el.wt);
-                
+                pthread_mutex_unlock(m);
             }
             rb.cur += linesize;
         } while (rb.cur < rb.end);
 
         // Compute next region to read
-        rb.start += rb.size * num_thread;
-        rb.end = rb.start + rb.size;
+        rb.start += rb.size * num_thread;  // MODIFY HERE
+        rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
+                     ? (rb.start + rb.size)
+                     : (regionsize + start_offset);
         rb.cur = rb.start;
 
     } while (rb.start < start_offset + regionsize);

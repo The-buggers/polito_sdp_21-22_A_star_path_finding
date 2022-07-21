@@ -13,9 +13,9 @@ int main(int argc, char* argv[]) {
     
     //G = GRAPHload_sequential(argv[1]);
     //GRAPHstore(G, stdout);
-    G = GRAPHload_parallel3(argv[1], 10, 1, 1);
-    ASTARshortest_path(G, 0, 23943);
-    //GRAPHstore(G, stdout);
+    G = GRAPHload_parallel3(argv[1], 10000, 20, 20);
+    //G= GRAPHload_sequential(argv[1]);
+    // GRAPHstore(G, stdout);
     /*
     fin = fopen(argv[1], "r");
     if (fin == NULL)
