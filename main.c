@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
   //if (fin == NULL)
     //exit(-1);
   clock_gettime(CLOCK_REALTIME, &begin);
-  G = GRAPHload_sequential(argv[1]);
+  G = GRAPHloadBin(argv[1]);
   
   ASTARshortest_path(G, 0, 23943);
   clock_gettime(CLOCK_REALTIME, &end);

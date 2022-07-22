@@ -33,8 +33,8 @@ struct threadData {
 
 struct V_data {
     int n;
-    int node_x;
-    int node_y;
+    double node_x;
+    double node_y;
 };
 
 struct E_data {
@@ -122,7 +122,7 @@ static void *GRAPHloadParallel(void *arg)  {
             sem_wait(&sem);
             //fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
             retVal = read(td->fd, &v, sizeof(struct V_data));
-            printf("%d %d %d\n", v.n, v.node_x, v.node_y);
+            //printf("%d %d %d\n", v.n, v.node_x, v.node_y);
             len++;
             p = POSITIONinit(v.node_x, v.node_y);
             STinsert(td->G->tab, p, v.n);
@@ -135,7 +135,7 @@ static void *GRAPHloadParallel(void *arg)  {
             retVal = read(td->fd, &e, sizeof(struct E_data));
             
             if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
-                printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                //printf("%d %d %lf\n", e.n1, e.n2, e.e);
                 GRAPHinsertE(td->G, e.n1, e.n2, e.e);
             }
             if(retVal < 0){
@@ -189,25 +189,25 @@ static void *GRAPHloadParallel(void *arg)  {
 }*/
 
 Graph GRAPHloadBin(char *fd) {
-    int V, i;
+    int V, i, fin;
     Graph G;
     struct threadData *td;
     void *retval;
-
-    int fin = open(fd, O_RDONLY);
-    read(fd, &V, sizeof(V));
-    // Read the first line: number of nodes
-    //fscanf(fin, "%d", &V);
-    printf("V = %d\n", V);
-    // Initialize the Graph ADT
-    G = GRAPHinit(V);
-
-    if (G == NULL) return NULL;
 
     sem_init(&sem, 0, 1);
     sem_init(&sem2, 0, 1);
     sem_init(&sem3, 0, 1);
 
+    fin = open(fd, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    printf("V = %d\n", V);
+    // Read the first line: number of nodes
+    //fscanf(fin, "%d", &V);
+    
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+
+    if (G == NULL) return NULL;
  
     td = (struct threadData *)malloc(10 * sizeof(struct threadData));
     for (i = 0; i < 10; i++) {
@@ -215,7 +215,6 @@ Graph GRAPHloadBin(char *fd) {
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
-        printf("THREAD %d V = %d \n", i, td[i].V);
         pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
     }
     for(i = 0; i < 10; i++) {
@@ -233,7 +232,6 @@ Graph GRAPHloadBin(char *fd) {
 Graph GRAPHload_sequential(char *filepath) {
     int V, i, id1, id2, fd, nR;
     char label1[MAXC], label2[MAXC];
-    int node_index, node_x, node_y;
     double wt;
     Graph G;
     Position p;
@@ -242,11 +240,12 @@ Graph GRAPHload_sequential(char *filepath) {
 
     fd = open(filepath, O_RDONLY);
     read(fd, &V, sizeof(V));
+    printf("%d\n", V);
     G = GRAPHinit(V);
     if (G == NULL) return NULL;
     for (i = 0; i < V; i++) {
         read(fd, &nl, sizeof(struct V_data));
-        printf("%d %d %d\n", nl.n, nl.node_x, nl.node_y);
+        //printf("%d %f %f\n", nl.n, nl.node_x, nl.node_y);
         p = POSITIONinit(nl.node_x, nl.node_y);
         STinsert(G->tab, p, nl.n);
         POSITIONfree(p);
