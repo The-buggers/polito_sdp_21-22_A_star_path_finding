@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fcntl.h>
 
 #include "Astar.h"
 #include "Graph.h"
@@ -13,9 +14,11 @@ int main(int argc, char* argv[]) {
     int partitions_nodes, partitions_edges, th_nodes, th_edges;
     long seconds, nanoseconds;
     double elapsed;
+    int fin = open(argv[1], O_RDONLY);
     // Measure parallel read performance
     clock_gettime(CLOCK_REALTIME, &begin);
-    G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
+    //G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
+    //G = GRAPHload_parallel2(fin);
     ASTARshortest_path(G, 0, 23943);
     clock_gettime(CLOCK_REALTIME, &end);
     GRAPHfree(G);

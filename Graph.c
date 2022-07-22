@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <semaphore.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "PQ.h"
 #include "Position.h"
@@ -499,4 +503,290 @@ static void *thread_read(void *arg) {
 
     close(fd);
     pthread_exit(NULL);
+}
+
+struct arg_t {
+    int start1;
+    int stop1;
+    int start2;
+    int stop2;
+    void *src;
+    int V;
+    Graph G;
+    pthread_mutex_t *node_m;
+    pthread_mutex_t *edge_m;
+};
+struct row1_t {
+    int index;
+    double x;
+    double y;
+};
+struct row2_t {
+    int a;
+    int b;
+    double wt;
+};
+
+static void parallelIo(void *arg) {
+    Position p;
+    struct row1_t *row1_d;
+    struct row2_t *row2_d;
+    // Read the nodes name(index 0-V) and the coordinates of each node
+    struct arg_t *args = (struct arg_t *)arg;
+
+    row1_d = args->src + sizeof(int);
+    row1_d += args->start1;
+    // printf("Thread starts from %d and stop at %d\n", args->start1,
+    // args->stop1);
+    for (int i = args->start1; i < args->stop1; i++, row1_d++) {
+        // printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
+        p = POSITIONinit(row1_d->x, row1_d->y);
+        pthread_spin_lock(args->node_m);  // lock
+        STinsert(args->G->tab, p, row1_d->index);
+        pthread_spin_unlock(args->node_m);  // unlock
+        POSITIONfree(p);
+    }
+    // printf("Edge starts from %d and stop at %d\n", args->start2,
+    // args->stop2);
+    row2_d = args->src + sizeof(int) + (args->V * sizeof(struct row1_t));
+    row2_d += args->start2;
+    for (int i = args->start2; i < args->stop2; i++, row2_d++) {
+        // printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
+        if (row2_d->a >= 0 && row2_d->b >= 0) {
+            // pthread_mutex_lock(args->edge_m);  // lock
+            GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
+            // pthread_mutex_unlock(args->edge_m);  // unlock
+        }
+    }
+    pthread_exit(NULL);
+}
+Graph GRAPHload_parallel2(int fin) {
+    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
+    float E;
+    char label1[MAXC], label2[MAXC];
+    pthread_t *threads;
+    struct arg_t *args;
+    struct stat sb;
+    void *src;
+    pthread_spinlock_t node;
+    // pthread_mutex_t edge;
+
+    double wt;
+    Graph G;
+    Position p;
+
+    // Read the first line: number of nodes
+    if (read(fin, &V, sizeof(int)) != sizeof(int)) return NULL;
+
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
+
+    // Memory Mapping
+    if (fstat(fin, &sb) < 0) return NULL;
+    copysz = sb.st_size;
+    int a = (copysz - sizeof(int) - (V * sizeof(struct row1_t)));
+    int b = (sizeof(struct row2_t));
+    E = (float)(copysz - sizeof(int) - (V * sizeof(struct row1_t))) /
+        (sizeof(struct row2_t));
+    src = mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
+    if (src == MAP_FAILED) return NULL;
+
+    // Initialize threads
+    T = 2;
+    nodexT = (int)ceil(((float)V) / T);
+    edgexT = (int)ceil(E / T);
+    threads = (pthread_t *)malloc(T * sizeof(pthread_t));
+    if (threads == NULL) return NULL;
+    args = (struct arg_t *)malloc(T * sizeof(struct arg_t));
+    if (args == NULL) return NULL;
+
+    pthread_spin_init(&node, 0);
+    // pthread_mutex_init(&edge, NULL);
+
+    for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
+        args[i].src = src;
+        args[i].V = V;
+        args[i].G = G;
+        args[i].node_m = &node;
+        // args[i].edge_m = &edge;
+        args[i].start1 = j;
+        if (v >= nodexT) {
+            j += nodexT;
+            v -= nodexT;
+        } else {
+            j += v;
+            v = 0;
+        }
+        args[i].stop1 = j;
+        args[i].start2 = k;
+        if (e >= edgexT) {
+            k += edgexT;
+            e -= edgexT;
+        } else {
+            k += e;
+            e = 0;
+        }
+        args[i].stop2 = k;
+        pthread_create(&threads[i], NULL, parallelIo, (void *)&args[i]);
+    }
+
+    for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
+
+    pthread_spin_destroy(&node);
+    munmap(src, copysz);
+    free(args);
+    free(threads);
+    return G;
+}
+
+struct threadData {
+    pthread_t threadId;
+    int fd;
+    int id;
+    Graph G;
+    int V;
+};
+
+struct V_data {
+    int n;
+    double node_x;
+    double node_y;
+};
+
+struct E_data {
+    int n1;
+    int n2;
+    double e;
+};
+
+int len = 0;
+int retVal = 1;
+sem_t sem, sem2, sem3;
+struct V_data v;
+struct E_data e;
+
+static void *GRAPHloadParallel(void *arg)  {
+    struct threadData *td;
+    td = (struct threadData *)arg;
+
+    int i;
+    char label1[MAXC], label2[MAXC];
+    double wt;
+    Position p;
+
+    // Read the nodes name(index 0-V) and the coordinates of each node
+
+#if DEBUGPRINT
+    // Print nodes coordinates
+    for (i = 0; i < td->V; i++) {
+        POSITIONprint(STsearchByIndex(td->G->tab, i), 1);
+    }
+#endif
+    //int fin = open(td->fd, O_RDONLY);
+
+    while (1) {
+        sem_wait(&sem3);
+         if (len < td->V) {
+            sem_wait(&sem);
+            //fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
+            retVal = read(td->fd, &v, sizeof(struct V_data));
+            //printf("%d %d %d\n", v.n, v.node_x, v.node_y);
+            len++;
+            p = POSITIONinit(v.node_x, v.node_y);
+            STinsert(td->G->tab, p, v.n);
+            sem_post(&sem); 
+            sem_post(&sem3); 
+            POSITIONfree(p);
+        } else {
+            sem_wait(&sem2);
+            //retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
+            retVal = read(td->fd, &e, sizeof(struct E_data));
+            
+            if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
+                //printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                GRAPHinsertE(td->G, e.n1, e.n2, e.e);
+            }
+            if(retVal < 0){
+                sem_post(&sem2);
+                sem_post(&sem3);
+                return td->G;
+            }
+            sem_post(&sem2);
+            sem_post(&sem3);
+        }
+    }
+    pthread_exit(NULL);
+    return td->G;
+}
+/*Graph GRAPHload(FILE *fin) {
+    int V, i;
+    Graph G;
+    struct threadData *td;
+    void *retval;
+    // Read the first line: number of nodes
+    fscanf(fin, "%d", &V);
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
+    sem_init(&sem, 0, 1);
+    sem_init(&sem2, 0, 1);
+    sem_init(&sem3, 0, 1);
+    printf("%d\n", V);
+    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
+    for (i = 0; i < 10; i++) {
+        td[i].fd = fin;
+        td[i].id = i;
+        td[i].V = V;
+        td[i].G = G;
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+    }
+    for(i = 0; i < 10; i++) {
+        pthread_join(td[i].threadId, &retval);
+    }
+    sem_destroy(&sem);
+    sem_destroy(&sem2);
+    sem_destroy(&sem3);
+    return G;
+}*/
+
+Graph GRAPHload_parallel1(char *fd) {
+    int V, i, fin;
+    Graph G;
+    struct threadData *td;
+    void *retval;
+
+    sem_init(&sem, 0, 1);
+    sem_init(&sem2, 0, 1);
+    sem_init(&sem3, 0, 1);
+
+    fin = open(fd, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    printf("V = %d\n", V);
+    // Read the first line: number of nodes
+    //fscanf(fin, "%d", &V);
+    
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+
+    if (G == NULL) return NULL;
+ 
+    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
+    for (i = 0; i < 10; i++) {
+        td[i].fd = fin;
+        td[i].id = i;
+        td[i].V = V;
+        td[i].G = G;
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+    }
+    for(i = 0; i < 10; i++) {
+        pthread_join(td[i].threadId, &retval);
+    }
+
+    sem_destroy(&sem);
+    sem_destroy(&sem2);
+    sem_destroy(&sem3);
+    close(fin);
+
+    return G;
 }
