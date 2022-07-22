@@ -196,7 +196,7 @@ Graph GRAPHloadParallel(int fin) {
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
-    T = 12;
+    T = 2;
     nodexT = (int)ceil(((float)V) / T);
     edgexT = (int)ceil(E / T);
     threads = (pthread_t *)malloc(T * sizeof(pthread_t));
