@@ -5,8 +5,8 @@
 #include <unistd.h>
 struct node_line_s{
     int node_index;
-    int node_x;
-    int node_y;
+    double node_x;
+    double node_y;
 };
 struct edge_line_s{
     int id1;
@@ -16,7 +16,8 @@ struct edge_line_s{
 
 int main(int argc, char** argv) {
     FILE *fp;
-    int V, i, node_index, node_x, node_y;
+    int V, i, node_index;
+    double node_x, node_y;
     int fd;
     struct node_line_s nl;
     struct edge_line_s el;
@@ -29,7 +30,7 @@ int main(int argc, char** argv) {
 
     for (i = 0; i < V; i++)
     {
-        fscanf(fp, "%d %d %d", &nl.node_index, &nl.node_x, &nl.node_y);
+        fscanf(fp, "%d %lf %lf", &nl.node_index, &nl.node_x, &nl.node_y);
         write(fd, &nl, sizeof(struct node_line_s));
     }
 
