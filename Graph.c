@@ -144,9 +144,9 @@ static void parallelIo(void *arg) {
     for (int i = args->start1; i < args->stop1; i++, row1_d++) {
         // printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
         p = POSITIONinit(row1_d->x, row1_d->y);
-        pthread_mutex_lock(args->node_m);  // lock
+        pthread_spin_lock(args->node_m);  // lock
         STinsert(args->G->tab, p, row1_d->index);
-        pthread_mutex_unlock(args->node_m);  // unlock
+        pthread_spin_unlock(args->node_m);  // unlock
         POSITIONfree(p);
     }
     // printf("Edge starts from %d and stop at %d\n", args->start2,
@@ -156,9 +156,9 @@ static void parallelIo(void *arg) {
     for (int i = args->start2; i < args->stop2; i++, row2_d++) {
         // printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
         if (row2_d->a >= 0 && row2_d->b >= 0) {
-            pthread_mutex_lock(args->edge_m);  // lock
+            // pthread_mutex_lock(args->edge_m);  // lock
             GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
-            pthread_mutex_unlock(args->edge_m);  // unlock
+            // pthread_mutex_unlock(args->edge_m);  // unlock
         }
     }
     pthread_exit(NULL);
@@ -171,8 +171,8 @@ Graph GRAPHloadParallel(int fin) {
     struct arg_t *args;
     struct stat sb;
     void *src;
-    pthread_mutex_t node;
-    pthread_mutex_t edge;
+    pthread_spinlock_t node;
+    // pthread_mutex_t edge;
 
     double wt;
     Graph G;
@@ -204,15 +204,15 @@ Graph GRAPHloadParallel(int fin) {
     args = (struct arg_t *)malloc(T * sizeof(struct arg_t));
     if (args == NULL) return NULL;
 
-    pthread_mutex_init(&node, NULL);
-    pthread_mutex_init(&edge, NULL);
+    pthread_spin_init(&node, 0);
+    // pthread_mutex_init(&edge, NULL);
 
     for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
         args[i].src = src;
         args[i].V = V;
         args[i].G = G;
         args[i].node_m = &node;
-        args[i].edge_m = &edge;
+        // args[i].edge_m = &edge;
         args[i].start1 = j;
         if (v >= nodexT) {
             j += nodexT;
@@ -236,6 +236,7 @@ Graph GRAPHloadParallel(int fin) {
 
     for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
 
+    pthread_spin_destroy(&node);
     munmap(src, copysz);
     free(args);
     free(threads);
