@@ -14,6 +14,8 @@ typedef struct node *link;
 Graph GRAPHinit(int V);
 void GRAPHfree(Graph G);
 Graph GRAPHload(FILE *fin);
+Graph GRAPHloadBin(char *fd);
+Graph GRAPHload_sequential(char *filepath);
 void GRAPHstore(Graph G, FILE *fin);
 int GRAPHgetIndex(Graph G, char *label);
 void GRAPHinsertE(Graph G, int id1, int id2, double wt);

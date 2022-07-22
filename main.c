@@ -9,11 +9,12 @@ int main(int argc, char* argv[]) {
   Graph G;
   FILE *fin;
   struct timespec begin, end; 
-  fin = fopen(argv[1], "r");
-  if (fin == NULL)
-    exit(-1);
+  //fin = fopen(argv[1], "r");
+  //if (fin == NULL)
+    //exit(-1);
   clock_gettime(CLOCK_REALTIME, &begin);
-  G = GRAPHload(fin);
+  G = GRAPHload_sequential(argv[1]);
+  
   ASTARshortest_path(G, 0, 23943);
   clock_gettime(CLOCK_REALTIME, &end);
   long seconds = end.tv_sec - begin.tv_sec;

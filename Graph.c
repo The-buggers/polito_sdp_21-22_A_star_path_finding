@@ -25,7 +25,7 @@ struct graph {
 
 struct threadData {
     pthread_t threadId;
-    FILE *fd;
+    int fd;
     int id;
     Graph G;
     int V;
@@ -33,8 +33,8 @@ struct threadData {
 
 struct V_data {
     int n;
-    int lat;
-    int lon;
+    int node_x;
+    int node_y;
 };
 
 struct E_data {
@@ -101,9 +101,8 @@ static void *GRAPHloadParallel(void *arg)  {
     struct threadData *td;
     td = (struct threadData *)arg;
 
-    int i, id1, id2;
+    int i;
     char label1[MAXC], label2[MAXC];
-    int node_index, node_x, node_y;
     double wt;
     Position p;
 
@@ -115,29 +114,34 @@ static void *GRAPHloadParallel(void *arg)  {
         POSITIONprint(STsearchByIndex(td->G->tab, i), 1);
     }
 #endif
+    //int fin = open(td->fd, O_RDONLY);
 
     while (1) {
         sem_wait(&sem3);
          if (len < td->V) {
             sem_wait(&sem);
-            fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
+            //fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
+            retVal = read(td->fd, &v, sizeof(struct V_data));
+            printf("%d %d %d\n", v.n, v.node_x, v.node_y);
             len++;
-            p = POSITIONinit(node_x, node_y);
-            STinsert(td->G->tab, p, node_index);
+            p = POSITIONinit(v.node_x, v.node_y);
+            STinsert(td->G->tab, p, v.n);
             sem_post(&sem); 
             sem_post(&sem3); 
             POSITIONfree(p);
         } else {
             sem_wait(&sem2);
-            retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
-            if(retVal != 3){
+            //retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
+            retVal = read(td->fd, &e, sizeof(struct E_data));
+            
+            if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
+                printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                GRAPHinsertE(td->G, e.n1, e.n2, e.e);
+            }
+            if(retVal < 0){
                 sem_post(&sem2);
                 sem_post(&sem3);
                 return td->G;
-            }
-            if ((id1 >= 0 && id2 >= 0) && (id1 != 0 || id2 != 0)) {
-                //printf("%d %d %lf\n", id1, id2, wt);
-                GRAPHinsertE(td->G, id1, id2, wt);
             }
             sem_post(&sem2);
             sem_post(&sem3);
@@ -146,7 +150,7 @@ static void *GRAPHloadParallel(void *arg)  {
     pthread_exit(NULL);
     return td->G;
 }
-Graph GRAPHload(FILE *fin) {
+/*Graph GRAPHload(FILE *fin) {
     int V, i;
     Graph G;
     struct threadData *td;
@@ -182,7 +186,78 @@ Graph GRAPHload(FILE *fin) {
     sem_destroy(&sem3);
 
     return G;
+}*/
+
+Graph GRAPHloadBin(char *fd) {
+    int V, i;
+    Graph G;
+    struct threadData *td;
+    void *retval;
+
+    int fin = open(fd, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    // Read the first line: number of nodes
+    //fscanf(fin, "%d", &V);
+    printf("V = %d\n", V);
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+
+    if (G == NULL) return NULL;
+
+    sem_init(&sem, 0, 1);
+    sem_init(&sem2, 0, 1);
+    sem_init(&sem3, 0, 1);
+
+ 
+    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
+    for (i = 0; i < 10; i++) {
+        td[i].fd = fin;
+        td[i].id = i;
+        td[i].V = V;
+        td[i].G = G;
+        printf("THREAD %d V = %d \n", i, td[i].V);
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+    }
+    for(i = 0; i < 10; i++) {
+        pthread_join(td[i].threadId, &retval);
+    }
+
+    sem_destroy(&sem);
+    sem_destroy(&sem2);
+    sem_destroy(&sem3);
+    close(fin);
+
+    return G;
 }
+
+Graph GRAPHload_sequential(char *filepath) {
+    int V, i, id1, id2, fd, nR;
+    char label1[MAXC], label2[MAXC];
+    int node_index, node_x, node_y;
+    double wt;
+    Graph G;
+    Position p;
+    struct V_data nl;
+    struct E_data el;
+
+    fd = open(filepath, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
+    for (i = 0; i < V; i++) {
+        read(fd, &nl, sizeof(struct V_data));
+        printf("%d %d %d\n", nl.n, nl.node_x, nl.node_y);
+        p = POSITIONinit(nl.node_x, nl.node_y);
+        STinsert(G->tab, p, nl.n);
+        POSITIONfree(p);
+    }
+    while ((nR = read(fd, &el, sizeof(struct E_data))) > 0) {
+        if (el.n1 >= 0 && el.n2 >= 0) GRAPHinsertE(G, el.n1, el.n2, el.e);
+    }
+
+    return G;
+}
+
 void GRAPHedges(Graph G, Edge *a) {
     int v, E = 0;
     link t;
