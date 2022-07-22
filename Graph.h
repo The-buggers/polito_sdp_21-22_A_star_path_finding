@@ -31,6 +31,7 @@ double LINKget_wt(link t);
 int LINKget_node(link t);
 // Parallel read
 Graph GRAPHload_sequential(char *filepath);  // binary version of GRAPHload
-Graph GRAPHload_parallel3(char *filepath, int num_partitions,
-                          int num_threads_nodes, int num_threads_edges);
+Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
+                          int num_partitions_edges, int num_threads_nodes,
+                          int num_threads_edges);
 #endif

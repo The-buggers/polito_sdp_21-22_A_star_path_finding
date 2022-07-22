@@ -4,8 +4,8 @@
 #include "Position.h"
 struct position
 {
-    int x;
-    int y;
+    double x;
+    double y;
 };
 double POSITIONcompute_euclidean_distance(Position p1, Position p2){
     return sqrt(pow(p1->x-p2->x, 2) + pow(p1->y-p2->y, 2));
@@ -18,10 +18,10 @@ void POSITIONcpy(Position p1, Position p2){
     p1->y = p2->y;
 }
 void POSITIONprint(Position p, FILE *fout){
-    fprintf(fout, "[%d;%d]\n", p->x, p->y);
+    fprintf(fout, "[%.4lf;%.4lf]\n", p->x, p->y);
 }
 
-Position POSITIONinit(int x, int y){
+Position POSITIONinit(double x, double y){
     Position p;
 
     p = malloc(sizeof(*p));

@@ -259,8 +259,8 @@ to node dest]
 // PARALLEL READ
 struct node_line_s {
     int index;
-    int x;
-    int y;
+    double x;
+    double y;
 };
 
 struct edge_line_s {
@@ -318,8 +318,9 @@ Graph GRAPHload_sequential(char *filepath) {
 
     return G;
 }
-Graph GRAPHload_parallel3(char *filepath, int num_partitions,
-                          int num_threads_nodes, int num_threads_edges) {
+Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
+                          int num_partitions_edges, int num_threads_nodes,
+                          int num_threads_edges) {
     int fd;
     int n_nodes;
     int i, j;
@@ -337,7 +338,8 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     threads_edges = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
     threads_arg = (struct thread_arg_s *)malloc(
         (num_threads_edges + num_threads_nodes) * sizeof(struct thread_arg_s));
-    if (m == NULL || threads_nodes == NULL || threads_edges == NULL || threads_arg == NULL) {
+    if (m == NULL || threads_nodes == NULL || threads_edges == NULL ||
+        threads_arg == NULL) {
         return NULL;
     }
 
@@ -365,11 +367,11 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     // Create threads for reading nodes and edges
     for (i = 0; i < num_threads_nodes + num_threads_edges; i++) {
         strcpy(threads_arg[i].filepath, filepath);
-        threads_arg[i].num_partitions = num_partitions;
         threads_arg[i].filesize = filesize;
         threads_arg[i].G = &G;  // &G
         if (i < num_threads_nodes) {
             threads_arg[i].num_threads = num_threads_nodes;
+            threads_arg[i].num_partitions = num_partitions_nodes;
             threads_arg[i].regionsize = filesize_nodes_region;
             threads_arg[i].index = i;
             threads_arg[i].linetype = 'n';
@@ -380,6 +382,7 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
         } else {
             j = i - num_threads_nodes;
             threads_arg[i].num_threads = num_threads_edges;
+            threads_arg[i].num_partitions = num_partitions_edges;
             threads_arg[i].regionsize = filesize_edges_region;
             threads_arg[i].index = j;
             threads_arg[i].linetype = 'e';
@@ -396,7 +399,10 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions,
     for (i = 0; i < num_threads_edges; i++) {
         pthread_join(threads_edges[i], NULL);
     }
-
+    free(threads_nodes);
+    free(threads_edges);
+    free(threads_arg);
+    free(m);
     return G;
 }
 
@@ -436,10 +442,11 @@ static void *thread_read(void *arg) {
     // If i have more threads than the number of partitions
     // other possible check: if(index > num_partitions)
     // /printf("T %d %c INFO: rb.start: %ld\n", index, linetype, rb.start);
-    if (rb.start > regionsize + start_offset) {
+    if (index >= targ->num_partitions) {
 #if DEBUGPARALLELREAD
         printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
 #endif
+        close(fd);
         pthread_exit(NULL);
     }
 
@@ -459,7 +466,7 @@ static void *thread_read(void *arg) {
             if (linetype == 'n') {
                 read(fd, &nl, linesize);
 #if DEBUGPARALLELREAD
-                printf("[T NODE %d] Node: %d - [%d; %d] - Cur: %ld\n", index,
+                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n", index,
                        nl.index, nl.x, nl.y, rb.cur);
 #endif
                 p = POSITIONinit(nl.x, nl.y);
@@ -490,5 +497,6 @@ static void *thread_read(void *arg) {
 
     } while (rb.start < start_offset + regionsize);
 
+    close(fd);
     pthread_exit(NULL);
 }
