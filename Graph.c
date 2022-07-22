@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <math.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +36,7 @@ struct arg_t {
     int V;
     Graph G;
     pthread_mutex_t *node_m;
-    pthread_mutex_t *edge_m;
+    pthread_spinlock_t *edge_m;
 };
 struct row1_t {
     int index;
@@ -144,9 +145,9 @@ static void parallelIo(void *arg) {
     for (int i = args->start1; i < args->stop1; i++, row1_d++) {
         // printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
         p = POSITIONinit(row1_d->x, row1_d->y);
-        pthread_mutex_lock(args->node_m);  // lock
+        pthread_spin_lock(args->edge_m);  // lock
         STinsert(args->G->tab, p, row1_d->index);
-        pthread_mutex_unlock(args->node_m);  // unlock
+        pthread_spin_unlock(args->edge_m);  // unlock
         POSITIONfree(p);
     }
     // printf("Edge starts from %d and stop at %d\n", args->start2,
@@ -170,7 +171,7 @@ Graph GRAPHloadParallel(int fin, int T) {
     struct stat sb;
     void *src;
     pthread_mutex_t node;
-    pthread_mutex_t edge;
+    pthread_spinlock_t edge;
 
     double wt;
     Graph G;
@@ -203,7 +204,7 @@ Graph GRAPHloadParallel(int fin, int T) {
     if (args == NULL) return NULL;
 
     pthread_mutex_init(&node, NULL);
-    pthread_mutex_init(&edge, NULL);
+    pthread_spin_init(&edge, 0);
 
     for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
         args[i].src = src;
@@ -234,6 +235,8 @@ Graph GRAPHloadParallel(int fin, int T) {
 
     for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
 
+    pthread_spin_destroy(&edge);
+    pthread_mutex_destroy(&node);
     munmap(src, copysz);
     free(args);
     free(threads);
