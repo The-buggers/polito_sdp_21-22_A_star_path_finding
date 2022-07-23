@@ -1,7 +1,7 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <fcntl.h>
 
 #include "Astar.h"
 #include "Graph.h"
@@ -17,16 +17,15 @@ int main(int argc, char* argv[]) {
     int fin = open(argv[1], O_RDONLY);
     // Measure parallel read performance
     clock_gettime(CLOCK_REALTIME, &begin);
-    //G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
-    //G = GRAPHload_parallel2(fin);
+    // G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
+    // G = GRAPHload_parallel2(fin);
     ASTARshortest_path(G, 0, 23943);
     clock_gettime(CLOCK_REALTIME, &end);
     GRAPHfree(G);
     seconds = end.tv_sec - begin.tv_sec;
     nanoseconds = end.tv_nsec - begin.tv_nsec;
     elapsed = seconds + nanoseconds * 1e-9;
-    fprintf(stdout, "%d %d %d %d: %.9f s\n", 100, 100,
-            5, 5, elapsed);
+    fprintf(stdout, "%d %d %d %d: %.9f s\n", 100, 100, 5, 5, elapsed);
     /*
     fperf = fopen("performance.txt", "w+");
     for (partitions_nodes = 1; partitions_nodes < 3; partitions_nodes++) {

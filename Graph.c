@@ -3,10 +3,10 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <semaphore.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -470,8 +470,8 @@ static void *thread_read(void *arg) {
             if (linetype == 'n') {
                 read(fd, &nl, linesize);
 #if DEBUGPARALLELREAD
-                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n", index,
-                       nl.index, nl.x, nl.y, rb.cur);
+                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n",
+                       index, nl.index, nl.x, nl.y, rb.cur);
 #endif
                 p = POSITIONinit(nl.x, nl.y);
                 pthread_mutex_lock(m);
@@ -666,7 +666,7 @@ sem_t sem, sem2, sem3;
 struct V_data v;
 struct E_data e;
 
-static void *GRAPHloadParallel(void *arg)  {
+static void *GRAPHloadParallel(void *arg) {
     struct threadData *td;
     td = (struct threadData *)arg;
 
@@ -683,31 +683,31 @@ static void *GRAPHloadParallel(void *arg)  {
         POSITIONprint(STsearchByIndex(td->G->tab, i), 1);
     }
 #endif
-    //int fin = open(td->fd, O_RDONLY);
+    // int fin = open(td->fd, O_RDONLY);
 
     while (1) {
         sem_wait(&sem3);
-         if (len < td->V) {
+        if (len < td->V) {
             sem_wait(&sem);
-            //fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
+            // fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
             retVal = read(td->fd, &v, sizeof(struct V_data));
-            //printf("%d %d %d\n", v.n, v.node_x, v.node_y);
+            // printf("%d %d %d\n", v.n, v.node_x, v.node_y);
             len++;
             p = POSITIONinit(v.node_x, v.node_y);
             STinsert(td->G->tab, p, v.n);
-            sem_post(&sem); 
-            sem_post(&sem3); 
+            sem_post(&sem);
+            sem_post(&sem3);
             POSITIONfree(p);
         } else {
             sem_wait(&sem2);
-            //retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
+            // retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
             retVal = read(td->fd, &e, sizeof(struct E_data));
-            
+
             if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
-                //printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                // printf("%d %d %lf\n", e.n1, e.n2, e.e);
                 GRAPHinsertE(td->G, e.n1, e.n2, e.e);
             }
-            if(retVal < 0){
+            if (retVal < 0) {
                 sem_post(&sem2);
                 sem_post(&sem3);
                 return td->G;
@@ -739,7 +739,8 @@ static void *GRAPHloadParallel(void *arg)  {
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
-        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void
+*)&td[i]);
     }
     for(i = 0; i < 10; i++) {
         pthread_join(td[i].threadId, &retval);
@@ -764,22 +765,23 @@ Graph GRAPHload_parallel1(char *fd) {
     read(fd, &V, sizeof(V));
     printf("V = %d\n", V);
     // Read the first line: number of nodes
-    //fscanf(fin, "%d", &V);
-    
+    // fscanf(fin, "%d", &V);
+
     // Initialize the Graph ADT
     G = GRAPHinit(V);
 
     if (G == NULL) return NULL;
- 
+
     td = (struct threadData *)malloc(10 * sizeof(struct threadData));
     for (i = 0; i < 10; i++) {
         td[i].fd = fin;
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
-        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void *)&td[i]);
+        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel,
+                       (void *)&td[i]);
     }
-    for(i = 0; i < 10; i++) {
+    for (i = 0; i < 10; i++) {
         pthread_join(td[i].threadId, &retval);
     }
 
