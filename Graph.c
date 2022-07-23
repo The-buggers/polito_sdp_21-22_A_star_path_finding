@@ -289,6 +289,7 @@ struct read_block_s {
     off_t cur;
     ssize_t size;
 };
+pthread_mutex_t *m;
 static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
     int index = targ->index;
@@ -383,7 +384,6 @@ static void *thread_read(void *arg) {
     close(fd);
     pthread_exit(NULL);
 }
-pthread_mutex_t *m;
 Graph GRAPHload_sequential(char *filepath) {
     int V, i, id1, id2, fd, nR;
     char label1[MAXC], label2[MAXC];
