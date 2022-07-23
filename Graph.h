@@ -34,6 +34,6 @@ Graph GRAPHload_sequential(char *filepath);  // binary version of GRAPHload
 Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
                           int num_partitions_edges, int num_threads_nodes,
                           int num_threads_edges);
-Graph GRAPHload_parallel2(int fin);
+Graph GRAPHload_parallel2(char *filepath);
 Graph GRAPHload_parallel1(char *fd);
 #endif

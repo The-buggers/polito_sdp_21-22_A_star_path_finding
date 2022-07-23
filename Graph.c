@@ -260,19 +260,17 @@ to node dest]
 }*/
 // ^(\s)*$\n
 
-// PARALLEL READ
+// PARALLEL READ 3
 struct node_line_s {
     int index;
     double x;
     double y;
 };
-
 struct edge_line_s {
     int id1;
     int id2;
     double wt;
 };
-
 struct thread_arg_s {
     char filepath[50];
     int num_threads;
@@ -285,17 +283,107 @@ struct thread_arg_s {
     char linetype;
     Graph *G;
 };
-
 struct read_block_s {
     off_t start;
     off_t end;
     off_t cur;
     ssize_t size;
 };
+static void *thread_read(void *arg) {
+    struct thread_arg_s *targ = (struct thread_arg_s *)arg;
+    int index = targ->index;
+    int fd;
+    ssize_t filesize = targ->filesize;
+    ssize_t regionsize = targ->regionsize;
+    ssize_t linesize = targ->linesize;
+    off_t start_offset = targ->start_offset;
+    int num_thread = targ->num_threads;
+    struct read_block_s rb;
+    off_t nodes_file_region_end;
+    struct edge_line_s el;
+    struct node_line_s nl;
+    char linetype = targ->linetype;
+    Position p;
+    Graph G = *(targ->G);
 
-static void *thread_read(void *arg);
+    // Open the file (each thread works on its own file descriptor)
+    fd = open(targ->filepath, O_RDONLY);
+
+    // Compute (first) portion of file to read
+    rb.size = targ->regionsize / targ->num_partitions;
+    if (rb.size < linesize)
+        rb.size = linesize;
+    else
+        rb.size = rb.size - (rb.size % linesize);
+
+    rb.start = index * rb.size + start_offset;
+    rb.cur = rb.start;
+    rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
+                 ? (rb.start + rb.size)
+                 : (regionsize + start_offset);
+
+    // If i have more threads than the number of partitions
+    // other possible check: if(index > num_partitions)
+    // /printf("T %d %c INFO: rb.start: %ld\n", index, linetype, rb.start);
+    if (index >= targ->num_partitions) {
+#if DEBUGPARALLELREAD
+        printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
+#endif
+        close(fd);
+        pthread_exit(NULL);
+    }
+
+    // Read
+    do {
+#if DEBUGPARALLELREAD
+        printf(
+            "\n[T %c] %d reads: offset start: %ld, offset end: %ld, size: "
+            "%ld\n",
+            linetype, index, rb.start, rb.end, rb.size);
+#endif
+        // Move the cursor on offset_start
+        lseek(fd, rb.start, SEEK_SET);
+
+        // Read the assigned portion of the file
+        do {
+            if (linetype == 'n') {
+                read(fd, &nl, linesize);
+#if DEBUGPARALLELREAD
+                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n",
+                       index, nl.index, nl.x, nl.y, rb.cur);
+#endif
+                p = POSITIONinit(nl.x, nl.y);
+                pthread_mutex_lock(m);
+                STinsert(G->tab, p, nl.index);
+                pthread_mutex_unlock(m);
+                POSITIONfree(p);
+
+            } else if (linetype == 'e') {
+                read(fd, &el, linesize);
+#if DEBUGPARALLELREAD
+                printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
+                       el.id1, el.id2, el.wt);
+#endif
+                pthread_mutex_lock(m);
+                GRAPHinsertE(G, el.id1, el.id2, el.wt);
+                pthread_mutex_unlock(m);
+            }
+            rb.cur += linesize;
+        } while (rb.cur < rb.end);
+
+        // Compute next region to read
+        rb.start += rb.size * num_thread;  // MODIFY HERE
+        rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
+                     ? (rb.start + rb.size)
+                     : (regionsize + start_offset);
+        rb.cur = rb.start;
+
+    } while (rb.start < start_offset + regionsize);
+
+    close(fd);
+    pthread_exit(NULL);
+}
 pthread_mutex_t *m;
-
 Graph GRAPHload_sequential(char *filepath) {
     int V, i, id1, id2, fd, nR;
     char label1[MAXC], label2[MAXC];
@@ -410,101 +498,7 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
     return G;
 }
 
-static void *thread_read(void *arg) {
-    struct thread_arg_s *targ = (struct thread_arg_s *)arg;
-    int index = targ->index;
-    int fd;
-    ssize_t filesize = targ->filesize;
-    ssize_t regionsize = targ->regionsize;
-    ssize_t linesize = targ->linesize;
-    off_t start_offset = targ->start_offset;
-    int num_thread = targ->num_threads;
-    struct read_block_s rb;
-    off_t nodes_file_region_end;
-    struct edge_line_s el;
-    struct node_line_s nl;
-    char linetype = targ->linetype;
-    Position p;
-    Graph G = *(targ->G);
-
-    // Open the file (each thread works on its own file descriptor)
-    fd = open(targ->filepath, O_RDONLY);
-
-    // Compute (first) portion of file to read
-    rb.size = targ->regionsize / targ->num_partitions;
-    if (rb.size < linesize)
-        rb.size = linesize;
-    else
-        rb.size = rb.size - (rb.size % linesize);
-
-    rb.start = index * rb.size + start_offset;
-    rb.cur = rb.start;
-    rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
-                 ? (rb.start + rb.size)
-                 : (regionsize + start_offset);
-
-    // If i have more threads than the number of partitions
-    // other possible check: if(index > num_partitions)
-    // /printf("T %d %c INFO: rb.start: %ld\n", index, linetype, rb.start);
-    if (index >= targ->num_partitions) {
-#if DEBUGPARALLELREAD
-        printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
-#endif
-        close(fd);
-        pthread_exit(NULL);
-    }
-
-    // Read
-    do {
-#if DEBUGPARALLELREAD
-        printf(
-            "\n[T %c] %d reads: offset start: %ld, offset end: %ld, size: "
-            "%ld\n",
-            linetype, index, rb.start, rb.end, rb.size);
-#endif
-        // Move the cursor on offset_start
-        lseek(fd, rb.start, SEEK_SET);
-
-        // Read the assigned portion of the file
-        do {
-            if (linetype == 'n') {
-                read(fd, &nl, linesize);
-#if DEBUGPARALLELREAD
-                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n",
-                       index, nl.index, nl.x, nl.y, rb.cur);
-#endif
-                p = POSITIONinit(nl.x, nl.y);
-                pthread_mutex_lock(m);
-                STinsert(G->tab, p, nl.index);
-                pthread_mutex_unlock(m);
-                POSITIONfree(p);
-
-            } else if (linetype == 'e') {
-                read(fd, &el, linesize);
-#if DEBUGPARALLELREAD
-                printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
-                       el.id1, el.id2, el.wt);
-#endif
-                pthread_mutex_lock(m);
-                GRAPHinsertE(G, el.id1, el.id2, el.wt);
-                pthread_mutex_unlock(m);
-            }
-            rb.cur += linesize;
-        } while (rb.cur < rb.end);
-
-        // Compute next region to read
-        rb.start += rb.size * num_thread;  // MODIFY HERE
-        rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
-                     ? (rb.start + rb.size)
-                     : (regionsize + start_offset);
-        rb.cur = rb.start;
-
-    } while (rb.start < start_offset + regionsize);
-
-    close(fd);
-    pthread_exit(NULL);
-}
-
+// PARALLEL READ 2
 struct arg_t {
     int start1;
     int stop1;
@@ -513,55 +507,43 @@ struct arg_t {
     void *src;
     int V;
     Graph G;
-    pthread_mutex_t *node_m;
-    pthread_mutex_t *edge_m;
+    pthread_spinlock_t *node;
+    pthread_spinlock_t *edge;
 };
-struct row1_t {
-    int index;
-    double x;
-    double y;
-};
-struct row2_t {
-    int a;
-    int b;
-    double wt;
-};
-
 static void parallelIo(void *arg) {
     Position p;
-    struct row1_t *row1_d;
-    struct row2_t *row2_d;
+    struct node_line_s *node_line_d;
+    struct edge_line_s *edge_line_d;
     // Read the nodes name(index 0-V) and the coordinates of each node
     struct arg_t *args = (struct arg_t *)arg;
 
-    row1_d = args->src + sizeof(int);
-    row1_d += args->start1;
-    // printf("Thread starts from %d and stop at %d\n", args->start1,
-    // args->stop1);
-    for (int i = args->start1; i < args->stop1; i++, row1_d++) {
-        // printf("%d %d %d\n", row1_d->index, row1_d->x, row1_d->y);
-        p = POSITIONinit(row1_d->x, row1_d->y);
-        pthread_spin_lock(args->node_m);  // lock
-        STinsert(args->G->tab, p, row1_d->index);
-        pthread_spin_unlock(args->node_m);  // unlock
+    node_line_d = args->src + sizeof(int);
+    node_line_d += args->start1;
+
+    for (int i = args->start1; i < args->stop1; i++, node_line_d++) {
+        p = POSITIONinit(node_line_d->x, node_line_d->y);
+        pthread_spin_lock(args->node);  // lock
+        STinsert(args->G->tab, p, node_line_d->index);
+        pthread_spin_unlock(args->node);  // unlock
         POSITIONfree(p);
     }
-    // printf("Edge starts from %d and stop at %d\n", args->start2,
-    // args->stop2);
-    row2_d = args->src + sizeof(int) + (args->V * sizeof(struct row1_t));
-    row2_d += args->start2;
-    for (int i = args->start2; i < args->stop2; i++, row2_d++) {
-        // printf("%d %d %lf\n", row2_d->a, row2_d->b, row2_d->wt);
-        if (row2_d->a >= 0 && row2_d->b >= 0) {
-            // pthread_mutex_lock(args->edge_m);  // lock
-            GRAPHinsertE(args->G, row2_d->a, row2_d->b, row2_d->wt);
-            // pthread_mutex_unlock(args->edge_m);  // unlock
+
+    edge_line_d =
+        args->src + sizeof(int) + (args->V * sizeof(struct node_line_s));
+    edge_line_d += args->start2;
+
+    for (int i = args->start2; i < args->stop2; i++, edge_line_d++) {
+        if (edge_line_d->id1 >= 0 && edge_line_d->id2 >= 0) {
+            pthread_spin_lock(args->edge);  // lock
+            GRAPHinsertE(args->G, edge_line_d->id1, edge_line_d->id2,
+                         edge_line_d->wt);
+            pthread_spin_unlock(args->edge);  // unlock
         }
     }
     pthread_exit(NULL);
 }
-Graph GRAPHload_parallel2(int fin) {
-    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fd;
+Graph GRAPHload_parallel2(char *filepath) {
+    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fin;
     float E;
     char label1[MAXC], label2[MAXC];
     pthread_t *threads;
@@ -569,11 +551,14 @@ Graph GRAPHload_parallel2(int fin) {
     struct stat sb;
     void *src;
     pthread_spinlock_t node;
-    // pthread_mutex_t edge;
+    pthread_spinlock_t edge;
 
     double wt;
     Graph G;
     Position p;
+
+    // Open file
+    fin = open(filepath, O_RDONLY);
 
     // Read the first line: number of nodes
     if (read(fin, &V, sizeof(int)) != sizeof(int)) return NULL;
@@ -585,10 +570,8 @@ Graph GRAPHload_parallel2(int fin) {
     // Memory Mapping
     if (fstat(fin, &sb) < 0) return NULL;
     copysz = sb.st_size;
-    int a = (copysz - sizeof(int) - (V * sizeof(struct row1_t)));
-    int b = (sizeof(struct row2_t));
-    E = (float)(copysz - sizeof(int) - (V * sizeof(struct row1_t))) /
-        (sizeof(struct row2_t));
+    E = (float)(copysz - sizeof(int) - (V * sizeof(struct node_line_s))) /
+        (sizeof(struct edge_line_s));
     src = mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
     if (src == MAP_FAILED) return NULL;
 
@@ -602,14 +585,14 @@ Graph GRAPHload_parallel2(int fin) {
     if (args == NULL) return NULL;
 
     pthread_spin_init(&node, 0);
-    // pthread_mutex_init(&edge, NULL);
+    pthread_spin_init(&edge, 0);
 
     for (i = 0, j = 0, k = 0, v = V, e = E; i < T; i++) {
         args[i].src = src;
         args[i].V = V;
         args[i].G = G;
-        args[i].node_m = &node;
-        // args[i].edge_m = &edge;
+        args[i].node = &node;
+        args[i].edge = &edge;
         args[i].start1 = j;
         if (v >= nodexT) {
             j += nodexT;
@@ -633,13 +616,19 @@ Graph GRAPHload_parallel2(int fin) {
 
     for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
 
+    // Close file
+    close(fin);
+
+    // Free space
     pthread_spin_destroy(&node);
+    pthread_spin_destroy(&edge);
     munmap(src, copysz);
     free(args);
     free(threads);
     return G;
 }
 
+// PARALLEL READ 1
 struct threadData {
     pthread_t threadId;
     int fd;
@@ -647,25 +636,21 @@ struct threadData {
     Graph G;
     int V;
 };
-
 struct V_data {
     int n;
     double node_x;
     double node_y;
 };
-
 struct E_data {
     int n1;
     int n2;
     double e;
 };
-
 int len = 0;
 int retVal = 1;
 sem_t sem, sem2, sem3;
 struct V_data v;
 struct E_data e;
-
 static void *GRAPHloadParallel(void *arg) {
     struct threadData *td;
     td = (struct threadData *)arg;
@@ -750,7 +735,6 @@ static void *GRAPHloadParallel(void *arg) {
     sem_destroy(&sem3);
     return G;
 }*/
-
 Graph GRAPHload_parallel1(char *fd) {
     int V, i, fin;
     Graph G;
