@@ -1,6 +1,7 @@
 #include "Graph.h"
 
 #include <fcntl.h>
+#include <float.h>
 #include <limits.h>
 #include <pthread.h>
 #include <semaphore.h>
@@ -13,7 +14,7 @@
 
 #include "PQ.h"
 #include "Position.h"
-#define maxWT INT_MAX
+#define maxWT DBL_MAX
 #define MAXC 10
 struct node {
     int v;
@@ -27,113 +28,40 @@ struct graph {
     ST tab;
     link z;
 };
+// Structures to NODE and EDGE lines
+struct node_line_s {
+    int index;
+    double x;
+    double y;
+};
+struct edge_line_s {
+    int id1;
+    int id2;
+    double wt;
+};
+
+// ################### PROTOTYPES ######################
 static Edge EDGEcreate(int v, int w, double wt);
 static link NEW(int v, double wt, link next);
 static void insertE(Graph G, Edge e);
 static void removeE(Graph G, Edge e);
-static Edge EDGEcreate(int v, int w, double wt) {
-    Edge e;
-    e.v = v;
-    e.w = w;
-    e.wt = wt;
-    return e;
-}
-static link NEW(int v, double wt, link next) {
-    link x = malloc(sizeof *x);
-    if (x == NULL) return NULL;
-    x->v = v;
-    x->wt = wt;
-    x->next = next;
-    return x;
-}
-Graph GRAPHinit(int V) {
-    int v;
-    Graph G = malloc(sizeof *G);
-    if (G == NULL) return NULL;
-    G->V = V;
-    G->E = 0;
-    G->z = NEW(-1, 0, NULL);
-    if (G->z == NULL) return NULL;
-    G->ladj = malloc(G->V * sizeof(link));
-    if (G->ladj == NULL) return NULL;
-    for (v = 0; v < G->V; v++) G->ladj[v] = G->z;
-    G->tab = STinit(V);
-    if (G->tab == NULL) return NULL;
-    return G;
-}
-void GRAPHfree(Graph G) {
-    int v;
-    link t, next;
-    for (v = 0; v < G->V; v++)
-        for (t = G->ladj[v]; t != G->z; t = next) {
-            next = t->next;
-            free(t);
-        }
-    STfree(G->tab);
-    free(G->ladj);
-    free(G->z);
-    free(G);
-}
-Graph GRAPHload(FILE *fin) {
-    int V, i, id1, id2;
-    char label1[MAXC], label2[MAXC];
-    int node_index, node_x, node_y;
-    double wt;
-    Graph G;
-    Position p;
 
-    // Read the first line: number of nodes
-    fscanf(fin, "%d", &V);
+// Static function prototypes for parallel read
+static void parallelIo(void *arg);          // version 2
+static void *thread_read(void *arg);        // version 3
+static void *GRAPHloadParallel(void *arg);  // version 1
+// #####################################################
 
-    // Initialize the Graph ADT
-    G = GRAPHinit(V);
-    if (G == NULL) return NULL;
-
-    // Read the nodes name(index 0-V) and the coordinates of each node
-    for (i = 0; i < V; i++) {
-        fscanf(fin, "%d %d %d", &node_index, &node_x, &node_y);
-
-        p = POSITIONinit(node_x, node_y);
-        STinsert(G->tab, p, node_index);
-        POSITIONfree(p);
-    }
-
-#if DEBUGPRINT
-    // Print nodes coordinates
-    for (i = 0; i < G->V; i++) {
-        POSITIONprint(STsearchByIndex(G->tab, i));
-    }
-#endif
-
-    while (fscanf(fin, "%d %d %lf", &id1, &id2, &wt) == 3) {
-        if (id1 >= 0 && id2 >= 0) GRAPHinsertE(G, id1, id2, wt);
-    }
-    return G;
+// Utily functions for a_star implementation
+int GRAPHget_num_nodes(Graph G) { return G->V; }
+Position GRAPHget_node_position(Graph G, int id) {
+    return STsearchByIndex(G->tab, id);
 }
-void GRAPHedges(Graph G, Edge *a) {
-    int v, E = 0;
-    link t;
-    for (v = 0; v < G->V; v++)
-        for (t = G->ladj[v]; t != G->z; t = t->next)
-            a[E++] = EDGEcreate(v, t->v, t->wt);
-}
-void GRAPHstore(Graph G, FILE *fout) {
-    int i;
-    Edge *a;
-    a = malloc(G->E * sizeof(Edge));
-    if (a == NULL) return;
-    GRAPHedges(G, a);
-    fprintf(fout, "Number of nodes: %d\n", G->V);
-    Position p = STsearchByIndex(G->tab, 0);
-    for (i = 0; i < G->V; i++) {
-        fprintf(fout, "Node %d: ", i);
-        POSITIONprint(STsearchByIndex(G->tab, i), fout);
-    }
-    for (i = 0; i < G->E; i++) {
-        fprintf(fout, "Edge %d -> %d - Weight: %.1lf\n", a[i].v, a[i].w,
-                a[i].wt);
-    }
-}
+link GRAPHget_list_node_head(Graph G, int v) { return G->ladj[v]; }
+link GRAPHget_list_node_tail(Graph G, int v) { return G->z; }
+link LINKget_next(link t) { return t->next; }
+double LINKget_wt(link t) { return t->wt; }
+int LINKget_node(link t) { return t->v; }
 int GRAPHgetIndex(Graph G, char *label) {
     int id;
     id = STsearch(G->tab, label);
@@ -168,15 +96,89 @@ static void removeE(Graph G, Edge e) {
                 G->E--;
             }
 }
+void GRAPHedges(Graph G, Edge *a) {
+    int v, E = 0;
+    link t;
+    for (v = 0; v < G->V; v++)
+        for (t = G->ladj[v]; t != G->z; t = t->next)
+            a[E++] = EDGEcreate(v, t->v, t->wt);
+}
+// Linked list utility functions
+static Edge EDGEcreate(int v, int w, double wt) {
+    Edge e;
+    e.v = v;
+    e.w = w;
+    e.wt = wt;
+    return e;
+}
+static link NEW(int v, double wt, link next) {
+    link x = malloc(sizeof *x);
+    if (x == NULL) return NULL;
+    x->v = v;
+    x->wt = wt;
+    x->next = next;
+    return x;
+}
 
-// Test: Djkstra algorithm
+// Graph management functions
+Graph GRAPHinit(int V) {
+    int v;
+    Graph G = malloc(sizeof *G);
+    if (G == NULL) return NULL;
+    G->V = V;
+    G->E = 0;
+    G->z = NEW(-1, 0, NULL);
+    if (G->z == NULL) return NULL;
+    G->ladj = malloc(G->V * sizeof(link));
+    if (G->ladj == NULL) return NULL;
+    for (v = 0; v < G->V; v++) G->ladj[v] = G->z;
+    G->tab = STinit(V);
+    if (G->tab == NULL) return NULL;
+    return G;
+}
+void GRAPHfree(Graph G) {
+    int v;
+    link t, next;
+    for (v = 0; v < G->V; v++)
+        for (t = G->ladj[v]; t != G->z; t = next) {
+            next = t->next;
+            free(t);
+        }
+    STfree(G->tab);
+    free(G->ladj);
+    free(G->z);
+    free(G);
+}
+
+void GRAPHstore(Graph G, FILE *fout) {
+    int i;
+    Edge *a;
+    a = malloc(G->E * sizeof(Edge));
+    if (a == NULL) return;
+    GRAPHedges(G, a);
+    fprintf(fout, "Number of nodes: %d\n", G->V);
+    Position p = STsearchByIndex(G->tab, 0);
+    for (i = 0; i < G->V; i++) {
+        fprintf(fout, "Node %d: ", i);
+        POSITIONprint(STsearchByIndex(G->tab, i), fout);
+    }
+    for (i = 0; i < G->E; i++) {
+        fprintf(fout, "Edge %d -> %d - Weight: %.1lf\n", a[i].v, a[i].w,
+                a[i].wt);
+    }
+}
+
+// ######################################
+// ### DJKSTRA ALGORITHM (SEQUENTIAL) ###
+// ######################################
 void GRAPHspD(Graph G, int id) {
     int v;
     link t;
     PQ pq = PQinit(G->V);
-    int *st, *mindist;
+    int *st;
+    double *mindist;
     st = malloc(G->V * sizeof(int));
-    mindist = malloc(G->V * sizeof(int));
+    mindist = malloc(G->V * sizeof(double));
     if ((st == NULL) || (mindist == NULL)) return;
     for (v = 0; v < G->V; v++) {
         st[v] = -1;
@@ -196,81 +198,52 @@ void GRAPHspD(Graph G, int id) {
                 }
         }
     }
+    /*
     printf("\n Shortest path tree\n");
     for (v = 0; v < G->V; v++) printf("parent of %d is %d \n", v, st[v]);
+    */
     printf("\n Minimum distances from node %d\n", id);
-    for (v = 0; v < G->V; v++) printf("mindist[%d] = %d \n", v, mindist[v]);
+    for (v = 0; v < G->V; v++) {
+        if (mindist[v] != -1) printf("mindist[%d] = %d \n", v, mindist[v]);
+    }
     PQfree(pq);
 }
-int GRAPHget_num_nodes(Graph G) { return G->V; }
-Position GRAPHget_node_position(Graph G, int id) {
-    return STsearchByIndex(G->tab, id);
-}
-link GRAPHget_list_node_head(Graph G, int v) { return G->ladj[v]; }
-link GRAPHget_list_node_tail(Graph G, int v) { return G->z; }
-link LINKget_next(link t) { return t->next; }
-double LINKget_wt(link t) { return t->wt; }
-int LINKget_node(link t) { return t->v; }
-/*
-void GRAPHshortest_path_astar(Graph G, int source, int dest){
-    int v;
-    link t;
-    PQ pq = PQinit(G->V);
-    int *st, *mindist;
-
-    st = malloc(G->V * sizeof(int));
-    mindist = malloc(G->V * sizeof(int));
-    if ((st == NULL) || (mindist == NULL))
-        return;
-
-    // Compute Heuristic function for each node [Euclidean distance from node N
-to node dest]
-
-    // Add all the nodes inside the priority queue
-    for (v = 0; v < G->V; v++)
-    {
-        st[v] = -1;
-        mindist[v] = maxWT;
-        PQinsert(pq, mindist, v);
-    }
-
-    mindist[id] = 0;
-    st[id] = id;
-    PQchange(pq, mindist, id);
-    while (!PQempty(pq))
-    {
-        if (mindist[v = PQextractMin(pq, mindist)] != maxWT)
-        {
-            for (t = G->ladj[v]; t != G->z; t = t->next)
-                if (mindist[v] + t->wt < mindist[t->v])
-                {
-                    mindist[t->v] = mindist[v] + t->wt;
-                    PQchange(pq, mindist, t->v);
-                    st[t->v] = v;
-                }
-        }
-    }
-    printf("\n Shortest path tree\n");
-    for (v = 0; v < G->V; v++)
-        printf("parent of %d is %d \n", v, st[v]);
-    printf("\n Minimum distances from node %d\n", id);
-    for (v = 0; v < G->V; v++)
-        printf("mindist[%d] = %d \n", v, mindist[v]);
-    PQfree(pq);
-}*/
 // ^(\s)*$\n
 
-// PARALLEL READ 3
-struct node_line_s {
-    int index;
-    double x;
-    double y;
-};
-struct edge_line_s {
-    int id1;
-    int id2;
+// ########################################
+// ### SEQUENTIAL READ FROM BINARY FILE ###
+// ########################################
+Graph GRAPHload_sequential(char *filepath) {
+    int V, i, id1, id2, fd, nR;
+    char label1[MAXC], label2[MAXC];
+    int node_index, node_x, node_y;
     double wt;
-};
+    Graph G;
+    Position p;
+    struct node_line_s nl;
+    struct edge_line_s el;
+
+    fd = open(filepath, O_RDONLY);
+    read(fd, &V, sizeof(V));
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
+    for (i = 0; i < V; i++) {
+        read(fd, &nl, sizeof(struct node_line_s));
+        p = POSITIONinit(nl.x, nl.y);
+        STinsert(G->tab, p, nl.index);
+        POSITIONfree(p);
+    }
+    while ((nR = read(fd, &el, sizeof(struct edge_line_s))) > 0) {
+        if (el.id1 >= 0 && el.id2 >= 0) GRAPHinsertE(G, el.id1, el.id2, el.wt);
+    }
+
+    return G;
+}
+// #################################
+// ### PARALLEL READ - VERSION 3 ###
+// #################################
+
+// Thread argument data structure
 struct thread_arg_s {
     char filepath[50];
     int num_threads;
@@ -283,13 +256,18 @@ struct thread_arg_s {
     char linetype;
     Graph *G;
 };
+
+// Defines the partition(block) to be read from one thread
 struct read_block_s {
     off_t start;
     off_t end;
     off_t cur;
     ssize_t size;
 };
+
+// Global mutex
 pthread_mutex_t *m;
+
 static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
     int index = targ->index;
@@ -323,9 +301,6 @@ static void *thread_read(void *arg) {
                  ? (rb.start + rb.size)
                  : (regionsize + start_offset);
 
-    // If i have more threads than the number of partitions
-    // other possible check: if(index > num_partitions)
-    // /printf("T %d %c INFO: rb.start: %ld\n", index, linetype, rb.start);
     if (index >= targ->num_partitions) {
 #if DEBUGPARALLELREAD
         printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
@@ -373,7 +348,7 @@ static void *thread_read(void *arg) {
         } while (rb.cur < rb.end);
 
         // Compute next region to read
-        rb.start += rb.size * num_thread;  // MODIFY HERE
+        rb.start += rb.size * num_thread;
         rb.end = ((rb.start + rb.size) <= (regionsize + start_offset))
                      ? (rb.start + rb.size)
                      : (regionsize + start_offset);
@@ -383,32 +358,6 @@ static void *thread_read(void *arg) {
 
     close(fd);
     pthread_exit(NULL);
-}
-Graph GRAPHload_sequential(char *filepath) {
-    int V, i, id1, id2, fd, nR;
-    char label1[MAXC], label2[MAXC];
-    int node_index, node_x, node_y;
-    double wt;
-    Graph G;
-    Position p;
-    struct node_line_s nl;
-    struct edge_line_s el;
-
-    fd = open(filepath, O_RDONLY);
-    read(fd, &V, sizeof(V));
-    G = GRAPHinit(V);
-    if (G == NULL) return NULL;
-    for (i = 0; i < V; i++) {
-        read(fd, &nl, sizeof(struct node_line_s));
-        p = POSITIONinit(nl.x, nl.y);
-        STinsert(G->tab, p, nl.index);
-        POSITIONfree(p);
-    }
-    while ((nR = read(fd, &el, sizeof(struct edge_line_s))) > 0) {
-        if (el.id1 >= 0 && el.id2 >= 0) GRAPHinsertE(G, el.id1, el.id2, el.wt);
-    }
-
-    return G;
 }
 Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
                           int num_partitions_edges, int num_threads_nodes,
@@ -498,7 +447,11 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
     return G;
 }
 
-// PARALLEL READ 2
+// #################################
+// ### PARALLEL READ - VERSION 2 ###
+// #################################
+
+// Thread argument data structure
 struct arg_t {
     int start1;
     int stop1;
@@ -510,6 +463,7 @@ struct arg_t {
     pthread_spinlock_t *node;
     pthread_spinlock_t *edge;
 };
+
 static void parallelIo(void *arg) {
     Position p;
     struct node_line_s *node_line_d;
@@ -542,7 +496,7 @@ static void parallelIo(void *arg) {
     }
     pthread_exit(NULL);
 }
-Graph GRAPHload_parallel2(char *filepath) {
+Graph GRAPHload_parallel2(char *filepath, int num_threads) {
     int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fin;
     float E;
     char label1[MAXC], label2[MAXC];
@@ -576,7 +530,7 @@ Graph GRAPHload_parallel2(char *filepath) {
     if (src == MAP_FAILED) return NULL;
 
     // Initialize threads
-    T = 2;
+    T = num_threads;
     nodexT = (int)ceil(((float)V) / T);
     edgexT = (int)ceil(E / T);
     threads = (pthread_t *)malloc(T * sizeof(pthread_t));
@@ -628,7 +582,11 @@ Graph GRAPHload_parallel2(char *filepath) {
     return G;
 }
 
-// PARALLEL READ 1
+// #################################
+// ### PARALLEL READ - VERSION 1 ###
+// #################################
+
+// Thread argument data structure
 struct threadData {
     pthread_t threadId;
     int fd;
@@ -636,21 +594,12 @@ struct threadData {
     Graph G;
     int V;
 };
-struct V_data {
-    int n;
-    double node_x;
-    double node_y;
-};
-struct E_data {
-    int n1;
-    int n2;
-    double e;
-};
+// Global data
 int len = 0;
 int retVal = 1;
 sem_t sem, sem2, sem3;
-struct V_data v;
-struct E_data e;
+struct node_line_s v;
+struct edge_line_s e;
 static void *GRAPHloadParallel(void *arg) {
     struct threadData *td;
     td = (struct threadData *)arg;
@@ -675,25 +624,25 @@ static void *GRAPHloadParallel(void *arg) {
         if (len < td->V) {
             sem_wait(&sem);
             // fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
-            retVal = read(td->fd, &v, sizeof(struct V_data));
-            //printf("%d %d %d\n", v.n, v.node_x, v.node_y);
+            retVal = read(td->fd, &v, sizeof(struct node_line_s));
+            // printf("%d %d %d\n", v.n, v.node_x, v.node_y);
             len++;
-            p = POSITIONinit(v.node_x, v.node_y);
-            STinsert(td->G->tab, p, v.n);
+            p = POSITIONinit(v.x, v.y);
+            STinsert(td->G->tab, p, v.index);
             sem_post(&sem);
             sem_post(&sem3);
             POSITIONfree(p);
         } else {
             sem_wait(&sem2);
-            
-            // retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
-            retVal = read(td->fd, &e, sizeof(struct E_data));
 
-            if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
-                //printf("%d %d %lf\n", e.n1, e.n2, e.e);
-                GRAPHinsertE(td->G, e.n1, e.n2, e.e);
+            // retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
+            retVal = read(td->fd, &e, sizeof(struct edge_line_s));
+
+            if ((e.id1 >= 0 && e.id2 >= 0) && (e.id1 != 0 || e.id2 != 0)) {
+                // printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                GRAPHinsertE(td->G, e.id1, e.id2, e.wt);
             }
-            if (retVal != sizeof(struct E_data)) {
+            if (retVal != sizeof(struct edge_line_s)) {
                 sem_post(&sem2);
                 sem_post(&sem3);
                 return td->G;
@@ -705,38 +654,8 @@ static void *GRAPHloadParallel(void *arg) {
     pthread_exit(NULL);
     return td->G;
 }
-/*Graph GRAPHload(FILE *fin) {
-    int V, i;
-    Graph G;
-    struct threadData *td;
-    void *retval;
-    // Read the first line: number of nodes
-    fscanf(fin, "%d", &V);
-    // Initialize the Graph ADT
-    G = GRAPHinit(V);
-    if (G == NULL) return NULL;
-    sem_init(&sem, 0, 1);
-    sem_init(&sem2, 0, 1);
-    sem_init(&sem3, 0, 1);
-    printf("%d\n", V);
-    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
-    for (i = 0; i < 10; i++) {
-        td[i].fd = fin;
-        td[i].id = i;
-        td[i].V = V;
-        td[i].G = G;
-        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel, (void
-*)&td[i]);
-    }
-    for(i = 0; i < 10; i++) {
-        pthread_join(td[i].threadId, &retval);
-    }
-    sem_destroy(&sem);
-    sem_destroy(&sem2);
-    sem_destroy(&sem3);
-    return G;
-}*/
-Graph GRAPHload_parallel1(char *filepath) {
+
+Graph GRAPHload_parallel1(char *filepath, int num_threads) {
     int V, i, fin;
     Graph G;
     struct threadData *td;
@@ -746,7 +665,7 @@ Graph GRAPHload_parallel1(char *filepath) {
     sem_init(&sem2, 0, 1);
     sem_init(&sem3, 0, 1);
 
-     // Open file
+    // Open file
     fin = open(filepath, O_RDONLY);
 
     // Read the first line: number of nodes
@@ -755,14 +674,14 @@ Graph GRAPHload_parallel1(char *filepath) {
     // Initialize the Graph ADT
     G = GRAPHinit(V);
     if (G == NULL) return NULL;
-    printf("V = %d\n", V);
+    // printf("V = %d\n", V);
     // Read the first line: number of nodes
     // fscanf(fin, "%d", &V);
 
     // Initialize the Graph ADT
 
-    td = (struct threadData *)malloc(10 * sizeof(struct threadData));
-    for (i = 0; i < 10; i++) {
+    td = (struct threadData *)malloc(num_threads * sizeof(struct threadData));
+    for (i = 0; i < num_threads; i++) {
         td[i].fd = fin;
         td[i].id = i;
         td[i].V = V;
@@ -770,7 +689,7 @@ Graph GRAPHload_parallel1(char *filepath) {
         pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel,
                        (void *)&td[i]);
     }
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < num_threads; i++) {
         pthread_join(td[i].threadId, &retval);
     }
 

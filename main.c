@@ -6,29 +6,23 @@
 #include "Astar.h"
 #include "Graph.h"
 #define MAXC 11
+void start_timer(struct timespec* begin);
+double stop_timer(struct timespec begin, struct timespec end);
 
 int main(int argc, char* argv[]) {
     Graph G;
     FILE* fperf;
     struct timespec begin, end;
     int partitions_nodes, partitions_edges, th_nodes, th_edges;
-    long seconds, nanoseconds;
-    double elapsed;
-    //int fin = fopen(argv[1], "r");
-    //if (fin == NULL)
-      //exit(-1);
-    // Measure parallel read performance
-    clock_gettime(CLOCK_REALTIME, &begin);
-    // G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
-    //G = GRAPHload_parallel2(fin);
-    G = GRAPHload_parallel1(argv[1]);
-    ASTARshortest_path(G, 0, 23943);
-    clock_gettime(CLOCK_REALTIME, &end);
-    GRAPHfree(G);
-    seconds = end.tv_sec - begin.tv_sec;
-    nanoseconds = end.tv_nsec - begin.tv_nsec;
-    elapsed = seconds + nanoseconds * 1e-9;
-    fprintf(stdout, "%d %d %d %d: %.9f s\n", 100, 100, 5, 5, elapsed);
+
+#if PARALLELREADTYPE == 3
+    // ######################################
+    // ### TEST PARALLEL READ - VERSION 3 ###
+    // ######################################
+    printf("Parallel read type: 3\n");
+    start_timer(&begin);
+    G = GRAPHload_parallel3(argv[1], 10, 10, 5, 5);
+    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
     /*
     fperf = fopen("performance.txt", "w+");
     for (partitions_nodes = 1; partitions_nodes < 3; partitions_nodes++) {
@@ -44,30 +38,46 @@ int main(int argc, char* argv[]) {
                     seconds = end.tv_sec - begin.tv_sec;
                     nanoseconds = end.tv_nsec - begin.tv_nsec;
                     elapsed = seconds + nanoseconds * 1e-9;
-                    fprintf(fperf, "%d %d %d %d: %.9f s\n", partitions_nodes,
-                            partitions_edges, th_nodes, th_edges, elapsed);
                 }
             }
         }
-    }
-    */
-    // G= GRAPHload_sequential(argv[1]);
-    //  GRAPHstore(G, stdout);
-    /*
-    fin = fopen(argv[1], "r");
-    if (fin == NULL)
-      exit(-1);
-    G = GRAPHload(fin);
-    clock_gettime(CLOCK_REALTIME, &begin);
+    }*/
+#elif PARALLELREADTYPE == 2
+    // ######################################
+    // ### TEST PARALLEL READ - VERSION 2 ###
+    // ######################################
+    printf("Parallel read type: 2\n");
+    start_timer(&begin);
+    G = GRAPHload_parallel2(argv[1], 2);
+    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
+#elif PARALLELREADTYPE == 1
+    // ######################################
+    // ### TEST PARALLEL READ - VERSION 1 ###
+    // ######################################
+    printf("Parallel read type: 1\n");
+    start_timer(&begin);
+    G = GRAPHload_parallel1(argv[1], 10);
+    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
+#elif PARALLELREADTYPE 0
+    // ############################
+    // ### TEST SEQUENTIAL READ ###
+    // ############################
+#endif
     ASTARshortest_path(G, 0, 23943);
-    clock_gettime(CLOCK_REALTIME, &end);
-    long seconds = end.tv_sec - begin.tv_sec;
-    long nanoseconds = end.tv_nsec - begin.tv_nsec;
-    double elapsed = seconds + nanoseconds*1e-9;
-    printf("Time measured: %.9f seconds.\n", elapsed);
-    // TODO: add check on input nodes
-    //GRAPHstore(G, stdout);
-    GRAPHfree(G);
-    */
+    //GRAPHspD(G, 0);
     return 0;
+}
+
+void start_timer(struct timespec* begin) {
+    clock_gettime(CLOCK_REALTIME, begin);
+}
+double stop_timer(struct timespec begin, struct timespec end) {
+    long seconds, nanoseconds;
+    double elapsed;
+
+    clock_gettime(CLOCK_REALTIME, &end);
+    seconds = end.tv_sec - begin.tv_sec;
+    nanoseconds = end.tv_nsec - begin.tv_nsec;
+    elapsed = seconds + nanoseconds * 1e-9;
+    return elapsed;
 }
