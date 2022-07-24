@@ -14,10 +14,14 @@ int main(int argc, char* argv[]) {
     int partitions_nodes, partitions_edges, th_nodes, th_edges;
     long seconds, nanoseconds;
     double elapsed;
+    //int fin = fopen(argv[1], "r");
+    //if (fin == NULL)
+      //exit(-1);
     // Measure parallel read performance
     clock_gettime(CLOCK_REALTIME, &begin);
     // G = GRAPHload_parallel3(argv[1], 100, 100, 5, 5);
-    // G = GRAPHload_parallel2(fin);
+    //G = GRAPHload_parallel2(fin);
+    G = GRAPHload_parallel1(argv[1]);
     ASTARshortest_path(G, 0, 23943);
     clock_gettime(CLOCK_REALTIME, &end);
     GRAPHfree(G);

@@ -676,7 +676,7 @@ static void *GRAPHloadParallel(void *arg) {
             sem_wait(&sem);
             // fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
             retVal = read(td->fd, &v, sizeof(struct V_data));
-            // printf("%d %d %d\n", v.n, v.node_x, v.node_y);
+            //printf("%d %d %d\n", v.n, v.node_x, v.node_y);
             len++;
             p = POSITIONinit(v.node_x, v.node_y);
             STinsert(td->G->tab, p, v.n);
@@ -685,14 +685,15 @@ static void *GRAPHloadParallel(void *arg) {
             POSITIONfree(p);
         } else {
             sem_wait(&sem2);
+            
             // retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
             retVal = read(td->fd, &e, sizeof(struct E_data));
 
             if ((e.n1 >= 0 && e.n2 >= 0) && (e.n1 != 0 || e.n2 != 0)) {
-                // printf("%d %d %lf\n", e.n1, e.n2, e.e);
+                //printf("%d %d %lf\n", e.n1, e.n2, e.e);
                 GRAPHinsertE(td->G, e.n1, e.n2, e.e);
             }
-            if (retVal < 0) {
+            if (retVal != sizeof(struct E_data)) {
                 sem_post(&sem2);
                 sem_post(&sem3);
                 return td->G;
@@ -735,7 +736,7 @@ static void *GRAPHloadParallel(void *arg) {
     sem_destroy(&sem3);
     return G;
 }*/
-Graph GRAPHload_parallel1(char *fd) {
+Graph GRAPHload_parallel1(char *filepath) {
     int V, i, fin;
     Graph G;
     struct threadData *td;
@@ -745,16 +746,20 @@ Graph GRAPHload_parallel1(char *fd) {
     sem_init(&sem2, 0, 1);
     sem_init(&sem3, 0, 1);
 
-    fin = open(fd, O_RDONLY);
-    read(fd, &V, sizeof(V));
+     // Open file
+    fin = open(filepath, O_RDONLY);
+
+    // Read the first line: number of nodes
+    if (read(fin, &V, sizeof(int)) != sizeof(int)) return NULL;
+
+    // Initialize the Graph ADT
+    G = GRAPHinit(V);
+    if (G == NULL) return NULL;
     printf("V = %d\n", V);
     // Read the first line: number of nodes
     // fscanf(fin, "%d", &V);
 
     // Initialize the Graph ADT
-    G = GRAPHinit(V);
-
-    if (G == NULL) return NULL;
 
     td = (struct threadData *)malloc(10 * sizeof(struct threadData));
     for (i = 0; i < 10; i++) {
