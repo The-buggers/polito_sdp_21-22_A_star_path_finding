@@ -5,7 +5,7 @@ OBJFILES= stack.o main.o
 TARGET=stacktest
 
 target: main.o Graph.o ST.o PQ.o Position.o Astar.o
-	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar.o -lm
+	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar.o -lm -lpthread
 
 main.o: main.c Graph.h
 	gcc -Wall -g -c main.c -o ./build/main.o
