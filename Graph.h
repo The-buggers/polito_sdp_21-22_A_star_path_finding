@@ -2,7 +2,7 @@
 #define GRAPH_H
 #define DEBUGPRINT 0
 #define DEBUGPARALLELREAD 0
-#define PARALLELREADTYPE 1
+#define PARALLELREADTYPE 0
 #include <stdio.h>
 
 #include "ST.h"

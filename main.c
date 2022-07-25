@@ -58,10 +58,14 @@ int main(int argc, char* argv[]) {
     start_timer(&begin);
     G = GRAPHload_parallel1(argv[1], 10);
     printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
-#elif PARALLELREADTYPE 0
+#elif PARALLELREADTYPE == 0
     // ############################
     // ### TEST SEQUENTIAL READ ###
     // ############################
+    printf("Parallel read type: 1\n");
+    start_timer(&begin);
+    G = GRAPHload_sequential(argv[1]);
+    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #endif
     ASTARshortest_path(G, 0, 23943);
     //GRAPHspD(G, 0);
