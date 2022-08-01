@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "Astar.h"
-#include "Graph.h"
+#include "./AstarEngine/Astar.h"
+#include "./DijkstraEngine/Dijkstra.h"
+#include "./Graph/Graph.h"
 #define MAXC 11
 void start_timer(struct timespec* begin);
 double stop_timer(struct timespec begin, struct timespec end);
@@ -67,7 +68,9 @@ int main(int argc, char* argv[]) {
     G = GRAPHload_sequential(argv[1]);
     printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #endif
-    ASTARshortest_path(G, 0, 23943);
+    //ASTARshortest_path_sequential(G, 0, 23943);
+    //ASTARshortest_path_sas_sf(G, 0, 23943, 3);
+    DIJKSTRA_shortest_path_sequential(G, 0, 23493);
     //GRAPHspD(G, 0);
     return 0;
 }

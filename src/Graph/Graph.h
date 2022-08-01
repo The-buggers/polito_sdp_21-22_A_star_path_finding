@@ -20,7 +20,6 @@ int GRAPHgetIndex(Graph G, char *label);
 void GRAPHinsertE(Graph G, int id1, int id2, double wt);
 void GRAPHremoveE(Graph G, int id1, int id2);
 void GRAPHedges(Graph G, Edge *a);
-void GRAPHspD(Graph G, int id);
 void GRAPHshortest_path_astar(Graph G, int source, int dest);
 Position GRAPHget_node_position(Graph G, int id);
 int GRAPHget_num_nodes(Graph G);
@@ -36,4 +35,6 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
                           int num_threads_edges);
 Graph GRAPHload_parallel2(char *filepath, int num_threads);
 Graph GRAPHload_parallel1(char *filepath, int num_threads);
+// Path reconstruction - common to A* and Dijkstra
+void reconstruct_path(int *parentVertex, int source, int dest, double *costToCome); 
 #endif

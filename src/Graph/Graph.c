@@ -45,9 +45,11 @@ static Edge EDGEcreate(int v, int w, double wt);
 static link NEW(int v, double wt, link next);
 static void insertE(Graph G, Edge e);
 static void removeE(Graph G, Edge e);
+static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
+                               double *tot_cost);
 
-// Static function prototypes for parallel read
-static void parallelIo(void *arg);          // version 2
+    // Static function prototypes for parallel read
+static void parallelIo(void *arg);      // version 2
 static void *thread_read(void *arg);        // version 3
 static void *GRAPHloadParallel(void *arg);  // version 1
 // #####################################################
@@ -167,48 +169,6 @@ void GRAPHstore(Graph G, FILE *fout) {
                 a[i].wt);
     }
 }
-
-// ######################################
-// ### DJKSTRA ALGORITHM (SEQUENTIAL) ###
-// ######################################
-void GRAPHspD(Graph G, int id) {
-    int v;
-    link t;
-    PQ pq = PQinit(G->V);
-    int *st;
-    double *mindist;
-    st = malloc(G->V * sizeof(int));
-    mindist = malloc(G->V * sizeof(double));
-    if ((st == NULL) || (mindist == NULL)) return;
-    for (v = 0; v < G->V; v++) {
-        st[v] = -1;
-        mindist[v] = maxWT;
-        PQinsert(pq, mindist, v);
-    }
-    mindist[id] = 0;
-    st[id] = id;
-    PQchange(pq, mindist, id);
-    while (!PQempty(pq)) {
-        if (mindist[v = PQextractMin(pq, mindist)] != maxWT) {
-            for (t = G->ladj[v]; t != G->z; t = t->next)
-                if (mindist[v] + t->wt < mindist[t->v]) {
-                    mindist[t->v] = mindist[v] + t->wt;
-                    PQchange(pq, mindist, t->v);
-                    st[t->v] = v;
-                }
-        }
-    }
-    /*
-    printf("\n Shortest path tree\n");
-    for (v = 0; v < G->V; v++) printf("parent of %d is %d \n", v, st[v]);
-    */
-    printf("\n Minimum distances from node %d\n", id);
-    for (v = 0; v < G->V; v++) {
-        if (mindist[v] != -1) printf("mindist[%d] = %d \n", v, mindist[v]);
-    }
-    PQfree(pq);
-}
-// ^(\s)*$\n
 
 // ########################################
 // ### SEQUENTIAL READ FROM BINARY FILE ###
@@ -699,4 +659,32 @@ Graph GRAPHload_parallel1(char *filepath, int num_threads) {
     close(fin);
 
     return G;
+}
+
+static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
+                               double *tot_cost) {
+    if (parentVertex[j] == -1) {
+        return;
+    } else {
+        reconstruct_path_r(parentVertex, parentVertex[j], costToCome, tot_cost);
+        if (parentVertex[parentVertex[j]] == -1) {
+            printf("%d ", parentVertex[j]);
+            *tot_cost = *tot_cost + costToCome[parentVertex[j]];
+        }
+        printf("%d ", j);
+        *tot_cost = *tot_cost + costToCome[j];
+    }
+}
+
+void reconstruct_path(int *parentVertex, int source, int dest, double *costToCome) {
+    int i;
+    double tot_cost;
+    printf("+-----------------------------------+");
+    printf("\nPath found\n");
+    printf("Path from %d to %d: [ ", source, dest);
+    reconstruct_path_r(parentVertex, dest, costToCome, &tot_cost);
+    printf("]");
+
+    printf("\nCost: %.2lf\n", &tot_cost);
+    printf("+-----------------------------------+\n\n");
 }

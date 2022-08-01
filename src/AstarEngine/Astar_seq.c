@@ -3,17 +3,11 @@
 #include <float.h>
 #include <math.h>
 
-#include "Graph.h"
-#include "PQ.h"
-#include "Position.h"
+#include "../Graph/Graph.h"
+#include "../Graph/PQ.h"
+#include "../Graph/Position.h"
 #define maxWT DBL_MAX
-static double heuristic_euclidean(Position source, Position dest);
-static double compute_f(double h, double g);
-static void reconstruct_path(int *previous, int source, int dest, double *cost,
-                             double *tot_cost);
-static void reconstruct_path_r(int *previous, int j, double *cost,
-                               double *tot_cost);
-void ASTARshortest_path(Graph G, int source, int dest) {
+void ASTARshortest_path_sequential(Graph G, int source, int dest) {
     printf("A star algorithm on graph from %d to %d\n", source, dest);
     int V = GRAPHget_num_nodes(G);
     int v, a, b;
@@ -78,7 +72,7 @@ void ASTARshortest_path(Graph G, int source, int dest) {
         // If the extracted node is the destination stop: path found
         if (a == dest) {
             found = 1;
-            reconstruct_path(previous, source, dest, cost, &tot_cost);
+            reconstruct_path(previous, source, dest, cost);
             break;
         }
 
@@ -126,37 +120,4 @@ void ASTARshortest_path(Graph G, int source, int dest) {
         printf("Cost[%d] = %lf\n", v, cost[v]);
     }
 #endif
-}
-
-static double heuristic_euclidean(Position source, Position dest) {
-    return POSITIONcompute_euclidean_distance(source, dest);
-}
-
-static double compute_f(double h, double g) { return h + g; }
-static void reconstruct_path(int *previous, int source, int dest, double *cost,
-                             double *tot_cost) {
-    int i;
-    printf("+-----------------------------------+");
-    printf("\nPath found\n");
-    printf("Path from %d to %d: [ ", source, dest);
-    reconstruct_path_r(previous, dest, cost, tot_cost);
-    printf("]");
-
-    printf("\nCost: %.2lf\n", *tot_cost);
-    printf("+-----------------------------------+\n\n");
-}
-
-static void reconstruct_path_r(int *previous, int j, double *cost,
-                               double *tot_cost) {
-    if (previous[j] == -1) {
-        return;
-    } else {
-        reconstruct_path_r(previous, previous[j], cost, tot_cost);
-        if (previous[previous[j]] == -1) {
-            printf("%d ", previous[j]);
-            *tot_cost = *tot_cost + cost[previous[j]];
-        }
-        printf("%d ", j);
-        *tot_cost = *tot_cost + cost[j];
-    }
 }
