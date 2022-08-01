@@ -70,7 +70,8 @@ int main(int argc, char* argv[]) {
 #endif
     //ASTARshortest_path_sequential(G, 0, 23943);
     //ASTARshortest_path_sas_sf(G, 0, 23943, 3);
-    DIJKSTRA_shortest_path_sequential(G, 0, 23493);
+    ASTARshortest_path_fa(G, 0, 23943, 3);
+    //DIJKSTRA_shortest_path_sequential(G, 0, 23493);
     //GRAPHspD(G, 0);
     return 0;
 }

@@ -7,6 +7,9 @@
 void ASTARshortest_path_sequential(Graph G, int source, int dest);
 void ASTARshortest_path_sas_b(Graph G, int source, int dest, int num_threads);
 void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads);
+void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads);
+void ASTARshortest_path_mp(Graph G, int source, int dest,
+                                    int num_threads);
 // Utility functions
 double heuristic_euclidean(Position source, Position dest);
 double compute_f(double h, double g);

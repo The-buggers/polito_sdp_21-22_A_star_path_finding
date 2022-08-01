@@ -4,8 +4,8 @@ SRC=main.c
 OBJFILES= stack.o main.o
 TARGET=stacktest
 
-target: main.o Graph.o ST.o PQ.o Position.o Astar_utility.o Astar_seq.o Astar_sas_b.o Astar_sas_sf.o Dijkstra_seq.o
-	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar_utility.o ./build/Astar_seq.o ./build/Astar_sas_b.o ./build/Astar_sas_sf.o ./build/Dijkstra_seq.o -lm -lpthread
+target: main.o Graph.o ST.o PQ.o Position.o Astar_utility.o Astar_seq.o Astar_sas_b.o Astar_sas_sf.o Dijkstra_seq.o Astar_fa.o Astar_mp.o
+	gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar_utility.o ./build/Astar_seq.o ./build/Astar_sas_b.o ./build/Astar_sas_sf.o ./build/Astar_fa.o ./build/Astar_mp.o ./build/Dijkstra_seq.o -lm -lpthread
 
 main.o: main.c ./Graph/Graph.h
 	gcc -Wall -g -c main.c -o ./build/main.o
@@ -33,6 +33,12 @@ Astar_sas_b.o: ./AstarEngine/Astar_sas_b.c ./AstarEngine/Astar.h
 
 Astar_sas_sf.o: ./AstarEngine/Astar_sas_sf.c ./AstarEngine/Astar.h 
 	gcc -Wall -g -c ./AstarEngine/Astar_sas_sf.c -o ./build/Astar_sas_sf.o -lpthread
+
+Astar_fa.o: ./AstarEngine/Astar_fa.c ./AstarEngine/Astar.h 
+	gcc -Wall -g -c ./AstarEngine/Astar_fa.c -o ./build/Astar_fa.o -lpthread
+
+Astar_mp.o: ./AstarEngine/Astar_mp.c ./AstarEngine/Astar.h 
+	gcc -Wall -g -c ./AstarEngine/Astar_mp.c -o ./build/Astar_mp.o -lpthread
 
 Dijkstra_seq.o: ./DijkstraEngine/Dijkstra_seq.c ./DijkstraEngine/Dijkstra.h 
 	gcc -Wall -g -c ./DijkstraEngine/Dijkstra_seq.c -o ./build/Dijkstra_seq.o

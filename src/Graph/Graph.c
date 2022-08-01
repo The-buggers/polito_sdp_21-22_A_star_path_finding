@@ -678,13 +678,13 @@ static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
 
 void reconstruct_path(int *parentVertex, int source, int dest, double *costToCome) {
     int i;
-    double tot_cost;
+    double tot_cost = 0;
     printf("+-----------------------------------+");
     printf("\nPath found\n");
     printf("Path from %d to %d: [ ", source, dest);
     reconstruct_path_r(parentVertex, dest, costToCome, &tot_cost);
     printf("]");
 
-    printf("\nCost: %.2lf\n", &tot_cost);
+    printf("\nCost: %.2lf\n", tot_cost);
     printf("+-----------------------------------+\n\n");
 }
