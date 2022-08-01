@@ -16,11 +16,11 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
     for (v = 0; v < V; v++) {
         parentVertex[v] = -1;
         mindist[v] = maxWT;
-        PQinsert(pq, mindist, v);
     }
+
     mindist[source] = 0;
     parentVertex[source] = -1;
-    PQchange(pq, mindist, source);
+    PQinsert(pq, mindist, source);
     while (!PQempty(pq)) {
         if (mindist[a = PQextractMin(pq, mindist)] != maxWT) {
             for (t = GRAPHget_list_node_head(G, a);
@@ -29,7 +29,10 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
                 a_b_wt = LINKget_wt(t);
                 if (mindist[a] + a_b_wt < mindist[b]) {
                     mindist[b] = mindist[a] + a_b_wt;
-                    PQchange(pq, mindist, b);
+                    if (PQsearch(pq, b) == -1)
+                        PQinsert(pq, mindist, b);
+                    else
+                        PQchange(pq, mindist, b);
                     parentVertex[b] = a;
                 }
             }

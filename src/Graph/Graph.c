@@ -48,8 +48,8 @@ static void removeE(Graph G, Edge e);
 static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
                                double *tot_cost);
 
-    // Static function prototypes for parallel read
-static void parallelIo(void *arg);      // version 2
+// Static function prototypes for parallel read
+static void parallelIo(void *arg);          // version 2
 static void *thread_read(void *arg);        // version 3
 static void *GRAPHloadParallel(void *arg);  // version 1
 // #####################################################
@@ -676,7 +676,8 @@ static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
     }
 }
 
-void reconstruct_path(int *parentVertex, int source, int dest, double *costToCome) {
+void reconstruct_path(int *parentVertex, int source, int dest,
+                      double *costToCome) {
     int i;
     double tot_cost = 0;
     printf("+-----------------------------------+");
@@ -688,3 +689,4 @@ void reconstruct_path(int *parentVertex, int source, int dest, double *costToCom
     printf("\nCost: %.2lf\n", tot_cost);
     printf("+-----------------------------------+\n\n");
 }
+
