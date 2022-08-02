@@ -215,6 +215,8 @@ struct thread_arg_s {
     off_t start_offset;
     char linetype;
     Graph *G;
+    pthread_mutex_t *m_nodes;
+    pthread_mutex_t *m_edges;
 };
 
 // Defines the partition(block) to be read from one thread
@@ -224,9 +226,6 @@ struct read_block_s {
     off_t cur;
     ssize_t size;
 };
-
-// Global mutex
-pthread_mutex_t *m;
 
 static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
@@ -244,6 +243,8 @@ static void *thread_read(void *arg) {
     char linetype = targ->linetype;
     Position p;
     Graph G = *(targ->G);
+    pthread_mutex_t *m_nodes = targ->m_nodes;
+    pthread_mutex_t *m_edges = targ->m_edges;
 
     // Open the file (each thread works on its own file descriptor)
     fd = open(targ->filepath, O_RDONLY);
@@ -289,9 +290,9 @@ static void *thread_read(void *arg) {
                        index, nl.index, nl.x, nl.y, rb.cur);
 #endif
                 p = POSITIONinit(nl.x, nl.y);
-                pthread_mutex_lock(m);
+                pthread_mutex_lock(m_nodes);
                 STinsert(G->tab, p, nl.index);
-                pthread_mutex_unlock(m);
+                pthread_mutex_unlock(m_nodes);
                 POSITIONfree(p);
 
             } else if (linetype == 'e') {
@@ -300,9 +301,9 @@ static void *thread_read(void *arg) {
                 printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
                        el.id1, el.id2, el.wt);
 #endif
-                pthread_mutex_lock(m);
+                pthread_mutex_lock(m_edges);
                 GRAPHinsertE(G, el.id1, el.id2, el.wt);
-                pthread_mutex_unlock(m);
+                pthread_mutex_unlock(m_edges);
             }
             rb.cur += linesize;
         } while (rb.cur < rb.end);
@@ -332,15 +333,17 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
     Graph G;
     struct node_line_s nl;
 
-    // Allocate array of threads and global mutex
-    m = malloc(sizeof(pthread_mutex_t));
-    pthread_mutex_init(m, NULL);
+    // Allocate array of threads and global mutexes
+    pthread_mutex_t *m_nodes = malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_t *m_edges = malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(m_nodes, NULL);
+    pthread_mutex_init(m_edges, NULL);
     threads_nodes = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
     threads_edges = (pthread_t *)malloc(num_threads_nodes * sizeof(pthread_t));
     threads_arg = (struct thread_arg_s *)malloc(
         (num_threads_edges + num_threads_nodes) * sizeof(struct thread_arg_s));
-    if (m == NULL || threads_nodes == NULL || threads_edges == NULL ||
-        threads_arg == NULL) {
+    if (m_nodes == NULL || m_edges == NULL || threads_nodes == NULL ||
+        threads_edges == NULL || threads_arg == NULL) {
         return NULL;
     }
 
@@ -369,7 +372,9 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
     for (i = 0; i < num_threads_nodes + num_threads_edges; i++) {
         strcpy(threads_arg[i].filepath, filepath);
         threads_arg[i].filesize = filesize;
-        threads_arg[i].G = &G;  // &G
+        threads_arg[i].G = &G;
+        threads_arg[i].m_nodes = m_nodes;
+        threads_arg[i].m_edges = m_edges;
         if (i < num_threads_nodes) {
             threads_arg[i].num_threads = num_threads_nodes;
             threads_arg[i].num_partitions = num_partitions_nodes;
@@ -403,7 +408,8 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
     free(threads_nodes);
     free(threads_edges);
     free(threads_arg);
-    free(m);
+    free(m_nodes);
+    free(m_edges);
     return G;
 }
 
@@ -681,7 +687,6 @@ void reconstruct_path(int *parentVertex, int source, int dest,
     int i;
     double tot_cost = 0;
     printf("+-----------------------------------+");
-    printf("\nPath found\n");
     printf("Path from %d to %d: [ ", source, dest);
     reconstruct_path_r(parentVertex, dest, costToCome, &tot_cost);
     printf("]");
@@ -689,4 +694,3 @@ void reconstruct_path(int *parentVertex, int source, int dest,
     printf("\nCost: %.2lf\n", tot_cost);
     printf("+-----------------------------------+\n\n");
 }
-

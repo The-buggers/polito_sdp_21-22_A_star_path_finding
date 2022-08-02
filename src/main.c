@@ -7,8 +7,9 @@
 #include "./DijkstraEngine/Dijkstra.h"
 #include "./Graph/Graph.h"
 #define MAXC 11
+#define PARALLELREADTYPE 0
 void start_timer(struct timespec* begin);
-double stop_timer(struct timespec begin, struct timespec end);
+double stop_timer(struct timespec begin);
 
 int main(int argc, char* argv[]) {
     Graph G;
@@ -16,14 +17,13 @@ int main(int argc, char* argv[]) {
     struct timespec begin, end;
     int partitions_nodes, partitions_edges, th_nodes, th_edges;
 
+    start_timer(&begin);
 #if PARALLELREADTYPE == 3
     // ######################################
     // ### TEST PARALLEL READ - VERSION 3 ###
     // ######################################
     printf("Parallel read type: 3\n");
-    start_timer(&begin);
-    G = GRAPHload_parallel3(argv[1], 10, 10, 5, 5);
-    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
+    G = GRAPHload_parallel3(argv[1], 10, 10, 3, 3);
     /*
     fperf = fopen("performance.txt", "w+");
     for (partitions_nodes = 1; partitions_nodes < 3; partitions_nodes++) {
@@ -48,40 +48,39 @@ int main(int argc, char* argv[]) {
     // ### TEST PARALLEL READ - VERSION 2 ###
     // ######################################
     printf("Parallel read type: 2\n");
-    start_timer(&begin);
     G = GRAPHload_parallel2(argv[1], 2);
-    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #elif PARALLELREADTYPE == 1
     // ######################################
     // ### TEST PARALLEL READ - VERSION 1 ###
     // ######################################
     printf("Parallel read type: 1\n");
-    start_timer(&begin);
     G = GRAPHload_parallel1(argv[1], 10);
-    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #elif PARALLELREADTYPE == 0
     // ############################
     // ### TEST SEQUENTIAL READ ###
     // ############################
-    printf("Parallel read type: 1\n");
-    start_timer(&begin);
+    printf("Sequential read\n");
     G = GRAPHload_sequential(argv[1]);
-    printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #endif
-    //ASTARshortest_path_sequential(G, 0, 23943);
+    printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
+
+    start_timer(&begin);
+    //ASTARshortest_path_sequential(G, 5, 197000);
     //ASTARshortest_path_sas_sf(G, 0, 23943, 3);
-    //ASTARshortest_path_fa(G, 0, 23943, 3);
-    DIJKSTRA_shortest_path_sequential(G, 0, 23943);
-    //GRAPHspD(G, 0);
+    //ASTARshortest_path_sas_b(G, 0, 23943, 2);
+    //ASTARshortest_path_fa(G, 0, 23943, 5);
+    //DIJKSTRA_shortest_path_sequential(G, 0, 23943);
+    printf("A* algorithm time: %.9f seconds\n", stop_timer(begin));
     return 0;
 }
 
 void start_timer(struct timespec* begin) {
     clock_gettime(CLOCK_REALTIME, begin);
 }
-double stop_timer(struct timespec begin, struct timespec end) {
+double stop_timer(struct timespec begin) {
     long seconds, nanoseconds;
     double elapsed;
+    struct timespec end;
 
     clock_gettime(CLOCK_REALTIME, &end);
     seconds = end.tv_sec - begin.tv_sec;

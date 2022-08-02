@@ -38,6 +38,7 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
     }
 #if STAT
     int *visited_nodes = (int *)calloc(V, sizeof(int));
+    int n_visited = 0;
 #endif
     fvalues[source] =
         compute_f(hvalues[source], 0);  // g(n) = 0 for n == source
@@ -51,6 +52,7 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
         f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
 #if STAT
         visited_nodes[a] = 1;
+        n_visited++;
 #endif
         // If the extracted node is the destination stop: path found
         if (a == dest) {
@@ -88,10 +90,14 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
         return;
     }
 #if STAT
+    int n = 0;
     FILE *fp = fopen("./stats/stat_astar_seq.txt", "w+");
     for (v = 0; v < V; v++) {
-        if (visited_nodes[v] == 1) fprintf(fp, "%d\n", v);
+        if (parentVertex[v] != -1) {
+            fprintf(fp, "%d\n", v);
+        }
     }
+    printf("Visited nodes: %d\n", n_visited);
     fclose(fp);
     free(visited_nodes);
 #endif
