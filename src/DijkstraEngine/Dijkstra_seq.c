@@ -33,6 +33,7 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
             if (a == dest) {
                 found = 1;
                 reconstruct_path(parentVertex, source, dest, costToCome);
+                break;
             }
             for (t = GRAPHget_list_node_head(G, a);
                  t != GRAPHget_list_node_tail(G, a); t = LINKget_next(t)) {
