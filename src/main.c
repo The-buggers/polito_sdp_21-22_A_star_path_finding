@@ -68,10 +68,10 @@ int main(int argc, char* argv[]) {
     G = GRAPHload_sequential(argv[1]);
     printf("Elapsed time: %.9f seconds\n", stop_timer(begin, end));
 #endif
-    //ASTARshortest_path_sequential(G, 0, 23943);
+    ASTARshortest_path_sequential(G, 0, 23943);
     //ASTARshortest_path_sas_sf(G, 0, 23943, 3);
     //ASTARshortest_path_fa(G, 0, 23943, 3);
-    DIJKSTRA_shortest_path_sequential(G, 0, 23493);
+    //DIJKSTRA_shortest_path_sequential(G, 0, 23943);
     //GRAPHspD(G, 0);
     return 0;
 }
