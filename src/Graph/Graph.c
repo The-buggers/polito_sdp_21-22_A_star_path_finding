@@ -1,3 +1,15 @@
+/** @file Graph.c
+ *  @brief Graph functions and utilities
+ *  
+ *  This file contains the definition of the I class ADT Graph and
+ *  the related data structures to work with it. Among these functions
+ *  the ones used for sequential and parallel reading of the input file
+ *  are present
+ * 
+ *  @author Mattia Rosso
+ *  @author Lorenzo Ippolito
+ *  @author Fabio  Mirto
+ */
 #include "Graph.h"
 
 #include <fcntl.h>
@@ -16,11 +28,19 @@
 #include "Position.h"
 #define maxWT DBL_MAX
 #define MAXC 10
+/**
+ * @brief Node(vertex) of the graph
+ * 
+ */
 struct node {
     int v;
     double wt;
     link next;
 };
+/**
+ * @brief Graph - I class ADT
+ * 
+ */
 struct graph {
     int V;
     int E;
@@ -28,12 +48,19 @@ struct graph {
     ST tab;
     link z;
 };
-// Structures to NODE and EDGE lines
+/**
+ * @brief Data type compatible with the binary format of a NODE line 
+ * 
+ */
 struct node_line_s {
     int index;
     double x;
     double y;
 };
+/**
+ * @brief Data type compatible with the binary format of a EDGE line 
+ * 
+ */
 struct edge_line_s {
     int id1;
     int id2;
@@ -226,7 +253,12 @@ struct read_block_s {
     off_t cur;
     ssize_t size;
 };
-
+/**
+ * @brief Thread function for reading file
+ * 
+ * @param arg thread argument
+ * @return void* 
+ */
 static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
     int index = targ->index;
