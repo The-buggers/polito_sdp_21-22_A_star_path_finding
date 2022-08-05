@@ -1,65 +1,46 @@
 This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-The style file: biblatex.bst
-Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
-Reallocated global_strs (elt_size=200001) to 20 items from 10.
-Reallocated glb_str_end (elt_size=4) to 20 items from 10.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Database file #1: main-blx.bib
-Database file #2: example.bib
-Biblatex version: 3.13
-Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 4 entries,
-            6365 wiz_defined-function locations,
-            1222 strings with 10897 characters,
-and the built_in function-call counts, 25548 in all, are:
-= -- 1848
-> -- 447
-< -- 97
-+ -- 570
-- -- 183
-* -- 2097
-:= -- 2984
-add.period$ -- 0
-call.type$ -- 4
-change.case$ -- 33
-chr.to.int$ -- 54
-cite$ -- 6
-duplicate$ -- 2226
-empty$ -- 2356
-format.name$ -- 234
-if$ -- 5251
-int.to.chr$ -- 0
-int.to.str$ -- 6
-missing$ -- 0
-newline$ -- 153
-num.names$ -- 123
-pop$ -- 1116
+The style file: unsrtnat.bst
+Database file #1: references.bib
+You've used 3 entries,
+            2481 wiz_defined-function locations,
+            567 strings with 5037 characters,
+and the built_in function-call counts, 1479 in all, are:
+= -- 132
+> -- 69
+< -- 4
++ -- 27
+- -- 20
+* -- 101
+:= -- 220
+add.period$ -- 11
+call.type$ -- 3
+change.case$ -- 6
+chr.to.int$ -- 2
+cite$ -- 3
+duplicate$ -- 80
+empty$ -- 131
+format.name$ -- 27
+if$ -- 331
+int.to.chr$ -- 2
+int.to.str$ -- 4
+missing$ -- 3
+newline$ -- 23
+num.names$ -- 9
+pop$ -- 33
 preamble$ -- 1
-purify$ -- 54
+purify$ -- 3
 quote$ -- 0
-skip$ -- 616
+skip$ -- 54
 stack$ -- 0
-substring$ -- 3725
-swap$ -- 582
-text.length$ -- 118
-text.prefix$ -- 3
-top$ -- 1
-type$ -- 124
+substring$ -- 70
+swap$ -- 28
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 21
 warning$ -- 0
-while$ -- 386
+while$ -- 12
 width$ -- 0
-write$ -- 150
+write$ -- 47
