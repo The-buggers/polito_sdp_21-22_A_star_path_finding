@@ -1,0 +1,17 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/fab/Desktop/AStar/src'
+gcc -Wall -g -c main.c -o ./build/main.o
+gcc -Wall -g -c ./Graph/Graph.c -o ./build/Graph.o
+gcc -Wall -g -c ./Graph/ST.c -o ./build/ST.o 
+gcc -Wall -g -c ./Graph/PQ.c -o ./build/PQ.o 
+gcc -Wall -g -c ./Graph/Position.c -o ./build/Position.o -lm
+gcc -Wall -g -c ./AstarEngine/Astar_utility.c -o ./build/Astar_utility.o
+gcc -Wall -g -c ./AstarEngine/Astar_seq.c -o ./build/Astar_seq.o
+gcc -Wall -g -c ./AstarEngine/Astar_sas_b.c -o ./build/Astar_sas_b.o -lpthread
+gcc -Wall -g -c ./AstarEngine/Astar_sas_sf.c -o ./build/Astar_sas_sf.o -lpthread
+gcc -Wall -g -c ./DijkstraEngine/Dijkstra_seq.c -o ./build/Dijkstra_seq.o
+gcc -Wall -g -c ./AstarEngine/Astar_fa.c -o ./build/Astar_fa.o -lpthread
+gcc -Wall -g -c ./AstarEngine/Astar_mp.c -o ./build/Astar_mp.o -lpthread
+gcc -Wall -g -o ./build/graphtest ./build/main.o ./build/Graph.o ./build/ST.o ./build/PQ.o ./build/Position.o ./build/Astar_utility.o ./build/Astar_seq.o ./build/Astar_sas_b.o ./build/Astar_sas_sf.o ./build/Astar_fa.o ./build/Astar_mp.o ./build/Dijkstra_seq.o -lm -lpthread
+make: Leaving directory '/home/fab/Desktop/AStar/src'
+ 

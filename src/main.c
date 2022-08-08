@@ -65,11 +65,11 @@ int main(int argc, char* argv[]) {
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
 
     start_timer(&begin);
-    //ASTARshortest_path_sequential(G, 5, 197000);
+    ASTARshortest_path_sequential(G, 0, 23943);
     //ASTARshortest_path_sas_sf(G, 0, 23943, 3);
     //ASTARshortest_path_sas_b(G, 0, 23943, 2);
     //ASTARshortest_path_fa(G, 0, 23943, 5);
-    //DIJKSTRA_shortest_path_sequential(G, 0, 23943);
+    DIJKSTRA_shortest_path_sequential(G, 0, 23943);
     printf("A* algorithm time: %.9f seconds\n", stop_timer(begin));
     return 0;
 }
