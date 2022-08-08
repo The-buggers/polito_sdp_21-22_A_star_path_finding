@@ -1,9 +1,10 @@
 #include "Dijkstra.h"
 #include "float.h"
 #define maxWT DBL_MAX
-#define STAT 1
+#define COLLECT_STAT 1
+static void get_path(int *path_to_dest, int source, int dest);
 void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
-    printf("Dijkstra algorithm on graph from %d to %d\n", source, dest);
+    printf("Dijkstra algorithm from %d to %d\n", source, dest);
     int v;
     link t;
     int V = GRAPHget_num_nodes(G);
@@ -19,11 +20,10 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
     for (v = 0; v < V; v++) {
         parentVertex[v] = -1;
         mindist[v] = maxWT;
-        //PQinsert(pq, mindist, v);
+        // PQinsert(pq, mindist, v);
     }
-#if STAT
-    int *visited_nodes = (int *)calloc(V, sizeof(int));
-    int n_visited = 0;
+#if COLLECT_STAT
+    int *expanded_nodes = (int *)calloc(V, sizeof(int));
 #endif
     mindist[source] = 0;
     parentVertex[source] = -1;
@@ -31,15 +31,13 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
 
     while (!PQempty(pq)) {
         if (mindist[v = PQextractMin(pq, mindist)] != maxWT) {
-#if STAT
-            n_visited++;
-            visited_nodes[v] = 1;
+#if COLLECT_STAT
+            expanded_nodes[v]++;
 #endif
-        if (v == dest) {
-            found = 1;
-            reconstruct_path(parentVertex, source, dest, mindist);
-            break;
-        }
+            if (v == dest) {
+                found = 1;
+                break;
+            }
             for (t = GRAPHget_list_node_head(G, v);
                  t != GRAPHget_list_node_tail(G, v); t = LINKget_next(t))
 
@@ -50,25 +48,44 @@ void DIJKSTRA_shortest_path_sequential(Graph G, int source, int dest) {
                 }
         }
     }
-    if (parentVertex[dest] == -1) {
-        printf("+-----------------------------------+\n");
-        printf("Path not found\n");
-        printf("+-----------------------------------+\n\n");
+    printf("+-----------------------------------+\n");
+    if (found == 1) {
+        printf("Path from %d to %d: [ ", source, dest);
+        get_path(parentVertex, source, dest);
+        printf("]");
+
+        printf("\nCost: %.2lf\n", mindist[dest]);
+    } else {
+        printf("Path from %d to %d not found.\n", source, dest);
     }
-#if STAT
+    printf("+-----------------------------------+\n");
+#if COLLECT_STAT
+    int n = 0, tot = 0;
     FILE *fp = fopen("./stats/stat_dijkstra.txt", "w+");
     for (v = 0; v < V; v++) {
-        if (visited_nodes[v] == 1) {
+        if (expanded_nodes[v] != 0) {
+            n++;
+            tot += expanded_nodes[v];
             fprintf(fp, "%d\n", v);
         }
     }
-    printf("Visited nodes: %d\n", n_visited);
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n,
+           V, tot);
     fclose(fp);
-    free(visited_nodes);
+    free(expanded_nodes);
 #endif
     free(mindist);
     // free(parentVertex);
     // free(costToCome);
     PQfree(pq);
 }
-// ^(\s)*$\n
+
+static void get_path(int *path_to_dest, int source, int dest) {
+    if (source == dest) {
+        printf("%d ", source);
+        return;
+    } else {
+        get_path(path_to_dest, source, path_to_dest[dest]);
+        printf("%d ", dest);
+    }
+}

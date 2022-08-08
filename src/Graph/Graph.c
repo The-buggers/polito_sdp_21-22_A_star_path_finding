@@ -699,30 +699,3 @@ Graph GRAPHload_parallel1(char *filepath, int num_threads) {
     return G;
 }
 
-static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
-                               double *tot_cost) {
-    if (parentVertex[j] == -1) {
-        return;
-    } else {
-        reconstruct_path_r(parentVertex, parentVertex[j], costToCome, tot_cost);
-        if (parentVertex[parentVertex[j]] == -1) {
-            printf("%d ", parentVertex[j]);
-            *tot_cost = *tot_cost + costToCome[parentVertex[j]];
-        }
-        printf("%d ", j);
-        *tot_cost = *tot_cost + costToCome[j];
-    }
-}
-
-void reconstruct_path(int *parentVertex, int source, int dest,
-                      double *costToCome) {
-    int i;
-    double tot_cost = 0;
-    printf("+-----------------------------------+");
-    printf("Path from %d to %d: [ ", source, dest);
-    reconstruct_path_r(parentVertex, dest, costToCome, &tot_cost);
-    printf("]");
-
-    printf("\nCost: %.2lf\n", tot_cost);
-    printf("+-----------------------------------+\n\n");
-}

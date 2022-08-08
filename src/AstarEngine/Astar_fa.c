@@ -18,6 +18,10 @@ struct threadData {
     int V;
     int source;
     int dest;
+    char heuristic_type;
+#if COLLECT_STAT
+    int *expanded_nodes;
+#endif
 };
 
 PQ open_list;
@@ -47,7 +51,7 @@ static void *ASTARshortest_path_parallel_initializer(void *arg){
         previous[len1] = -1;
         closed_list[len1] = -1;
         p = GRAPHget_node_position(td->G, len1);
-        hvalues[len1] = heuristic_euclidean(p, pos_dest);
+        hvalues[len1] = heuristic(p, pos_dest, td->heuristic_type);
         fvalues[len1] = maxWT;
         gvalues[len1] = maxWT;
         len1++;
@@ -75,7 +79,9 @@ static void *ASTARshortest_path_parallel(void *arg){
         }
         // Take from OPEN list the node with min f(n) (min priority)
         f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
-
+#if COLLECT_STAT
+        td->expanded_nodes[a]++;
+#endif
         // If the extracted node is the destination stop: path found
         if (a == td->dest) {
             found = 1;
@@ -114,13 +120,13 @@ static void *ASTARshortest_path_parallel(void *arg){
 
 
 
-void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads){
-    printf("A star algorithm on graph from %d to %d\n", source, dest);
+void ASTARshortest_path_fa(Graph G, int source, int dest, char heuristic_type, int num_threads){
+    printf("## FA A* [heuristic: %c] from %d to %d ##\n", heuristic_type, source, dest);
     int V = GRAPHget_num_nodes(G);
     struct threadData *td;
     int v, a, b, i;
     double f_extracted_node, g_b, f_b, a_b_wt;
-
+    int * expanded_nodes;
     double tot_cost = 0;
 
     void *retval;
@@ -139,6 +145,12 @@ void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads){
     gvalues = (double *)malloc(V * sizeof(double));
     closed_list = (int *)malloc(V * sizeof(int));
     cost = (double *)malloc(V * sizeof(double));
+#if COLLECT_STAT
+    expanded_nodes = (int *)calloc(V, sizeof(int));
+    if(expanded_nodes == NULL){
+        return NULL;
+    }
+#endif
     if ((previous == NULL) || (fvalues == NULL) || (hvalues == NULL) ||
         (gvalues == NULL) || (closed_list == NULL) || (cost == NULL))
         return;
@@ -149,6 +161,7 @@ void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads){
         td[i].id = i;
         td[i].V = V;
         td[i].G = G;
+        td[i].heuristic_type = heuristic_type;
         pthread_create(&(td[i].threadId), NULL, ASTARshortest_path_parallel_initializer,
                        (void *)&td[i]);
     }
@@ -169,6 +182,9 @@ void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads){
         td[i].G = G;
         td[i].source = source;
         td[i].dest = dest;
+#if COLLECT_STAT
+        td[i].expanded_nodes = expanded_nodes;
+#endif
         pthread_create(&(td[i].threadId), NULL, ASTARshortest_path_parallel,
                        (void *)&td[i]);
     }
@@ -185,7 +201,21 @@ void ASTARshortest_path_fa(Graph G, int source, int dest, int num_threads){
         printf("+-----------------------------------+\n\n");
         return;
     }
-
+#if COLLECT_STAT
+    int n = 0;
+    int tot = 0;
+    FILE *fp = fopen("./stats/stat_astar_fa.txt", "w+");
+    for (v = 0; v < V; v++) {
+        if (expanded_nodes[v] != 0) {
+            n++;
+            tot += expanded_nodes[v];
+            fprintf(fp, "%d\n", v);
+        }
+    }
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n, V, tot);
+    fclose(fp);
+    free(expanded_nodes);
+#endif
     pthread_spin_destroy(&lockI);
     pthread_spin_destroy(&lockP);
     free(td);

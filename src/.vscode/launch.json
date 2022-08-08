@@ -6,8 +6,8 @@
             "preLaunchTask": "make",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/graphtest",
-            "args": ["../Benchmark/binarydUSA-road-dBAY"],
+            "program": "${workspaceFolder}/build/graphtest", 
+            "args": ["../Benchmark/DIMACS_custom_format/binarydUSA-road-dBAY", "321269", "263446", "2", "h"], // input_path - source - dest - threads - heuristic(h/m)
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

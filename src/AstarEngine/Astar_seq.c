@@ -6,9 +6,8 @@
 #include "../Graph/Position.h"
 #include "Astar.h"
 #define maxWT DBL_MAX
-#define STAT 1
-void ASTARshortest_path_sequential(Graph G, int source, int dest) {
-    printf("A star algorithm on graph from %d to %d\n", source, dest);
+void ASTARshortest_path_sequential(Graph G, int source, int dest, char heuristic_type) {
+    printf("## Sequential A* [heuristic: %c] from %d to %d ##\n", heuristic_type, source, dest);
     int V = GRAPHget_num_nodes(G);
     int v, a, b;
     double f_extracted_node, g_b, f_b, a_b_wt;
@@ -32,13 +31,12 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
     for (v = 0; v < V; v++) {
         parentVertex[v] = -1;
         p = GRAPHget_node_position(G, v);
-        hvalues[v] = heuristic_euclidean(p, pos_dest);
+        hvalues[v] = heuristic(p, pos_dest, heuristic_type);
         fvalues[v] = maxWT;
         gvalues[v] = maxWT;
     }
-#if STAT
-    int *visited_nodes = (int *)calloc(V, sizeof(int));
-    int n_visited = 0;
+#if COLLECT_STAT
+    int *expanded_nodes = (int *)calloc(V, sizeof(int));
 #endif
     fvalues[source] =
         compute_f(hvalues[source], 0);  // g(n) = 0 for n == source
@@ -50,9 +48,8 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
     {
         // Take from OPEN list the node with min f(n) (min priority)
         f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
-#if STAT
-        visited_nodes[a] = 1;
-        n_visited++;
+#if COLLECT_STAT
+        expanded_nodes[a]++;
 #endif
         // If the extracted node is the destination stop: path found
         if (a == dest) {
@@ -89,17 +86,19 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest) {
         printf("+-----------------------------------+\n\n");
         return;
     }
-#if STAT
-    int n = 0;
+#if COLLECT_STAT
+    int n = 0, tot = 0;
     FILE *fp = fopen("./stats/stat_astar_seq.txt", "w+");
-    for (v = 0; v < V; v++) {
-        if (parentVertex[v] != -1) {
+        for (v = 0; v < V; v++) {
+        if (expanded_nodes[v] != 0) {
+            n++;
+            tot += expanded_nodes[v];
             fprintf(fp, "%d\n", v);
         }
     }
-    printf("Visited nodes: %d\n", n_visited);
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n, V, tot);
     fclose(fp);
-    free(visited_nodes);
+    free(expanded_nodes);
 #endif
     free(parentVertex);
     free(costToCome);
