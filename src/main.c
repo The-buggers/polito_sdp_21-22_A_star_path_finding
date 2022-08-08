@@ -73,12 +73,12 @@ int main(int argc, char* argv[]) {
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
 
     start_timer(&begin);
-    //ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+    ASTARshortest_path_sequential(G, source, dest, heuristic_type);
     //ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_mp(G, source, dest, heuristic_type, num_threads);
-    DIJKSTRA_shortest_path_sequential(G, source, dest);
+    //DIJKSTRA_shortest_path_sequential(G, source, dest);
     printf("A* algorithm time: %.9f seconds\n", stop_timer(begin));
     return 0;
 }
