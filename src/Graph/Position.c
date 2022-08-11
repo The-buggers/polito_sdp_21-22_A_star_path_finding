@@ -8,7 +8,21 @@ struct position {
     double y;
 };
 double POSITIONcompute_euclidean_distance(Position p1, Position p2) {
-    return sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
+    double lat_1 = p1->y;
+    double lon_1 = p1->x;
+    double lat_2 = p2->y;
+    double lon_2 = p2->x;
+
+    double earth_radius = 6371e3; // metres
+    double phi_1 = lat_1 * M_PI/180; // φ in radians
+    double phi_2 = lat_2 * M_PI/180;
+    double delta_phi = (lat_2-lat_1) * M_PI/180; // λ in radians
+    double delta_delta = (lon_2-lon_1) * M_PI/180;
+
+    double a = pow(sin(delta_phi/2),2) + cos(phi_1)*cos(phi_2)*pow(sin(delta_delta/2),2);
+    double c = 2*atan2(sqrt(a), sqrt(1-a));
+    return earth_radius * c; // in metres
+    //return sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
 }
 double POSITIONcompute_manhattan_distance(Position p1, Position p2){
     return abs(p1->x - p2->x) + abs(p1->y - p2->y);
