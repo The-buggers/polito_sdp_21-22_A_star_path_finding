@@ -1,9 +1,8 @@
-#include "Astar.h"
-
 #include <float.h>
 #include <math.h>
 #include <pthread.h>
 
+#include "Astar.h"
 #define maxWT DBL_MAX
 
 // Thread argument data structure
@@ -17,7 +16,6 @@ struct arg_t {
     Position pos_dest;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
-    pthread_barrier_t *barrier;
     int *wait_flags;
     int source;
     int dest;
@@ -34,33 +32,16 @@ static void *hda(void *arg);
 static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, owner_a, owner_b;
-    Position p;
     double f_extracted_node, g_b, f_b, a_b_wt;
     link t;
     // - Insert all the nodes in the priority queue
     // - compute h(n) for each node
     // - initialize f(n) to maxWT
     // - initialize g(n) to maxWT
-    for (v = 0; v < args->V; v++) {
+
 #if DEBUG_ASTAR_SAS
-        printf("Node %d belogs to T %d\n", v, hash_function(v, args->num_threads));
+    printf("Node %d belogs to T %d\n", v, hash_function(v, args->num_threads));
 #endif
-        if (hash_function(v, args->num_threads) == args->index) {
-            args->previous[v] = -1;
-            p = GRAPHget_node_position(args->G, v);
-            args->hvalues[v] = heuristic_euclidean(p, args->pos_dest);
-            args->fvalues[v] = maxWT;
-            args->gvalues[v] = maxWT;
-        }
-    }
-    if (hash_function(args->source, args->num_threads) == args->index) {
-        args->fvalues[args->source] = compute_f(args->hvalues[args->source],
-                                                0);  // g(n) = 0 for n == source
-        args->gvalues[args->source] = 0;
-        PQinsert(args->open_lists[args->index], args->fvalues, args->source);
-    }
-    // Waiting for all threads are ready
-    pthread_barrier_wait(args->barrier);
 
     // START
     while (1)  // while OPEN list not empty
@@ -136,6 +117,7 @@ static void *hda(void *arg) {
         }
     }
 }
+
 void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
     printf("A star algorithm (SAS version) on graph from %d to %d\n", source,
            dest);
@@ -143,7 +125,6 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
     int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0, found = 0;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
-    pthread_barrier_t barrier;
     double *fvalues, *hvalues, *gvalues, *cost,
         tot_cost = 0;  // f(n) for each node n
     pthread_t *threads;
@@ -176,10 +157,21 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
         (args == NULL))
         return;
 
-    for (i = 0; i < num_threads; i++) wait_flags[i] = 0;
+    // SETUP
+    for (i = 0; i < V; i++) {
+        previous[i] = -1;
+        hvalues[i] =
+            heuristic_euclidean(GRAPHget_node_position(G, i), pos_dest);
+        fvalues[i] = maxWT;
+        gvalues[i] = maxWT;
+    }
+    fvalues[source] =
+        compute_f(hvalues[source], 0);  // g(n) = 0 for n == source
+    gvalues[source] = 0;
+    PQinsert(open_lists[hash_function(source, num_threads)], fvalues, source);
 
-    pthread_barrier_init(&barrier, NULL, num_threads);
     for (i = 0; i < num_threads; i++) {
+        wait_flags[i] = 0;
         pthread_cond_init(&cond[i], NULL);
         pthread_mutex_init(&mut[i], NULL);
         args[i].index = i;
@@ -188,7 +180,6 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
         args[i].cond = cond;
         args[i].mut = mut;
         args[i].wait_flags = wait_flags;
-        args[i].barrier = &barrier;
         args[i].V = V;
         args[i].G = G;
         args[i].pos_source = pos_source;
@@ -208,8 +199,6 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
         pthread_mutex_destroy(&mut[i]);
         free(open_lists[i]);
     }
-
-    pthread_barrier_destroy(&barrier);
 
     if (args->gvalues[args->dest] < maxWT) {
         reconstruct_path(args->previous, args->source, args->dest, args->cost);
