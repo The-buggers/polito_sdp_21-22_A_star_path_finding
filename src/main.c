@@ -7,7 +7,7 @@
 #include "./DijkstraEngine/Dijkstra.h"
 #include "./Graph/Graph.h"
 #define MAXC 11
-#define PARALLELREADTYPE 0
+#define PARALLELREADTYPE 3
 void start_timer(struct timespec* begin);
 double stop_timer(struct timespec begin);
 
@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     // ### TEST PARALLEL READ - VERSION 3 ###
     // ######################################
     printf("Parallel read type: 3\n");
-    G = GRAPHload_parallel3(argv[1], 10, 10, 3, 3);
+    G = GRAPHload_parallel3(argv[1], 3, 3, 2, 2);
     /*
     fperf = fopen("performance.txt", "w+");
     for (partitions_nodes = 1; partitions_nodes < 3; partitions_nodes++) {
@@ -73,9 +73,9 @@ int main(int argc, char* argv[]) {
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
 
     start_timer(&begin);
-    ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+    //ASTARshortest_path_sequential(G, source, dest, heuristic_type);
     //ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
-    //ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
+    ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_mp(G, source, dest, heuristic_type, num_threads);
     //DIJKSTRA_shortest_path_sequential(G, source, dest);

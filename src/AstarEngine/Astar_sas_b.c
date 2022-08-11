@@ -31,6 +31,7 @@ struct arg_t {
     int *open_set_empty;
     double **t_fvalues;
     pthread_mutex_t *mut_nodes;
+    pthread_mutex_t *open_set_empty_lk;
 #if COLLECT_STAT
     int * expanded_nodes;
 #endif
@@ -45,6 +46,7 @@ static void *hda(void *arg) {
     link t;
     barrier_t *bar = args->bar;
     int *open_set_empty = args->open_set_empty;
+    pthread_mutex_t *open_set_empty_lk = args->open_set_empty_lk;
 
     // -- Notation --
     // MY OPEN SET: open_lists[index], t_fvalues[index]
@@ -124,13 +126,13 @@ static void *hda(void *arg) {
             printf("t[%d] says: all threads hit the barrier--\n", args->index);
 #endif
             // Now check if all the open set is still empty or not
-            // pthread_mutex_lock(&open_set_empty_lk);
+            pthread_mutex_lock(open_set_empty_lk);
             if (PQempty(args->open_lists[args->index])) {
                 open_set_empty[args->index] = 1;
             } else {
                 open_set_empty[args->index] = 0;
             }
-            // pthread_mutex_unlock(&open_set_empty_lk);
+            pthread_mutex_unlock(open_set_empty_lk);
 
 #if DEBUG_ASTAR
             if (PQempty(args->open_lists[args->index])) {
@@ -178,6 +180,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     int i, j, v, num_threads_nodes, *parentVertex;
     pthread_mutex_t *mut_threads;
     pthread_mutex_t *mut_nodes;
+    pthread_mutex_t *open_set_empty_lk;
     double *hvalues, *gvalues, *costToCome;
     double tot_cost;
     int *open_set_empty;
@@ -216,6 +219,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     mut_threads =
         (pthread_mutex_t *)malloc(num_threads * sizeof(pthread_mutex_t));
     mut_nodes = (pthread_mutex_t *)malloc(V * sizeof(pthread_mutex_t));
+    open_set_empty_lk = (pthread_mutex_t *)malloc(num_threads* sizeof(pthread_mutex_t));
     parentVertex = (int *)malloc(V * sizeof(int));
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
@@ -227,7 +231,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         return NULL;
     }
 #endif
-    if ((parentVertex == NULL) || (mut_threads == NULL) || (hvalues == NULL) ||
+    if ((parentVertex == NULL) || (mut_threads == NULL) || (open_set_empty_lk == NULL) || (hvalues == NULL) ||
         (gvalues == NULL) || (costToCome == NULL) || (threads == NULL) ||
         (args == NULL) || (open_set_empty == NULL))
         return;
@@ -240,6 +244,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         pthread_mutex_init(&mut_nodes[v], NULL);
     }
 
+    pthread_mutex_init(open_set_empty_lk, NULL);
     for (i = 0; i < num_threads; i++) {
         pthread_mutex_init(&mut_threads[i], NULL);
         args[i].index = i;
@@ -258,6 +263,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         args[i].open_set_empty = open_set_empty;
         args[i].t_fvalues = t_fvalues;
         args[i].mut_nodes = mut_nodes;
+        args[i].open_set_empty_lk = open_set_empty_lk;
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
