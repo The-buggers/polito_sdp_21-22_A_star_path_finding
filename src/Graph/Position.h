@@ -4,7 +4,7 @@
 typedef struct position* Position;
 Position POSITIONinit(double x, double y);
 void POSITIONfree(Position p);
-double POSITIONcompute_euclidean_distance(Position p1, Position p2);
+double POSITIONcompute_haversine_distance(Position p1, Position p2);
 double POSITIONcompute_manhattan_distance(Position p1, Position p2);
 int POSITIONcmp(Position p1, Position p2);
 void POSITIONcpy(Position p1, Position p2);

@@ -1,11 +1,8 @@
 #include "Astar.h"
 static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
                                double *tot_cost);
-double heuristic_euclidean(Position source, Position dest) {
-    return POSITIONcompute_euclidean_distance(source, dest);
-}
-double heuristic_manhattan(Position source, Position dest) {
-    return POSITIONcompute_manhattan_distance(source, dest);
+double heuristic_haversine(Position source, Position dest) {
+    return POSITIONcompute_haversine_distance(source, dest);
 }
 
 double compute_f(double h, double g) { return h + g; }
@@ -14,9 +11,7 @@ int hash_function(int index, int Nthread) { return index % Nthread; }
 
 double heuristic(Position p1, Position p2, char heuristic_type){
     if(heuristic_type == 'h'){
-        heuristic_euclidean(p1, p2);
-    }else if(heuristic_type == 'm'){
-        heuristic_manhattan(p1, p2);
+        heuristic_haversine(p1, p2);
     }
 }
 
@@ -40,10 +35,10 @@ static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
     } else {
         reconstruct_path_r(parentVertex, parentVertex[j], costToCome, tot_cost);
         if (parentVertex[parentVertex[j]] == -1) {
-            printf("%d ", parentVertex[j]);
+            printf("%d, ", parentVertex[j]);
             *tot_cost = *tot_cost + costToCome[parentVertex[j]];
         }
-        printf("%d ", j);
+        printf("%d, ", j);
         *tot_cost = *tot_cost + costToCome[j];
     }
 }

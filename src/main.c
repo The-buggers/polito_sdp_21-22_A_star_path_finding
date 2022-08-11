@@ -72,8 +72,9 @@ int main(int argc, char* argv[]) {
     G = GRAPHload_sequential(argv[1]);
 #endif
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
-    printf("Test distance: %lf\n", POSITIONcompute_euclidean_distance(POSITIONinit(-121.452591, 38.999470), POSITIONinit(-122.020373, 37.001649)));
+
     start_timer(&begin);
+
     ASTARshortest_path_sequential(G, source, dest, heuristic_type);
     //ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     //ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);

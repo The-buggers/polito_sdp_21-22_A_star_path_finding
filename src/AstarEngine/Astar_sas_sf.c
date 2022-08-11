@@ -174,7 +174,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     for (i = 0; i < V; i++) {
         previous[i] = -1;
         hvalues[i] =
-            heuristic_euclidean(GRAPHget_node_position(G, i), pos_dest);
+            heuristic_haversine(GRAPHget_node_position(G, i), pos_dest);
         fvalues[i] = maxWT;
         gvalues[i] = maxWT;
     }

@@ -67,15 +67,13 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest, char heuristic
             g_b = gvalues[a] + a_b_wt;
             f_b = g_b + hvalues[b];
 
-            if (g_b < gvalues[b]) {
+            if (g_b < gvalues[b]) { 
                 parentVertex[b] = a;
                 costToCome[b] = a_b_wt;
                 gvalues[b] = g_b;
                 fvalues[b] = f_b;
                 if (PQsearch(open_list, b) == -1) {
                     PQinsert(open_list, fvalues, b);
-                } else {
-                    PQchange(open_list, fvalues, b);
                 }
             }
         }
