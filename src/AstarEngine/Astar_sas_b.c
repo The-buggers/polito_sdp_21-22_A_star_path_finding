@@ -31,7 +31,6 @@ struct arg_t {
     int *open_set_empty;
     double **t_fvalues;
     pthread_mutex_t *mut_nodes;
-    pthread_mutex_t *open_set_empty_lk;
 #if COLLECT_STAT
     int * expanded_nodes;
 #endif
@@ -46,7 +45,6 @@ static void *hda(void *arg) {
     link t;
     barrier_t *bar = args->bar;
     int *open_set_empty = args->open_set_empty;
-    pthread_mutex_t *open_set_empty_lk = args->open_set_empty_lk;
 
     // -- Notation --
     // MY OPEN SET: open_lists[index], t_fvalues[index]
@@ -55,12 +53,19 @@ static void *hda(void *arg) {
     // If i am the owner of the source node: set g(source) = 0, f(source) =
     // g(source) + h(source) = h(source)
     if (hash_function(args->source, args->num_threads) == args->index) {
+        // Modify gvalues[source], t_fvalues[index][source], open_list[index]
+        pthread_mutex_lock(&(args->mut_nodes[args->source])); // lock_n(source)
+        pthread_mutex_lock(&(args->mut_threads[args->index])); // lock_t(index)
+        args->gvalues[args->source] = 0;
         args->t_fvalues[args->index][args->source] =
             compute_f(args->hvalues[args->source], 0);
-        args->gvalues[args->source] = 0;
         PQinsert(args->open_lists[args->index], args->t_fvalues[args->index],
                  args->source);
+        pthread_mutex_unlock(&(args->mut_nodes[args->source]));
+        pthread_mutex_unlock(&(args->mut_threads[args->index]));
     }
+    
+    // Start HDA*    
     while (1) {
         while (!PQempty(args->open_lists[args->index])) {
             // POP the node with min f(n)
@@ -93,20 +98,18 @@ static void *hda(void *arg) {
                 f_b = g_b + args->hvalues[b];
 
                 // Update gvalues, fvalues, parentVertex, costToCome
+                pthread_mutex_lock(&(args->mut_nodes[b]));
                 if (g_b < args->gvalues[b]) {
-                    // Acuire the lock for vertex b and modify shared data
-                    // structures
-                    pthread_mutex_lock(&(args->mut_nodes[b]));
+                    // Modify shared data structures
                     args->parentVertex[b] = a;
                     args->costToCome[b] = a_b_wt;
                     args->gvalues[b] = g_b;
-                    args->t_fvalues[k_b][b] = f_b;
                     pthread_mutex_lock(&(args->mut_threads[k_b]));
-                    // note: with PQchange the algorithm doesn't find best path
+                    args->t_fvalues[k_b][b] = f_b;
                     PQinsert(args->open_lists[k_b], args->t_fvalues[k_b], b);
                     pthread_mutex_unlock(&(args->mut_threads[k_b]));
-                    pthread_mutex_unlock(&(args->mut_nodes[b]));
                 }
+                pthread_mutex_unlock(&(args->mut_nodes[b]));
             }
         }
 
@@ -122,27 +125,14 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&bar->mutex);
             sem_wait(&bar->sem1);
             // Here if: all threads hit the barrier
-#if DEBUG_ASTAR
-            printf("t[%d] says: all threads hit the barrier--\n", args->index);
-#endif
+            
             // Now check if all the open set is still empty or not
-            pthread_mutex_lock(open_set_empty_lk);
             if (PQempty(args->open_lists[args->index])) {
                 open_set_empty[args->index] = 1;
             } else {
                 open_set_empty[args->index] = 0;
             }
-            pthread_mutex_unlock(open_set_empty_lk);
-
-#if DEBUG_ASTAR
-            if (PQempty(args->open_lists[args->index])) {
-                printf("t[%d] after barrier: message queue empty\n",
-                       args->index);
-            } else {
-                printf("t[%d] after barrier: message queue NOT empty\n",
-                       args->index);
-            }
-#endif
+            
             pthread_mutex_lock(&bar->mutex);
             bar->count--;
             if (bar->count == 0) {
@@ -151,22 +141,13 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&bar->mutex);
             sem_wait(&bar->sem2);
 
-            // If all the threads had the message queue empty terminate
-            pthread_mutex_lock(open_set_empty_lk);
+            // If all the threads have the message queue empty terminate
             int count = 0;
             for (i = 0; i < args->num_threads; i++) {
                 count += open_set_empty[i];
             }
-            pthread_mutex_unlock(open_set_empty_lk);
             if (count == args->num_threads) {
-#if DEBUG_ASTAR
-                printf(
-                    "Exit t[%d]: best path to %d with costToCome %.4lf and "
-                    "parent: "
-                    "%d\n",
-                    args->index, args->dest, args->gvalues[args->dest],
-                    args->parentVertex[args->dest]);
-#endif
+                printf("Empty: %d\n", PQempty(args->open_lists[args->index]));
                 break;
             }
         }
@@ -180,7 +161,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     int i, j, v, num_threads_nodes, *parentVertex;
     pthread_mutex_t *mut_threads;
     pthread_mutex_t *mut_nodes;
-    pthread_mutex_t *open_set_empty_lk;
     double *hvalues, *gvalues, *costToCome;
     double tot_cost;
     int *open_set_empty;
@@ -219,7 +199,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     mut_threads =
         (pthread_mutex_t *)malloc(num_threads * sizeof(pthread_mutex_t));
     mut_nodes = (pthread_mutex_t *)malloc(V * sizeof(pthread_mutex_t));
-    open_set_empty_lk = (pthread_mutex_t *)malloc(num_threads* sizeof(pthread_mutex_t));
     parentVertex = (int *)malloc(V * sizeof(int));
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
@@ -231,7 +210,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         return NULL;
     }
 #endif
-    if ((parentVertex == NULL) || (mut_threads == NULL) || (open_set_empty_lk == NULL) || (hvalues == NULL) ||
+    if ((parentVertex == NULL) || (mut_threads == NULL) || (hvalues == NULL) ||
         (gvalues == NULL) || (costToCome == NULL) || (threads == NULL) ||
         (args == NULL) || (open_set_empty == NULL))
         return;
@@ -244,7 +223,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         pthread_mutex_init(&mut_nodes[v], NULL);
     }
 
-    pthread_mutex_init(open_set_empty_lk, NULL);
     for (i = 0; i < num_threads; i++) {
         pthread_mutex_init(&mut_threads[i], NULL);
         args[i].index = i;
@@ -263,7 +241,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         args[i].open_set_empty = open_set_empty;
         args[i].t_fvalues = t_fvalues;
         args[i].mut_nodes = mut_nodes;
-        args[i].open_set_empty_lk = open_set_empty_lk;
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
