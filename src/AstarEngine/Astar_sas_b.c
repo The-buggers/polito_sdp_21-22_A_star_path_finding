@@ -152,12 +152,12 @@ static void *hda(void *arg) {
             sem_wait(&bar->sem2);
 
             // If all the threads had the message queue empty terminate
-            // pthread_mutex_lock(&open_set_empty_lk);
+            pthread_mutex_lock(open_set_empty_lk);
             int count = 0;
             for (i = 0; i < args->num_threads; i++) {
                 count += open_set_empty[i];
             }
-            // pthread_mutex_unlock(&open_set_empty_lk);
+            pthread_mutex_unlock(open_set_empty_lk);
             if (count == args->num_threads) {
 #if DEBUG_ASTAR
                 printf(
