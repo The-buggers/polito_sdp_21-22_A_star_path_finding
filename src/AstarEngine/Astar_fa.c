@@ -107,8 +107,6 @@ static void *ASTARshortest_path_parallel(void *arg){
                 fvalues[b] = f_b;
                 if (PQsearch(open_list, b) == -1) {
                     PQinsert(open_list, fvalues, b);
-                } else {
-                    PQchange(open_list, fvalues, b);
                 }
             }
         }
