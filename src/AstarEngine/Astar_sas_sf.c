@@ -24,6 +24,10 @@ struct arg_t {
     double *hvalues;
     double *gvalues;
     double *cost;
+    char heuristic_type;
+#if COLLECT_STAT
+    int *expanded_nodes;
+#endif
 };
 
 int stop_flag = 0;
@@ -74,6 +78,9 @@ static void *hda(void *arg) {
         f_extracted_node =
             args->fvalues[a = PQextractMin(args->open_lists[args->index],
                                            args->fvalues)];
+#if COLLECT_STAT
+        args->expanded_nodes[a]++;
+#endif
         pthread_mutex_unlock(&(args->mut[args->index]));
 #if DEBUG_ASTAR_SAS
         printf("T %d extracts node %d\n", args->index, a);
@@ -117,10 +124,10 @@ static void *hda(void *arg) {
         }
     }
 }
-
-void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
-    printf("A star algorithm (SAS version) on graph from %d to %d\n", source,
-           dest);
+void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
+                               char heuristic_type, int num_threads) {
+    printf("## SAS-SF A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
+           source, dest);
     int V = GRAPHget_num_nodes(G);
     int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0, found = 0;
     pthread_cond_t *cond;
@@ -151,6 +158,12 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
     cost = (double *)malloc(V * sizeof(double));
+#if COLLECT_STAT
+    int *expanded_nodes = (int *)calloc(V, sizeof(int));
+    if (expanded_nodes == NULL) {
+        return NULL;
+    }
+#endif
     if ((fvalues == NULL) || (previous == NULL) || (cond == NULL) ||
         (mut == NULL) || (hvalues == NULL) || (wait_flags == NULL) ||
         (gvalues == NULL) || (cost == NULL) || (threads == NULL) ||
@@ -191,6 +204,10 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
         args[i].hvalues = hvalues;
         args[i].gvalues = gvalues;
         args[i].cost = cost;
+        args[i].heuristic_type = heuristic_type;
+#if COLLECT_STAT
+        args[i].expanded_nodes = expanded_nodes;
+#endif
         pthread_create(&threads[i], NULL, hda, (void *)&args[i]);
     }
     for (i = 0; i < num_threads; i++) {
@@ -207,7 +224,22 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest, int num_threads) {
         printf("Path not found\n");
         printf("+-----------------------------------+\n\n");
     }
-
+#if COLLECT_STAT
+    int n = 0;
+    int tot = 0;
+    FILE *fp = fopen("./stats/stat_astar_sas_sf.txt", "w+");
+    for (int v = 0; v < V; v++) {
+        if (expanded_nodes[v] != 0) {
+            n++;
+            tot += expanded_nodes[v];
+            fprintf(fp, "%d\n", v);
+        }
+    }
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n,
+           V, tot);
+    fclose(fp);
+    free(expanded_nodes);
+#endif
     free(threads);
     free(args);
     free(cond);

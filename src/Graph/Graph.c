@@ -232,7 +232,7 @@ Graph GRAPHload_sequential(char *filepath) {
 
 // Thread argument data structure
 struct thread_arg_s {
-    char filepath[50];
+    char filepath[150];
     int num_threads;
     int num_partitions;
     ssize_t filesize;
@@ -295,21 +295,12 @@ static void *thread_read(void *arg) {
                  : (regionsize + start_offset);
 
     if (index >= targ->num_partitions) {
-#if DEBUGPARALLELREAD
-        printf("THREAD %d %c NO READ, EXIT\n", index, linetype);
-#endif
         close(fd);
         pthread_exit(NULL);
     }
 
     // Read
     do {
-#if DEBUGPARALLELREAD
-        printf(
-            "\n[T %c] %d reads: offset start: %ld, offset end: %ld, size: "
-            "%ld\n",
-            linetype, index, rb.start, rb.end, rb.size);
-#endif
         // Move the cursor on offset_start
         lseek(fd, rb.start, SEEK_SET);
 
@@ -317,10 +308,6 @@ static void *thread_read(void *arg) {
         do {
             if (linetype == 'n') {
                 read(fd, &nl, linesize);
-#if DEBUGPARALLELREAD
-                printf("[T NODE %d] Node: %d - [%.lf; %.lf] - Cur: %ld\n",
-                       index, nl.index, nl.x, nl.y, rb.cur);
-#endif
                 p = POSITIONinit(nl.x, nl.y);
                 pthread_mutex_lock(m_nodes);
                 STinsert(G->tab, p, nl.index);
@@ -329,10 +316,6 @@ static void *thread_read(void *arg) {
 
             } else if (linetype == 'e') {
                 read(fd, &el, linesize);
-#if DEBUGPARALLELREAD
-                printf("[T EDGE %d] Edge: %d --> %d - wt = %lf\n", index,
-                       el.id1, el.id2, el.wt);
-#endif
                 pthread_mutex_lock(m_edges);
                 GRAPHinsertE(G, el.id1, el.id2, el.wt);
                 pthread_mutex_unlock(m_edges);
@@ -699,30 +682,3 @@ Graph GRAPHload_parallel1(char *filepath, int num_threads) {
     return G;
 }
 
-static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
-                               double *tot_cost) {
-    if (parentVertex[j] == -1) {
-        return;
-    } else {
-        reconstruct_path_r(parentVertex, parentVertex[j], costToCome, tot_cost);
-        if (parentVertex[parentVertex[j]] == -1) {
-            printf("%d ", parentVertex[j]);
-            *tot_cost = *tot_cost + costToCome[parentVertex[j]];
-        }
-        printf("%d ", j);
-        *tot_cost = *tot_cost + costToCome[j];
-    }
-}
-
-void reconstruct_path(int *parentVertex, int source, int dest,
-                      double *costToCome) {
-    int i;
-    double tot_cost = 0;
-    printf("+-----------------------------------+");
-    printf("Path from %d to %d: [ ", source, dest);
-    reconstruct_path_r(parentVertex, dest, costToCome, &tot_cost);
-    printf("]");
-
-    printf("\nCost: %.2lf\n", tot_cost);
-    printf("+-----------------------------------+\n\n");
-}

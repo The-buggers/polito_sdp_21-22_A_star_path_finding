@@ -34,6 +34,4 @@ Graph GRAPHload_parallel3(char *filepath, int num_partitions_nodes,
                           int num_threads_edges);
 Graph GRAPHload_parallel2(char *filepath, int num_threads);
 Graph GRAPHload_parallel1(char *filepath, int num_threads);
-// Path reconstruction - common to A* and Dijkstra
-void reconstruct_path(int *parentVertex, int source, int dest, double *costToCome); 
 #endif

@@ -10,6 +10,9 @@ struct position {
 double POSITIONcompute_euclidean_distance(Position p1, Position p2) {
     return sqrt(pow(p1->x - p2->x, 2) + pow(p1->y - p2->y, 2));
 }
+double POSITIONcompute_manhattan_distance(Position p1, Position p2){
+    return abs(p1->x - p2->x) + abs(p1->y - p2->y);
+}
 int POSITIONcmp(Position p1, Position p2) {
     return (p1->x == p2->x && p1->y == p2->y);
 }
