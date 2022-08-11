@@ -32,7 +32,7 @@ struct arg_t {
     double **t_fvalues;
     pthread_mutex_t *mut_nodes;
 #if COLLECT_STAT
-    int * expanded_nodes;
+    int *expanded_nodes;
 #endif
 };
 static void *hda(void *arg);
@@ -54,8 +54,8 @@ static void *hda(void *arg) {
     // g(source) + h(source) = h(source)
     if (hash_function(args->source, args->num_threads) == args->index) {
         // Modify gvalues[source], t_fvalues[index][source], open_list[index]
-        pthread_mutex_lock(&(args->mut_nodes[args->source])); // lock_n(source)
-        pthread_mutex_lock(&(args->mut_threads[args->index])); // lock_t(index)
+        pthread_mutex_lock(&(args->mut_nodes[args->source]));  // lock_n(source)
+        pthread_mutex_lock(&(args->mut_threads[args->index]));  // lock_t(index)
         args->gvalues[args->source] = 0;
         args->t_fvalues[args->index][args->source] =
             compute_f(args->hvalues[args->source], 0);
@@ -64,8 +64,8 @@ static void *hda(void *arg) {
         pthread_mutex_unlock(&(args->mut_nodes[args->source]));
         pthread_mutex_unlock(&(args->mut_threads[args->index]));
     }
-    
-    // Start HDA*    
+
+    // Start HDA*
     while (1) {
         while (!PQempty(args->open_lists[args->index])) {
             // POP the node with min f(n)
@@ -125,14 +125,14 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&bar->mutex);
             sem_wait(&bar->sem1);
             // Here if: all threads hit the barrier
-            
+
             // Now check if all the open set is still empty or not
             if (PQempty(args->open_lists[args->index])) {
                 open_set_empty[args->index] = 1;
             } else {
                 open_set_empty[args->index] = 0;
             }
-            
+
             pthread_mutex_lock(&bar->mutex);
             bar->count--;
             if (bar->count == 0) {
@@ -156,7 +156,8 @@ static void *hda(void *arg) {
 }
 void ASTARshortest_path_sas_b(Graph G, int source, int dest,
                               char heuristic_type, int num_threads) {
-    printf("## SAS-B A* [heuristic: %c] from %d to %d ##\n", heuristic_type, source, dest);
+    printf("## SAS-B A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
+           source, dest);
     int V = GRAPHget_num_nodes(G);
     int i, j, v, num_threads_nodes, *parentVertex;
     pthread_mutex_t *mut_threads;
@@ -205,8 +206,8 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     costToCome = (double *)malloc(V * sizeof(double));
     open_set_empty = (int *)malloc(num_threads * sizeof(int));
 #if COLLECT_STAT
-    int * expanded_nodes = (int *)calloc(V, sizeof(int));
-    if(expanded_nodes == NULL){
+    int *expanded_nodes = (int *)calloc(V, sizeof(int));
+    if (expanded_nodes == NULL) {
         return NULL;
     }
 #endif
@@ -265,7 +266,8 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
             fprintf(fp, "%d\n", v);
         }
     }
-    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n, V, tot);
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n,
+           V, tot);
     fclose(fp);
     free(expanded_nodes);
 #endif
