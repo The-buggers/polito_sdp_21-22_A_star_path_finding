@@ -16,6 +16,7 @@ struct arg_t {
     Position pos_dest;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
+    pthread_barrier_t *barr;
     int *wait_flags;
     int source;
     int dest;
@@ -31,7 +32,6 @@ struct arg_t {
 #endif
 };
 
-pthread_barrier_t barr;
 static void *hda(void *arg);
 
 static void *hda(void *arg) {
@@ -48,7 +48,7 @@ static void *hda(void *arg) {
     printf("Node %d belogs to T %d\n", v, hash_function(v, args->num_threads));
 #endif
 
-    pthread_barrier_wait(&barr);
+    pthread_barrier_wait(args->barr);
 
     // START
     while (1)  // while OPEN list not empty
@@ -136,6 +136,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
+    pthread_barrier_t barr;
     double *fvalues, *hvalues, *gvalues, *cost,
         tot_cost = 0;  // f(n) for each node n
     pthread_t *threads;
@@ -197,6 +198,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
 
     for (i = 0; i < num_threads; i++) {
         args[i].stop_flag = &stop_flag;
+        args[i].barr = &barr;
         args[i].index = i;
         args[i].num_threads = num_threads;
         args[i].open_lists = open_lists;
