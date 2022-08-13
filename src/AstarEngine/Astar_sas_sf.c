@@ -19,6 +19,7 @@ struct arg_t {
     int *wait_flags;
     int source;
     int dest;
+    int *stop_flag;
     int *previous;
     double *fvalues;
     double *hvalues;
@@ -30,7 +31,7 @@ struct arg_t {
 #endif
 };
 
-int stop_flag = 0;
+pthread_barrier_t barr;
 static void *hda(void *arg);
 
 static void *hda(void *arg) {
@@ -47,6 +48,8 @@ static void *hda(void *arg) {
     printf("Node %d belogs to T %d\n", v, hash_function(v, args->num_threads));
 #endif
 
+    pthread_barrier_wait(&barr);
+
     // START
     while (1)  // while OPEN list not empty
     {
@@ -54,19 +57,19 @@ static void *hda(void *arg) {
         pthread_mutex_lock(&(args->mut[args->index]));
         while (PQempty(args->open_lists[args->index])) {
             args->wait_flags[args->index] = 1;
-            stop_flag++;
+            *(args->stop_flag) += 1;
 #if DEBUG_ASTAR_SAS
             printf("T %d signal end\n", args->index);
 #endif
-            if (stop_flag == args->num_threads) {
+            if (*(args->stop_flag) == args->num_threads) {
+                pthread_mutex_unlock(&(args->mut[args->index]));
                 for (i = 0; i < args->num_threads; i++)
                     pthread_cond_signal(&(args->cond[i]));
-                pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             }
             pthread_cond_wait(&(args->cond[args->index]),
                               &(args->mut[args->index]));
-            if (stop_flag == args->num_threads) {
+            if (*(args->stop_flag) == args->num_threads) {
                 pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             };
@@ -117,19 +120,20 @@ static void *hda(void *arg) {
 #endif
                 pthread_cond_signal(&(args->cond[owner_b]));
 
-                if (args->wait_flags[owner_b] == 1) stop_flag--;
+                if (args->wait_flags[owner_b] == 1) *(args->stop_flag) -= 1;
                 args->wait_flags[owner_b] = 0;
             }
             pthread_mutex_unlock(&(args->mut[owner_b]));
         }
     }
 }
+
 void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
                                char heuristic_type, int num_threads) {
     printf("## SAS-SF A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
            source, dest);
     int V = GRAPHget_num_nodes(G);
-    int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0, found = 0;
+    int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
     double *fvalues, *hvalues, *gvalues, *cost,
@@ -183,10 +187,16 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     gvalues[source] = 0;
     PQinsert(open_lists[hash_function(source, num_threads)], fvalues, source);
 
+    pthread_barrier_init(&barr, NULL, num_threads);
+
     for (i = 0; i < num_threads; i++) {
         wait_flags[i] = 0;
         pthread_cond_init(&cond[i], NULL);
         pthread_mutex_init(&mut[i], NULL);
+    }
+
+    for (i = 0; i < num_threads; i++) {
+        args[i].stop_flag = &stop_flag;
         args[i].index = i;
         args[i].num_threads = num_threads;
         args[i].open_lists = open_lists;
@@ -217,8 +227,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         free(open_lists[i]);
     }
 
-    if (args->gvalues[args->dest] < maxWT) {
-        reconstruct_path(args->previous, args->source, args->dest, args->cost);
+    if (gvalues[dest] < maxWT) {
+        reconstruct_path(previous, source, dest, cost);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");
