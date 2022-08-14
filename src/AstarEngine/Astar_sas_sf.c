@@ -49,7 +49,7 @@ static void *hda(void *arg) {
     printf("Node %d belogs to T %d\n", v, hash_function(v, args->num_threads));
 #endif
 
-    pthread_barrier_wait(args->barr);
+    // pthread_barrier_wait(args->barr);
 
     // START
     while (1)  // while OPEN list not empty
