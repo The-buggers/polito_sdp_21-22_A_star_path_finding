@@ -34,6 +34,8 @@ struct arg_t {
 
 static void *hda(void *arg);
 
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+int stop = 0;
 static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, owner_a, owner_b;
@@ -57,19 +59,24 @@ static void *hda(void *arg) {
         pthread_mutex_lock(&(args->mut[args->index]));
         while (PQempty(args->open_lists[args->index])) {
             args->wait_flags[args->index] = 1;
+
+            pthread_mutex_lock(&m);
             *(args->stop_flag) += 1;
+            if (*(args->stop_flag) == args->num_threads) stop = 1;
+            pthread_mutex_unlock(&m);
+
 #if DEBUG_ASTAR_SAS
             printf("T %d signal end\n", args->index);
 #endif
-            if (*(args->stop_flag) == args->num_threads) {
-                pthread_mutex_unlock(&(args->mut[args->index]));
+            if (stop) {
                 for (i = 0; i < args->num_threads; i++)
                     pthread_cond_signal(&(args->cond[i]));
+                pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             }
             pthread_cond_wait(&(args->cond[args->index]),
                               &(args->mut[args->index]));
-            if (*(args->stop_flag) == args->num_threads) {
+            if (stop) {
                 pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             };
@@ -120,7 +127,11 @@ static void *hda(void *arg) {
 #endif
                 pthread_cond_signal(&(args->cond[owner_b]));
 
-                if (args->wait_flags[owner_b] == 1) *(args->stop_flag) -= 1;
+                if (args->wait_flags[owner_b] == 1) {
+                    pthread_mutex_lock(&m);
+                    *(args->stop_flag) -= 1;
+                    pthread_mutex_unlock(&m);
+                }
                 args->wait_flags[owner_b] = 0;
             }
             pthread_mutex_unlock(&(args->mut[owner_b]));
