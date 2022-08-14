@@ -16,6 +16,7 @@ struct arg_t {
     Position pos_dest;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
+    pthread_mutex_t *m;
     pthread_barrier_t *barr;
     int *wait_flags;
     int source;
@@ -34,8 +35,6 @@ struct arg_t {
 
 static void *hda(void *arg);
 
-pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
-int stop = 0;
 static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, owner_a, owner_b;
@@ -60,15 +59,14 @@ static void *hda(void *arg) {
         while (PQempty(args->open_lists[args->index])) {
             args->wait_flags[args->index] = 1;
 
-            pthread_mutex_lock(&m);
+            pthread_mutex_lock(args->m);
             *(args->stop_flag) += 1;
-            if (*(args->stop_flag) == args->num_threads) stop = 1;
-            pthread_mutex_unlock(&m);
+            pthread_mutex_unlock(args->m);
 
 #if DEBUG_ASTAR_SAS
             printf("T %d signal end\n", args->index);
 #endif
-            if (stop) {
+            if (*(args->stop_flag) == args->num_threads) {
                 for (i = 0; i < args->num_threads; i++)
                     pthread_cond_signal(&(args->cond[i]));
                 pthread_mutex_unlock(&(args->mut[args->index]));
@@ -76,7 +74,8 @@ static void *hda(void *arg) {
             }
             pthread_cond_wait(&(args->cond[args->index]),
                               &(args->mut[args->index]));
-            if (stop) {
+
+            if (*(args->stop_flag) == args->num_threads) {
                 pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             };
@@ -128,9 +127,9 @@ static void *hda(void *arg) {
                 pthread_cond_signal(&(args->cond[owner_b]));
 
                 if (args->wait_flags[owner_b] == 1) {
-                    pthread_mutex_lock(&m);
+                    pthread_mutex_lock(args->m);
                     *(args->stop_flag) -= 1;
-                    pthread_mutex_unlock(&m);
+                    pthread_mutex_unlock(args->m);
                 }
                 args->wait_flags[owner_b] = 0;
             }
@@ -146,7 +145,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     int V = GRAPHget_num_nodes(G);
     int i, num_threads_nodes, *previous, *wait_flags, stop_flag = 0;
     pthread_cond_t *cond;
-    pthread_mutex_t *mut;
+    pthread_mutex_t *mut, m;
     pthread_barrier_t barr;
     double *fvalues, *hvalues, *gvalues, *cost,
         tot_cost = 0;  // f(n) for each node n
@@ -206,6 +205,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         pthread_cond_init(&cond[i], NULL);
         pthread_mutex_init(&mut[i], NULL);
     }
+    pthread_mutex_init(&m, NULL);
 
     for (i = 0; i < num_threads; i++) {
         args[i].stop_flag = &stop_flag;
@@ -215,6 +215,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         args[i].open_lists = open_lists;
         args[i].cond = cond;
         args[i].mut = mut;
+        args[i].m = &m;
         args[i].wait_flags = wait_flags;
         args[i].V = V;
         args[i].G = G;
