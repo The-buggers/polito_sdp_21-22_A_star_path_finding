@@ -10,8 +10,9 @@
 \usepackage{preprint}
 
 %% Math packages
-\usepackage{amsmath, amsthm, amssymb, amsfonts}
-
+\usepackage{amsmath, amsthm, amssymb, amsfonts, algorithm2e, algpseudocode, graphicx, caption, subcaption}
+\RestyleAlgo{ruled}
+\graphicspath{ {./Pictures/} }
 %% Bibliography options
 \usepackage[numbers,square]{natbib}
 \bibliographystyle{unsrtnat}
@@ -72,7 +73,7 @@
 \newcommand{\orcidauthorD}{0000-0000-0000-0004}
 
 %%%%%%%%%%%%%%%%   Title   %%%%%%%%%%%%%%%%
-\title{A preprint template for LaTeX users}
+\title{Parallel A* project}
 
 % Add watermark with submission status
 \usepackage{xwatermark}
@@ -89,30 +90,6 @@
 \author{Lorenzo Ippolito, Mattia Rosso, Fabio Mirto}
 
 
-% Option 2 for author list
-%\author{
-%  David S.~Hippocampus\thanks{Use footnote for providing further
-%    information about author (webpage, alternative
-%    address)---\emph{not} for acknowledging funding agencies.} \\
-%  Department of Computer Science\\
-%  Cranberry-Lemon University\\
-%  Pittsburgh, PA 15213 \\
-%  \texttt{hippo@cs.cranberry-lemon.edu} \\
-%  %% examples of more authors
-%   \And
-% Elias D.~Striatum \\
-%  Department of Electrical Engineering\\
-%  Mount-Sheikh University\\
-%  Santa Narimana, Levand \\
-%  \texttt{stariate@ee.mount-sheikh.edu} \\
-%  \AND
-%  Coauthor \\
-%  Affiliation \\
-%  Address \\
-%  \texttt{email} \\
-%  % etc.
-%}
-
 %%%%%%%%%%%%%%    Front matter    %%%%%%%%%%%%%%
 \begin{document}
 
@@ -122,7 +99,7 @@
 \maketitle
 
 \begin{abstract}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis. Curabitur dictum gravida mauris. Nam arcu libero, nonummy eget, consectetuer id, vulputate a, magna. Donec vehicula augue eu neque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris ut leo. Cras viverra metus rhoncus sem. Nulla et lectus vestibulum urna fringilla ultrices. Phasellus eu tellus sit amet tortor gravida placerat. Integer sapien est, iaculis in, pretium quis, viverra ac, nunc. Praesent eget sem vel leo ultrices bibendum. Aenean faucibus. Morbi dolor nulla, malesuada eu, pulvinar at, mollis ac, nulla. Curabitur auctor semper nulla. Donec varius orci eget risus. Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam. Duis eget orci sit amet orci dignissim rutrum. Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non justo. 
+  ...Here the abstract...
 \end{abstract}
 %\keywords{First keyword \and Second keyword \and More} % (optional)
 \vspace{0.35cm}
@@ -136,90 +113,108 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit, vestibu
 %%%%%%%%%%%%%%%  Main text   %%%%%%%%%%%%%%%
 % \linenumbers
 
-\section{Introduction}
-\lipsum[2]
-\lipsum[3]
 
+\section{Introduction: about the A* algorithm}
+(Explanation of the general A* problem)
 
-\section{Headings: first level}
-\label{sec:headings}
+\section{A* project application}
+(What we will apply the algorithm to)
 
-\lipsum[7] See Section \ref{sec:headings}.
+\subsection{Heuristic function}
+(Explanation + formula)
 
-\subsection{Headings: second level}
-\lipsum[5]
-\begin{equation}
-\xi _{ij}(t)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-\end{equation}
-
-\subsubsection{Headings: third level}
-\lipsum[6]
-
-\paragraph{Paragraph}
-\lipsum[7]
-
-\section{Examples of citations, figures, tables, references}
-\label{sec:others}
-\lipsum[8] \cite{kour2014real,kour2014fast} and see \cite{hadash2018estimate}.
-
-The documentation for \verb+natbib+ may be found at
-\begin{center}
-  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-Of note is the command \verb+\citet+, which produces citations
-appropriate for use in inline text.  For example,
-\begin{verbatim}
-   \citet{hasselmo} investigated\dots
-\end{verbatim}
-produces
-\begin{quote}
-  Hasselmo, et al.\ (1995) investigated\dots
-\end{quote}
-
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-
-
-\subsection{Figures}
-\lipsum[10] 
-See Figure \ref{fig:fig1}. Here is how you add footnotes. %\footnote{Sample of the first footnote.}
-\lipsum[11] 
-
-\begin{figure}[H]
+\section{Test data and benchmark}
+(Explanation, include file reading problem)
+\paragraph{Random Graph}
+(Explanation about how the random graph was generated)
+\paragraph{Benchmark}
+(General details about the benchmark used and about the paths chosed)
+\begin{figure}[ht!]
   \centering
-  \fbox{\rule[-.5cm]{4cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-  \label{fig:fig1}
+  \includegraphics[width=0.5\linewidth]{google_maps.png}
+  \caption{A subfigure}
+  \label{fig:sub2}
 \end{figure}
 
-\subsection{Tables}
-\lipsum[12]
-See awesome Table \ref{tab:table}.
+\section{Sequential A* Algorithm}
+(Explanation)
 
-\begin{table}[H]
- \caption{Sample table title}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-  \label{tab:table}
-\end{table}
+\subsection{Psedocode}
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm} 
+\caption{An algorithm with caption}\label{alg:two}
+\KwData{$n \geq 0$}
+\KwResult{$y = x^n$}
+$y \gets 1$\;
+$X \gets x$\;
+$N \gets n$\;
+\While{$N \neq 0$}{
+  \eIf{$N$ is even}{
+    $X \gets X \times X$\;
+    $N \gets \frac{N}{2}$ \Comment*[r]{This is a comment}
+  }{\If{$N$ is odd}{
+      $y \gets y \times X$\;
+      $N \gets N - 1$\;
+    }
+  }
+}
+\end{algorithm}
 
-\subsection{Lists}
-\begin{itemize}
-\item Lorem ipsum dolor sit amet
-\item consectetur adipiscing elit. 
-\item Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.
-\end{itemize}
+\subsection{C Implementation}
+(Explain the details of the input file and of the main data structures used)
+
+\subsection{Results}
+(Results of sequential reading + A* sequential on random, BAY, FLA)
+(Table with numbers)
+
+\section{A* and Dijkstra: a comparison}
+(Explanation)
+
+\subsection{Results}
+(Picture A* vs Dijkstra on BAY and FLA)
+
+\section{Parallel reading of the input file}
+(Motivation of parallel reading)
+\subsection{Parallel Read: approach 1}
+(Explanation)
+\subsection{Parallel Read: approach 2}
+(Explanation)
+\subsection{Parallel Read: approach 3}
+(Explanation)
+\subsection{Results}
+(Plots of parallel reading vs sequential reading)
+
+\section{Parallel A*: two examinated approaches}
+(Explanation)
+\subsection{First Attempt In Parallelizing A*}
+(Explanation + Pseudocode?)
+\subsection{HDA*}
+(Introduction + map with colored points)
+\subsubsection{Message Passing Model}
+(Explanation + Pseudocode?)
+\subsubsection{Shared Address Space Model}
+\paragraph{Barrier(SAS-B)}
+(Explanation + Pseudocode?)
+\paragraph{Barrier(SAS-SF)}
+(Explanation + Pseudocode?)
+\subsection{Results}
+(Plots with the comparison of all the models with sequential A* on
+random, BAY, FLA)
+
+\section{Complete Results}
+(Tables with numbers)
+
+\section{Final Considerations}
+(Comments)
+
+\section{DIMACS Benchmark}
+(More detailed explanation of the input format of the benchmarks)
+
+\section{Future Works}
+(Possible improvements)
+
+
+
 
 %%%%%%%%%%%% Supplementary Methods %%%%%%%%%%%%
 %\footnotesize
