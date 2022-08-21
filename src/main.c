@@ -7,7 +7,7 @@
 #include "./DijkstraEngine/Dijkstra.h"
 #include "./Graph/Graph.h"
 #define MAXC 11
-#define PARALLELREADTYPE 2
+#define PARALLELREADTYPE 0
 void start_timer(struct timespec* begin);
 double stop_timer(struct timespec begin);
 
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     dest = atoi(argv[3]);
     num_threads = atoi(argv[4]);
     heuristic_type = argv[5][0];
-
+    fperf = fopen("out.txt","a");
     // Start computation
     start_timer(&begin);
 #if PARALLELREADTYPE == 3
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     // ### TEST PARALLEL READ - VERSION 1 ###
     // ######################################
     printf("Parallel read type: 1\n");
-    G = GRAPHload_parallel1(argv[1], 10);
+    G = GRAPHload_parallel1(argv[1], num_threads);
 #elif PARALLELREADTYPE == 0
     // ############################
     // ### TEST SEQUENTIAL READ ###
@@ -74,14 +74,15 @@ int main(int argc, char* argv[]) {
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
 
     start_timer(&begin);
-
-    // ASTARshortest_path_sequential(G, source, dest, heuristic_type);
-    ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
-    // ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
-    // ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
-    // ASTARshortest_path_mp(G, source, dest, heuristic_type, num_threads);
-    // DIJKSTRA_shortest_path_sequential(G, source, dest);
-    printf("A* algorithm time: %.9f seconds\n", stop_timer(begin));
+    //ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+    //ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
+    ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
+    //ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
+    //ASTARshortest_path_mp(G, source, dest, heuristic_type, num_threads);
+    //DIJKSTRA_shortest_path_sequential(G, source, dest);
+    //printf("A* algorithm time: %.9f seconds\n#threads: %d\n", stop_timer(begin), num_threads);
+    fprintf(fperf, "%.9f\n", stop_timer(begin));
+    fclose(fperf);
     return 0;
 }
 

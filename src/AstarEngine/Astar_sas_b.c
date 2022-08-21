@@ -147,7 +147,6 @@ static void *hda(void *arg) {
                 count += open_set_empty[i];
             }
             if (count == args->num_threads) {
-                printf("Empty: %d\n", PQempty(args->open_lists[args->index]));
                 break;
             }
         }
