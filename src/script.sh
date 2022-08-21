@@ -3,7 +3,12 @@
 make clean
 make target
 
-for i in {1..10}
+array=(2 3 5 7 10 15 20 50 100 200 500 1000)
+
+for j in {0..11}
 do
-    ./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dBAY 321269 263446 2 h
+    for i in {1..10}
+    do
+        ./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 0 103585 ${array[$j]} h >> outFAstar.txt
+    done
 done
