@@ -161,6 +161,9 @@ we have about the cost of the path from every node (source included) to the dest
         a completly greedy-best-first search algorithm.
 \end{itemize}
 
+%% %%%%%%%%%%%%%%%%%%%%%% %%
+%% CHAPTER 2: APPLICATION %%
+%% %%%%%%%%%%%%%%%%%%%%%% %%
 \section{A* project application}
 \paragraph{Problem definition} Given a wide range of fields where the A* algorithm can be applied we have choosed the one of
 optimal path searching in geographical areas where the goal is to find the minimum distance path from a 
@@ -201,6 +204,9 @@ and $(\phi_1,\lambda_1)$ where $\phi$ is the latitude and $\lambda$ is the longi
   \\$R$ is the earth radius that we have fixed to $R=6.371km$
 \end{center}
 
+%% %%%%%%%%%%%%%%%%%%%%%% %%
+%% CHAPTER 1: INPUT GRAPH %%
+%% %%%%%%%%%%%%%%%%%%%%%% %%
 \section{Graph file input}
 \paragraph{File input format} 
 Now we start discussing the A* alogorithm implementation and to do that we need to specify which 
@@ -268,42 +274,133 @@ a reasonable long path.
   \label{testpaths}
 \end{figure}
 
+%% %%%%%%%%%%%%%%%%%%%%%%%% %%
+%% CHAPTER 1: A* SEQUENTIAL %%
+%% %%%%%%%%%%%%%%%%%%%%%%%% %%
 \section{Sequential A* Algorithm}
-(Explanation)
-
-\subsection{Psedocode}
+Sequential A* algorithm is the one we will start with to see how the algorithm works and performs.
+The first step consists of a pre-computation of:
+\begin{itemize}
+  \item The heurstic $h(n)$ for each node (by defintion the $h(dest)$ will
+        be 0) computed through the Haversine formula. We thus keep a global data
+        structure \texttt{h} to do this.
+  \item The initial values of $f(n)$ and $g(n)$ that will be set to $DOUBLE\_MAX$ for each
+        node except for the source node that will have $f(source) = h(source)$ because 
+        $g(soruce)$ is clearly $0$. We thus keep global data structures \texttt{f} and \texttt{g} to do this. 
+        $f(source) = g(source) + h(source) = 0 + h(source) = h(source)$.
+\end{itemize}
+We will also need two additional global data structures:
+\begin{itemize}
+  \item The global \textit{costToCome} table (where \texttt{costToCome[i]} contains the current
+        best cost to reach node \texttt{i}) that is initialized
+        to $DOUBLE\_MAX$.
+  \item The global \textit{parentVertex} table (where \texttt{parentVertex[i]} contains the
+        parent node of node \texttt{i} according to the current best path found to reach
+        the destination) that is initialized with $-1$.
+\end{itemize}
+The outer loop is based on the nodes extraction from a \textit{open set}, the one containing
+the nodes that have still to be explored (it is implemented as a Priory Queue where the priority
+is associated to the $f(n)$ of the nodes). At each iteration the node $a$ with minimum $f(a)$ is
+extracted from the \textit{open set} and its neighbors are expanded: the inner loop is repeated once for each neighbor $b$ of the
+extracted node $a$($b$ is neighbor of $a$ if the edge $(a, b)$ exists). A tentative score is computed
+for each node $b$ as $g(b) = g(a) + weight(a, b)$. If $g(b)$ is less than current \texttt{g[b]} these data structures
+are updated: 
+\begin{flushleft}
+  \texttt{g[b] = g[a] + weight(a, b)}\\
+  \texttt{costToCome[b] = g[b]}\\
+  \texttt{parentVertex[b] = a}\\
+  \texttt{f[b] = g[b] + h[b]}
+\end{flushleft}
+The final step of this inner loop is checking wheter the node $b$ has already been added to the 
+\textit{open set} or not. In case the \textit{open set} doesn't contain it we add it (with priority
+$f(n)$ just computed).
+Since the heuristic function we have chosen is both admissible and consistent we have the guarantee 
+that the first time a node is extracted from the \textit{open set} we have found a best path to it (this
+is why when the destination node is extracted we can terminate having found the best path). So despite
+the node may be added to the \textit{open set} more than once (when discovered as a neighbor of different nodes)
+it will be only expanded once.
+\subsection{Pseudocode}
 \SetKwComment{Comment}{/* }{ */}
-\begin{algorithm} 
-\caption{An algorithm with caption}\label{alg:two}
-\KwData{$n \geq 0$}
-\KwResult{$y = x^n$}
-$y \gets 1$\;
-$X \gets x$\;
-$N \gets n$\;
-\While{$N \neq 0$}{
-  \eIf{$N$ is even}{
-    $X \gets X \times X$\;
-    $N \gets \frac{N}{2}$ \Comment*[r]{This is a comment}
-  }{\If{$N$ is odd}{
-      $y \gets y \times X$\;
-      $N \gets N - 1$\;
+\begin{algorithm}[ht!] 
+\caption{Sequential A*}\label{alg:two}
+\KwData{Graph G(V,E), Source s, Destination d, Heurstic h}
+\KwResult{Best path from Source to Destination and relative cost}
+$g[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
+$f[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
+$h[i] \gets h(i, d) \; \forall i \in V$\;
+$costToCome[i] \gets 1 \; \forall i \in V$\;
+$parentVertex[i] \gets 1 \; \forall i \in V$\;
+$f[s] \gets h[s]$\;
+$g[s] \gets 0$\;
+$openSet := \{(s, f[s])\}$\;
+\While{$!openSet.EMPTY()$}{
+  $a \gets openSet.POP()$\;
+  \If{$a == d$}{
+    $pathFound \gets true$\;
+    reconstructPath()\;
+  }
+  %\Comment*[r]{Inner loop}
+  \ForEach{neighbor $b$ of $a$}{
+    $wt \gets weight(a, b)$\;
+    $tentativeScore \gets g[a] + wt$\;
+    \If{$tentativeScore$ is less than $g[b]$}{
+      $parentVertex[b] \gets a$\;
+      $costToCome[b] \gets wt$\;
+      $g[b] \gets tentativeScore$\;
+      $f[b] \gets g[b] + h[b]$\;
+      \If{$!openSet.CONTAINS(b)$}{
+        $openSet.PUSH((b, f[b]))$\;
+      }
     }
   }
 }
 \end{algorithm}
 
-\subsection{C Implementation}
-(Explain the details of the input file and of the main data structures used)
-
 \subsection{Results}
-(Results of sequential reading + A* sequential on random, BAY, FLA)
-(Table with numbers)
-
+We are now going to run the sequential A* algorithm.
+\begin{table}[]
+  \caption{Sequential algorithms performance}
+  \begin{tabular}{|l|l|l|l|l|l|}
+  \hline
+  \textbf{}    & \textbf{File Size} & \textbf{Reading} & \textbf{A*} & \textbf{Total} & \textbf{\begin{tabular}[c]{@{}l@{}}Reading \\ Impact\end{tabular}} \\ \hline
+  \textbf{RND} & 2876B              & 0.0011s          & 0.0862s     & 1.1714s        & 1.2872\%                                                           \\ \hline
+  \textbf{BAY} & 20.51MB            & 0.9365s          & 0.2349s     & 1.1714s        & 79.9477\%                                                          \\ \hline
+  \textbf{FLA} & 69.09MB            & 3.0728s          & 0.5893s     & 3.6621s        & 83.9075\%                                                          \\ \hline
+  \end{tabular}
+\end{table}
+We can realize that (despite for the random graph that is too small to appreciate this result) the 
+reading time has a very high impact on the overall execution time of the algorithm and in section 6
+we will investigate three different techniques for parallelizing the reading of the file. 
 \section{A* and Dijkstra: a comparison}
-(Explanation)
+As already mentioned the Dijkstra algorithm can be considered as a particular case of A* where we
+don't any prior knowledge about the distances of the nodes (heuristic $h(n) = 0 \;\forall n \in V$).
+We have also seen that the more precise is the heuristic function we provide the less nodes the algorithm
+will expand to get to the destination obtaining the best path. To investigate this point we have run
+Dijkstra algorithm on the same graph (here we only consider BAY and FLA) comparing the number of 
+expanded nodes by the two algorithms:
 
-\subsection{Results}
-(Picture A* vs Dijkstra on BAY and FLA)
+\begin{table}[ht!]
+  \caption{Expanded nodes vs total nodes for Dijkstra and A*}
+  \begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Expanded nodes} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
+  \textbf{RND}            & 15 of 101         & 13 of 101         \\ \hline
+  \textbf{BAY}            & 318725 of 321270  & 156950 of 321270  \\ \hline
+  \textbf{FLA}            & 996956 of 1070376 & 591926 of 1070376 \\ \hline
+  \end{tabular}
+\end{table}
+
+The number of expanded nodes is clearly much higher when Dijkstra algorithm is used and the picture
+\ref{astardijkstra} cleary show in \textcolor{blue}{blue} the nodes expanded by the sequntial A* algorithm
+while the \textcolor{red}{red} show the nodes expanded by the Dijkstra algorithm. In the BAY map Dijkstra
+expands $50\%$ nodes more than A* while in FLA it is less evident since Dijkstra visits $38\%$ of nodes
+more than A*.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{dijkstra_astar.png}
+  \caption{Test paths on BAY(left) and FLA(right)}
+  \label{astardijkstra}
+\end{figure}
 
 \section{Parallel reading of the input file}
 (Motivation of parallel reading)
