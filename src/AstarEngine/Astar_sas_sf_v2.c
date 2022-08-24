@@ -8,11 +8,6 @@
 #define maxWT DBL_MAX
 #define DEBUG_ASTAR 0
 
-typedef struct barrier_s {
-    sem_t sem1, sem2;
-    pthread_mutex_t mutex;
-    int count;
-} barrier_t;
 struct arg_t {
     int index;
     int num_threads;
@@ -27,7 +22,6 @@ struct arg_t {
     double *hvalues;
     double *gvalues;
     double *costToCome;
-    barrier_t *bar;
     int *open_set_empty;
     double *closed_set;
     double **t_fvalues;
@@ -44,15 +38,8 @@ static void *hda(void *arg) {
     Position p;
     double f_extracted_node, g_b, f_b, a_b_wt, tot_cost = 0;
     link t;
-    barrier_t *bar = args->bar;
     int *open_set_empty = args->open_set_empty;
 
-    // -- Notation --
-    // MY OPEN SET: open_lists[index], t_fvalues[index]
-    // t[n] OPEN SET: open_lists[n], t_fvalues[n]
-
-    // If i am the owner of the source node: set g(source) = 0, f(source) =
-    // g(source) + h(source) = h(source)
     if (hash_function(args->source, args->num_threads) == args->index) {
         // Modify gvalues[source], t_fvalues[index][source], open_list[index]
         pthread_mutex_lock(&(args->mut_nodes[args->source]));  // lock_n(source)
@@ -69,6 +56,11 @@ static void *hda(void *arg) {
     // Start HDA*
     while (1) {
         while (!PQempty(args->open_lists[args->index])) {
+            // Set flag: not empty
+            pthread_mutex_lock(&(args->mut_threads[args->index]));
+            open_set_empty[args->index] = 0;
+            pthread_mutex_unlock(&(args->mut_threads[args->index]));
+
             // POP the node with min f(n)
             pthread_mutex_lock(&(args->mut_threads[args->index]));
             f_extracted_node =
@@ -132,33 +124,13 @@ static void *hda(void *arg) {
             }
         }
 
-        // Check if open set is empty and global costToCome to dest is < maxWT
-        // -> hit the barrier
+        // Check if open set is empty and a path has already been found
         if (PQempty(args->open_lists[args->index]) &&
             args->parentVertex[args->dest] != -1) {
-            pthread_mutex_lock(&bar->mutex);
-            bar->count++;
-            if (bar->count == args->num_threads) {
-                for (i = 0; i < args->num_threads; i++) sem_post(&bar->sem1);
-            }
-            pthread_mutex_unlock(&bar->mutex);
-            sem_wait(&bar->sem1);
-            // Here if: all threads hit the barrier
-
-            // Now check if all the open set is still empty or not
-            if (PQempty(args->open_lists[args->index])) {
-                open_set_empty[args->index] = 1;
-            } else {
-                open_set_empty[args->index] = 0;
-            }
-
-            pthread_mutex_lock(&bar->mutex);
-            bar->count--;
-            if (bar->count == 0) {
-                for (i = 0; i < args->num_threads; i++) sem_post(&bar->sem2);
-            }
-            pthread_mutex_unlock(&bar->mutex);
-            sem_wait(&bar->sem2);
+            // Set flag: empty
+            pthread_mutex_lock(&(args->mut_threads[args->index]));
+            open_set_empty[args->index] = 1;
+            pthread_mutex_unlock(&(args->mut_threads[args->index]));
 
             // If all the threads have the message queue empty terminate
             int count = 0;
@@ -172,10 +144,10 @@ static void *hda(void *arg) {
     }
     pthread_exit(NULL);
 }
-void ASTARshortest_path_sas_b(Graph G, int source, int dest,
-                              char heuristic_type, int num_threads) {
-    printf("## SAS-B A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
-           source, dest);
+void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
+                               char heuristic_type, int num_threads) {
+    printf("## SAS-SF-V2 A* [heuristic: %c] from %d to %d ##\n",
+           heuristic_type, source, dest);
     int V = GRAPHget_num_nodes(G);
     int i, j, v, num_threads_nodes, *parentVertex;
     pthread_mutex_t *mut_threads;
@@ -205,13 +177,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
             t_fvalues[i][j] = maxWT;
         }
     }
-
-    // Allocate the barrier
-    barrier_t *bar = (barrier_t *)malloc(1 * sizeof(barrier_t));
-    sem_init(&bar->sem1, 0, 0);
-    sem_init(&bar->sem2, 0, 0);
-    pthread_mutex_init(&bar->mutex, NULL);
-    bar->count = 0;
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
@@ -258,7 +223,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         args[i].hvalues = hvalues;
         args[i].gvalues = gvalues;
         args[i].costToCome = costToCome;
-        args[i].bar = bar;
         args[i].open_set_empty = open_set_empty;
         args[i].t_fvalues = t_fvalues;
         args[i].mut_nodes = mut_nodes;
@@ -300,7 +264,6 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
     free(hvalues);
     free(gvalues);
     free(costToCome);
-    free(bar);
 
     return;
 }

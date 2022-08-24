@@ -27,6 +27,7 @@ struct arg_t {
     double *hvalues;
     double *gvalues;
     double *cost;
+    double *closed_set;
     char heuristic_type;
 #if COLLECT_STAT
     int *expanded_nodes;
@@ -94,6 +95,17 @@ static void *hda(void *arg) {
 #if DEBUG_ASTAR_SAS
         printf("T %d extracts node %d\n", args->index, a);
 #endif
+        // NEW: duplicate check
+        /*
+        pthread_mutex_lock(&(args->mut[args->index]));
+        if (args->closed_set[a] != -1 &&
+            args->closed_set[a] <= args->gvalues[a]) {
+            pthread_mutex_unlock(&(args->mut[args->index]));
+            continue;
+        }
+        args->closed_set[a] = args->gvalues[a];
+        pthread_mutex_unlock(&(args->mut[args->index]));
+        */
 
         // For each successor 'b' of node 'a':
         for (t = GRAPHget_list_node_head(args->G, a);
@@ -108,6 +120,16 @@ static void *hda(void *arg) {
             g_b = args->gvalues[a] + a_b_wt;
             pthread_mutex_unlock(&(args->mut[owner_a]));
             f_b = g_b + args->hvalues[b];
+
+            // NEW: duplicate check
+            /*
+            pthread_mutex_lock(&(args->mut[owner_b]));
+            if (args->closed_set[b] != -1 && args->closed_set[b] <= g_b) {
+                pthread_mutex_unlock(&(args->mut[owner_b]));
+                continue;
+            }
+            pthread_mutex_unlock(&(args->mut[owner_b]));
+            */
 
             pthread_mutex_lock(&(args->mut[owner_b]));
             if (g_b < args->gvalues[b] && f_b < args->fvalues[b]) {
@@ -147,7 +169,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     pthread_cond_t *cond;
     pthread_mutex_t *mut, m;
     pthread_barrier_t barr;
-    double *fvalues, *hvalues, *gvalues, *cost,
+    double *fvalues, *hvalues, *gvalues, *closed_set, *cost,
         tot_cost = 0;  // f(n) for each node n
     pthread_t *threads;
     struct arg_t *args;
@@ -173,6 +195,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
     cost = (double *)malloc(V * sizeof(double));
+    closed_set = (double *)malloc(V * sizeof(double));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
     if (expanded_nodes == NULL) {
@@ -192,6 +215,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
             heuristic_haversine(GRAPHget_node_position(G, i), pos_dest);
         fvalues[i] = maxWT;
         gvalues[i] = maxWT;
+        closed_set[i] = -1.0;
     }
     fvalues[source] =
         compute_f(hvalues[source], 0);  // g(n) = 0 for n == source
@@ -227,6 +251,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         args[i].fvalues = fvalues;
         args[i].hvalues = hvalues;
         args[i].gvalues = gvalues;
+        args[i].closed_set = closed_set;
         args[i].cost = cost;
         args[i].heuristic_type = heuristic_type;
 #if COLLECT_STAT
@@ -277,3 +302,4 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
 
     return;
 }
+
