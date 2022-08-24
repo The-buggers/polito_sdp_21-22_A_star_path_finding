@@ -73,6 +73,7 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&(args->mut_threads[args->index]));
 
             // NEW: duplicate check
+            /*
             pthread_mutex_lock(&(args->mut_nodes[a]));
             if (args->closed_set[a] != -1 &&
                 args->closed_set[a] <= args->gvalues[a]) {
@@ -81,6 +82,7 @@ static void *hda(void *arg) {
             }
             args->closed_set[a] = args->gvalues[a];
             pthread_mutex_unlock(&(args->mut_nodes[a]));
+            */
 
             // For each successor 'b' of node 'a':
             for (t = GRAPHget_list_node_head(args->G, a);
@@ -101,12 +103,14 @@ static void *hda(void *arg) {
                 f_b = g_b + args->hvalues[b];
 
                 // NEW: duplicate check
+                /*
                 pthread_mutex_lock(&(args->mut_nodes[b]));
                 if (args->closed_set[b] != -1 && args->closed_set[b] <= g_b) {
                     pthread_mutex_unlock(&(args->mut_nodes[b]));
                     continue;
                 }
                 pthread_mutex_unlock(&(args->mut_nodes[b]));
+                */
 
                 // Update gvalues, fvalues, parentVertex, costToCome
                 pthread_mutex_lock(&(args->mut_nodes[b]));
