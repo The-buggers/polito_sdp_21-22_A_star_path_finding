@@ -393,7 +393,7 @@ expanded nodes by the two algorithms:
 The number of expanded nodes is clearly much higher when Dijkstra algorithm is used and the picture
 \ref{astardijkstra} cleary show in \textcolor{blue}{blue} the nodes expanded by the sequntial A* algorithm
 while the \textcolor{red}{red} show the nodes expanded by the Dijkstra algorithm. In the BAY map Dijkstra
-expands $50\%$ nodes more than A* while in FLA it is less evident since Dijkstra visits $38\%$ of nodes
+expands $50\%$ nodes more than A* while in FLA it is less evident since Dijkstra expands $38\%$ of nodes
 more than A*.
 \begin{figure}[ht!]
   \centering
@@ -403,15 +403,94 @@ more than A*.
 \end{figure}
 
 \section{Parallel reading of the input file}
-(Motivation of parallel reading)
+As we have seen in section 5 the time spent by the algorithm to read the input graph
+(the input binary file) used by the A* algorithm is very high w.r.t. the total
+amount of time spent. This is the reason why we have decided to inspect three techniques of
+parallelization of the reading phase to speed it up. The input file, as already discussed,
+is divided in two different sections (nodes and edges) so, in general, we need to take care of which
+section a given thread is working on because different data structures of the graph need to
+be loaded in the two sections (the symbol table when reading a \textit{node line} and the linked list when
+reading a \textit{edge line}).
 \subsection{Parallel Read: approach 1}
-(Explanation)
+In this first approach we have implemeted a solution on which:
+\begin{itemize}
+  \item $N$ threads runs freely to read the entire file
+  \item Only one file descriptor is shared among all the threads (this means that
+        when thread $t_i$ performs a \texttt{read} opearation all the other threads 
+        are waiting for it to finish)
+\end{itemize}
+This is the most trivial solution that can be adopted and the drawback is the really high
+resource contention that exists among all the threads (when N threads whant to access line
+$k$ of the file only $1$ can do it and others $N-1$ wait). The advantage is that the file
+will be read \textit{sequentially} but in a multithread fashion (line $k$ of the file
+is always read before line $k+1$) and this results in a easier implementation.
+\paragraph{Results on BAY}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{par_read_1_time.png}
+  \caption{Performance of approach 1 for different number of threads}
+  \label{parread1time}
+\end{figure}
 \subsection{Parallel Read: approach 2}
 (Explanation)
+\paragraph{Results on BAY}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{par_read_2_time.png}
+  \caption{Performance of approach 2 for different number of threads}
+  \label{parread2time}
+\end{figure}
 \subsection{Parallel Read: approach 3}
-(Explanation)
-\subsection{Results}
-(Plots of parallel reading vs sequential reading)
+This is the approach that generalize the first one by:
+\begin{itemize}
+  \item Letting threads differentiate among \textit{nodes section} and 
+        \textit{edges section} to be able to read them togheter.
+  \item Using a $(NP, NT)$ mechanism to read each section of the input file (where
+        $NP$ is the number of partitions the section is divided in and $NT$ is the number
+        of threads that have to read all the partitions).
+\end{itemize}
+\paragraph{The $(NP, NT)$ mechanism}
+We need to provide as input:
+\begin{itemize}
+  \item $NP-nodes$: the number of partitions of the \textit{nodes section}
+  \item $NP-edges$: the number of partitions of the \textit{edges section}
+  \item $NT-nodes$: the number of threads that have to read the \textit{nodes section}
+  \item $NT-edges$: the number of threads that have to read the \textit{edges section}
+\end{itemize}
+If the number of threads is equal to the number of partitions we have a simpler mechanism in
+which each thread will read only one partition and then terminates.
+As we can see in the example in figure \ref{parread3} threads will iterate over the partitions
+of the sections that have been statically allocated to them. This means that there is not a real
+contention of the reading phase since the partions are not overlapping and
+each partition will be read by one and only one thread (actually, the
+loading of the graph data structures after reading each line must be done in mutual exclusion so we will need a lock
+both for the \textit{nodes-threads} and for the \textit{edges-threads}).
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{par_read_3.png}
+  \caption{Example of parallel read - approach 3}
+  \label{parread3}
+\end{figure}
+Each thread terminates when it has no more partitions to read.\\
+\paragraph{Results on BAY}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{par_read_3_time.png}
+  \caption{Performance of approach 3 for different number of threads and partitions}
+  \label{parread3time}
+\end{figure}
+We can realize from figure \ref{parread3time} that the number of partitions (setted equal
+both for \textit{nodes section} and \textit{edges section}) has not a high impact.
+What has an interesting impact is the number of threads. With a small number we are able
+to reduce the reading time w.r.t the sequential approach while when increasing the 
+number of threads results in too much overhead with consequent performance degradation.
+\subsection{Final results}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{par_read_all_time.png}
+  \caption{RA(Read Approach) 1,2,3 compared with sequential reading}
+  \label{parreadalltime}
+\end{figure}
 
 \section{Parallel A*: two examinated approaches}
 (Explanation)
