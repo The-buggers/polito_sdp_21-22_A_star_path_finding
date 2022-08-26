@@ -1,11 +1,11 @@
 /** @file Graph.c
  *  @brief Graph functions and utilities
- *  
+ *
  *  This file contains the definition of the I class ADT Graph and
  *  the related data structures to work with it. Among these functions
  *  the ones used for sequential and parallel reading of the input file
  *  are present
- * 
+ *
  *  @author Mattia Rosso
  *  @author Lorenzo Ippolito
  *  @author Fabio  Mirto
@@ -30,7 +30,7 @@
 #define MAXC 10
 /**
  * @brief Node(vertex) of the graph
- * 
+ *
  */
 struct node {
     int v;
@@ -39,7 +39,7 @@ struct node {
 };
 /**
  * @brief Graph - I class ADT
- * 
+ *
  */
 struct graph {
     int V;
@@ -49,8 +49,8 @@ struct graph {
     link z;
 };
 /**
- * @brief Data type compatible with the binary format of a NODE line 
- * 
+ * @brief Data type compatible with the binary format of a NODE line
+ *
  */
 struct node_line_s {
     int index;
@@ -58,8 +58,8 @@ struct node_line_s {
     double y;
 };
 /**
- * @brief Data type compatible with the binary format of a EDGE line 
- * 
+ * @brief Data type compatible with the binary format of a EDGE line
+ *
  */
 struct edge_line_s {
     int id1;
@@ -77,6 +77,7 @@ static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
 
 // Static function prototypes for parallel read
 static void parallelIo(void *arg);          // version 2
+static void parallelIo_rev(void *arg);      // version 4
 static void *thread_read(void *arg);        // version 3
 static void *GRAPHloadParallel(void *arg);  // version 1
 // #####################################################
@@ -255,9 +256,9 @@ struct read_block_s {
 };
 /**
  * @brief Thread function for reading file
- * 
+ *
  * @param arg thread argument
- * @return void* 
+ * @return void*
  */
 static void *thread_read(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
@@ -564,6 +565,163 @@ Graph GRAPHload_parallel2(char *filepath, int num_threads) {
 }
 
 // #################################
+// ### PARALLEL READ - VERSION 4 ###
+// #################################
+
+static void parallelIo_rev(void *arg) {
+    Position p;
+    struct node_line_s *node_line_d;
+    struct edge_line_s *edge_line_d;
+    // Read the nodes name(index 0-V) and the coordinates of each node
+    struct arg_t *args = (struct arg_t *)arg;
+
+    node_line_d = args->src + sizeof(int);
+    node_line_d += args->start1;
+
+    for (int i = args->start1; i < args->stop1; i++, node_line_d++) {
+        p = POSITIONinit(node_line_d->x, node_line_d->y);
+        pthread_spin_lock(args->node);  // lock
+        STinsert(args->G->tab, p, node_line_d->index);
+        pthread_spin_unlock(args->node);  // unlock
+        POSITIONfree(p);
+    }
+
+    edge_line_d =
+        args->src + sizeof(int) + (args->V * sizeof(struct node_line_s));
+    edge_line_d += args->start2;
+
+    for (int i = args->start2; i < args->stop2; i++, edge_line_d++) {
+        if (edge_line_d->id1 >= 0 && edge_line_d->id2 >= 0) {
+            pthread_spin_lock(args->edge);  // lock
+            GRAPHinsertE(args->G, edge_line_d->id2, edge_line_d->id1,
+                         edge_line_d->wt);
+            pthread_spin_unlock(args->edge);  // unlock
+        }
+    }
+    pthread_exit(NULL);
+}
+void GRAPHload_parallel4(char *filepath, int num_threads, Graph *G, Graph *R) {
+    int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fin;
+    float E;
+    char label1[MAXC], label2[MAXC];
+    pthread_t *threads;
+    struct arg_t *args;
+    struct stat sb;
+    void *src;
+    pthread_spinlock_t nodeG, nodeR;
+    pthread_spinlock_t edgeG, edgeR;
+
+    double wt;
+    Position p;
+
+    // Open file
+    fin = open(filepath, O_RDONLY);
+
+    // Read the first line: number of nodes
+    if (read(fin, &V, sizeof(int)) != sizeof(int)) return NULL;
+
+    // Initialize the Graph ADT
+    *G = GRAPHinit(V);
+    if (*G == NULL) return NULL;
+    // Initialize the reverse Graph ADT
+    *R = GRAPHinit(V);
+    if (*R == NULL) return NULL;
+
+    // Memory Mapping
+    if (fstat(fin, &sb) < 0) return NULL;
+    copysz = sb.st_size;
+    E = (float)(copysz - sizeof(int) - (V * sizeof(struct node_line_s))) /
+        (sizeof(struct edge_line_s));
+    src = mmap(0, copysz, PROT_READ, MAP_SHARED, fin, 0);
+    if (src == MAP_FAILED) return NULL;
+
+    // Initialize threads
+    T = num_threads * 2;
+    nodexT = (int)ceil(((float)V) / num_threads);
+    edgexT = (int)ceil(E / num_threads);
+    threads = (pthread_t *)malloc(T * sizeof(pthread_t));
+    if (threads == NULL) return NULL;
+    args = (struct arg_t *)malloc(T * sizeof(struct arg_t));
+    if (args == NULL) return NULL;
+
+    // Execution of thread
+    pthread_spin_init(&nodeG, 0);
+    pthread_spin_init(&edgeG, 0);
+
+    for (i = 0, j = 0, k = 0, v = V, e = E; i < T / 2; i++) {
+        args[i].src = src;
+        args[i].V = V;
+        args[i].G = *G;
+        args[i].node = &nodeG;
+        args[i].edge = &edgeG;
+        args[i].start1 = j;
+        if (v >= nodexT) {
+            j += nodexT;
+            v -= nodexT;
+        } else {
+            j += v;
+            v = 0;
+        }
+        args[i].stop1 = j;
+        args[i].start2 = k;
+        if (e >= edgexT) {
+            k += edgexT;
+            e -= edgexT;
+        } else {
+            k += e;
+            e = 0;
+        }
+        args[i].stop2 = k;
+        pthread_create(&threads[i], NULL, parallelIo, (void *)&args[i]);
+    }
+
+    // Execution of reverse thread
+    pthread_spin_init(&nodeR, 0);
+    pthread_spin_init(&edgeR, 0);
+
+    for (i = T / 2, j = 0, k = 0, v = V, e = E; i < T; i++) {
+        args[i].src = src;
+        args[i].V = V;
+        args[i].G = *R;
+        args[i].node = &nodeR;
+        args[i].edge = &edgeR;
+        args[i].start1 = j;
+        if (v >= nodexT) {
+            j += nodexT;
+            v -= nodexT;
+        } else {
+            j += v;
+            v = 0;
+        }
+        args[i].stop1 = j;
+        args[i].start2 = k;
+        if (e >= edgexT) {
+            k += edgexT;
+            e -= edgexT;
+        } else {
+            k += e;
+            e = 0;
+        }
+        args[i].stop2 = k;
+        pthread_create(&threads[i], NULL, parallelIo_rev, (void *)&args[i]);
+    }
+
+    for (i = 0; i < T; i++) pthread_join(threads[i], NULL);
+
+    // Close file
+    close(fin);
+
+    // Free space
+    pthread_spin_destroy(&nodeG);
+    pthread_spin_destroy(&edgeG);
+    pthread_spin_destroy(&nodeR);
+    pthread_spin_destroy(&edgeR);
+    munmap(src, copysz);
+    free(args);
+    free(threads);
+}
+
+// #################################
 // ### PARALLEL READ - VERSION 1 ###
 // #################################
 
@@ -681,4 +839,3 @@ Graph GRAPHload_parallel1(char *filepath, int num_threads) {
 
     return G;
 }
-
