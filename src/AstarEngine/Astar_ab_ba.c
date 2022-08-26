@@ -1,5 +1,4 @@
 #include <float.h>
-#include <math.h>
 
 #include "../Graph/Graph.h"
 #include "../Graph/PQ.h"
@@ -55,9 +54,6 @@ static void *nba(void *arg) {
         fvalues[v] = maxWT;
         gvalues[v] = maxWT;
     }
-#if COLLECT_STAT
-    int *expanded_nodes = (int *)calloc(V, sizeof(int));
-#endif
     fvalues[args->source] =
         compute_f(hvalues[args->source], 0);  // g(n) = 0 for n == source
     gvalues[args->source] = 0;
@@ -68,7 +64,7 @@ static void *nba(void *arg) {
         // Take from OPEN list the node with min f(n) (min priority)
         f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
 #if COLLECT_STAT
-        expanded_nodes[a]++;
+        args->expanded_nodes[a]++;
 #endif
         // If the extracted node is the destination stop: path found
         if (a == args->dest) {
@@ -123,6 +119,9 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     costToComeG = (double *)malloc(args->V * sizeof(double));
     parentVertexR = (int *)malloc(args->V * sizeof(int));
     costToComeR = (double *)malloc(args->V * sizeof(double));
+#if COLLECT_STAT
+    int *expanded_nodes = (int *)calloc(args->V, sizeof(int));
+#endif
 
     pthread_mutex_init(&m, NULL);
 
@@ -150,6 +149,9 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         args[i].heuristic_type = heuristic_type;
         args[i].V = V;
         args[i].found = &found;
+#if COLLECT_STAT
+        args[i].expanded_nodes = expanded_nodes;
+#endif
         pthread_create(&threads[i], NULL, nba, (void *)&args[i]);
     }
 

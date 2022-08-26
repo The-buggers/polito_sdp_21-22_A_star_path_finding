@@ -1,7 +1,7 @@
 #ifndef ASTAR_H
 #define ASTAR_H
 #define DEBUG_ASTAR 0
-#define COLLECT_STAT 1
+#define COLLECT_STAT 0
 #include "../Graph/Graph.h"
 #include "../Graph/PQ.h"
 #include "../Graph/Position.h"
@@ -13,6 +13,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
                                char heuristic_type, int num_threads);
 void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
                                   char heuristic_type, int num_threads);
+void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
+                              char heuristic_type);
 void ASTARshortest_path_fa(Graph G, int source, int dest, char heuristic_type,
                            int num_threads);
 void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
