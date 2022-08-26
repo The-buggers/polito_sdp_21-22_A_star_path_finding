@@ -13,6 +13,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
                                char heuristic_type, int num_threads);
 void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
                                   char heuristic_type, int num_threads);
+void ASTARshortest_path_nps(Graph G, int source, int dest, char heuristic_type);
+void ASTARshortest_path_phs(Graph G, int source, int dest, char heuristic_type);
 void ASTARshortest_path_fa(Graph G, int source, int dest, char heuristic_type,
                            int num_threads);
 void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
