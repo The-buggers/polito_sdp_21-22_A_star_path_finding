@@ -26,4 +26,7 @@ double compute_f(double h, double g);
 int hash_function(int index, int Nthread);
 void reconstruct_path(int *parentVertex, int source, int dest,
                       double *costToCome);
+void reconstruct_path_ab_ba(int *parentVertexG, int *parentVertexR, int source,
+                            int comm, int dest, double *costToComeG,
+                            double *costToComeR);
 #endif

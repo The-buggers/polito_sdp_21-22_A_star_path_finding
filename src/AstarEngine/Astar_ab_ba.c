@@ -7,20 +7,21 @@
 #include "pthread.h"
 
 #define maxWT DBL_MAX
+#define N 2
 
 // Thread argument data structure
 struct arg_t {
     int index;
     int num_threads;
-    int *found;
     int V;
+    int *common_pos;
     Graph G;
-    Position pos_source;
     Position pos_dest;
     pthread_mutex_t *m;
     int source;
     int dest;
     int *parentVertex;
+    int *otherParentVertex;
     double *costToCome;
     char heuristic_type;
 #if COLLECT_STAT
@@ -66,13 +67,13 @@ static void *nba(void *arg) {
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
 #endif
-        // If the extracted node is the destination stop: path found
-        if (a == args->dest) {
-            pthread_mutex_lock(args->m);
-            args->found = 1;
+        // If the extracted node is the common one: stop
+        pthread_mutex_lock(args->m);
+        if (*(args->common_pos) != -1) {
             pthread_mutex_unlock(args->m);
             break;
-        }
+        } else
+            pthread_mutex_unlock(args->m);
 
         // For each successor 'b' of node 'a':
         for (t = GRAPHget_list_node_head(args->G, a);
@@ -91,6 +92,14 @@ static void *nba(void *arg) {
                 if (PQsearch(open_list, b) == -1) {
                     PQinsert(open_list, fvalues, b);
                 }
+
+                pthread_mutex_lock(args->m);
+                if (args->otherParentVertex[b] != -1) {
+                    *(args->common_pos) = b;
+                    pthread_mutex_unlock(args->m);
+                    break;
+                } else
+                    pthread_mutex_unlock(args->m);
             }
         }
     }
@@ -102,7 +111,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     printf("## NBA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
            dest);
     int V = GRAPHget_num_nodes(G);
-    int v, i, found = 0, *parentVertexG, *parentVertexR;
+    int v, i, *parentVertexG, *parentVertexR, common_pos = -1;
     double *costToComeG, *costToComeR;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
@@ -110,55 +119,60 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     pthread_mutex_t m;
     struct arg_t *args;
 
-    threads = (pthread_t *)malloc(2 * sizeof(pthread_t));
+    threads = (pthread_t *)malloc(N * sizeof(pthread_t));
     if (threads == NULL) return NULL;
-    args = (struct arg_t *)malloc(2 * sizeof(struct arg_t));
+    args = (struct arg_t *)malloc(N * sizeof(struct arg_t));
     if (args == NULL) return NULL;
 
-    parentVertexG = (int *)malloc(args->V * sizeof(int));
-    costToComeG = (double *)malloc(args->V * sizeof(double));
-    parentVertexR = (int *)malloc(args->V * sizeof(int));
-    costToComeR = (double *)malloc(args->V * sizeof(double));
+    parentVertexG = (int *)malloc(V * sizeof(int));
+    costToComeG = (double *)malloc(V * sizeof(double));
+    parentVertexR = (int *)malloc(V * sizeof(int));
+    costToComeR = (double *)malloc(V * sizeof(double));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(args->V, sizeof(int));
 #endif
+    if ((parentVertexG == NULL) || (parentVertexR == NULL) ||
+        (costToComeG == NULL) || (costToComeR == NULL))
+        return;
 
     pthread_mutex_init(&m, NULL);
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < N; i++) {
         if (i == 0) {
             args[i].G = G;
-            args[i].pos_source = pos_source;
             args[i].pos_dest = pos_dest;
             args[i].source = source;
             args[i].dest = dest;
             args[i].parentVertex = parentVertexG;
+            args[i].otherParentVertex = parentVertexR;
             args[i].costToCome = costToComeG;
         } else {
             args[i].G = R;
-            args[i].pos_source = pos_dest;
             args[i].pos_dest = pos_source;
             args[i].source = dest;
             args[i].dest = source;
             args[i].parentVertex = parentVertexR;
+            args[i].otherParentVertex = parentVertexG;
             args[i].costToCome = costToComeR;
         }
         args[i].index = i;
-        args[i].num_threads = 2;
+        args[i].num_threads = N;
         args[i].m = &m;
+        args[i].common_pos = &common_pos;
         args[i].heuristic_type = heuristic_type;
         args[i].V = V;
-        args[i].found = &found;
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
         pthread_create(&threads[i], NULL, nba, (void *)&args[i]);
     }
 
-    for (i = 0; i < 2; i++) pthread_join(threads[i], NULL);
+    for (i = 0; i < N; i++) pthread_join(threads[i], NULL);
 
-    if (found) {
-        reconstruct_path(parentVertexG, source, dest, costToComeG);
+    if (common_pos != -1) {
+        printf("Common node: %d\n", common_pos);
+        reconstruct_path_ab_ba(parentVertexG, parentVertexR, source, common_pos,
+                               dest, costToComeG, costToComeR);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");
