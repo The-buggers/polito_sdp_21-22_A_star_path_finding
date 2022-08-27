@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.1}{Introduction: about the A* algorithm}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Heuristic design}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{A* project application}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{Heuristic function: the great-circle distance}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Graph file input}{}% 5
+\BOOKMARK [1][-]{section.4}{Sequential A* Algorithm}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Pseudocode}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{Results}{section.4}% 8
+\BOOKMARK [1][-]{section.5}{A* and Dijkstra: a comparison}{}% 9
+\BOOKMARK [1][-]{section.6}{Parallel reading of the input file}{}% 10
+\BOOKMARK [2][-]{subsection.6.1}{Parallel Read: approach 1}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.2}{Parallel Read: approach 2}{section.6}% 12
+\BOOKMARK [2][-]{subsection.6.3}{Parallel Read: approach 3}{section.6}% 13
+\BOOKMARK [2][-]{subsection.6.4}{Final results}{section.6}% 14
+\BOOKMARK [1][-]{section.7}{Parallel A*: two examinated approaches}{}% 15
+\BOOKMARK [2][-]{subsection.7.1}{First Attempt In Parallelizing A*}{section.7}% 16
+\BOOKMARK [2][-]{subsection.7.2}{HDA*}{section.7}% 17
+\BOOKMARK [3][-]{subsubsection.7.2.1}{Message Passing Model}{subsection.7.2}% 18
+\BOOKMARK [3][-]{subsubsection.7.2.2}{Shared Address Space Model}{subsection.7.2}% 19
+\BOOKMARK [2][-]{subsection.7.3}{Results}{section.7}% 20
+\BOOKMARK [1][-]{section.8}{Complete Results}{}% 21
+\BOOKMARK [1][-]{section.9}{Final Considerations}{}% 22
+\BOOKMARK [1][-]{section.10}{DIMACS Benchmark}{}% 23
+\BOOKMARK [1][-]{section.11}{Future Works}{}% 24
