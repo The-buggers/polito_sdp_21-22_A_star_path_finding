@@ -33,7 +33,7 @@ static void *nba(void *arg);
 
 static void *nba(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
-    int i, v, a, b;
+    int i, v, a, b, found = 0;
     double f_extracted_node, g_b, f_b, a_b_wt;
     double *fvalues, *hvalues, *gvalues;
     Position p;
@@ -67,13 +67,6 @@ static void *nba(void *arg) {
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
 #endif
-        // If the extracted node is the common one: stop
-        pthread_mutex_lock(args->m);
-        if (*(args->common_pos) != -1) {
-            pthread_mutex_unlock(args->m);
-            break;
-        } else
-            pthread_mutex_unlock(args->m);
 
         // For each successor 'b' of node 'a':
         for (t = GRAPHget_list_node_head(args->G, a);
@@ -96,11 +89,15 @@ static void *nba(void *arg) {
                 pthread_mutex_lock(args->m);
                 if (args->otherParentVertex[b] != -1) {
                     *(args->common_pos) = b;
+                    found = 1;
                     pthread_mutex_unlock(args->m);
                     break;
                 } else
                     pthread_mutex_unlock(args->m);
             }
+        }
+        if (found) {
+            break;
         }
     }
     pthread_exit(NULL);
