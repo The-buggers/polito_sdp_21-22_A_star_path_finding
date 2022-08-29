@@ -70,11 +70,11 @@ static void *nba(void *arg) {
 #endif
 
         pthread_spin_lock(args->m);
-        if (*(args->count) - 1 == 0) {
+        *(args->count) = *(args->count) - 1;
+        if (*(args->count) < 1) {
             pthread_spin_unlock(args->m);
             break;
         } else {
-            *(args->count) -= 1;
             pthread_spin_unlock(args->m);
         }
 
@@ -96,14 +96,19 @@ static void *nba(void *arg) {
                     PQinsert(open_list, fvalues, b);
                 }
 
-                pthread_spin_lock(args->m);
                 if ((args->gvalues[b] < maxWT &&
                      args->otherGvalues[b] < maxWT) &&
                     (*(args->L) > (args->gvalues[b] + args->otherGvalues[b]))) {
-                    *(args->common_pos) = b;
-                    *(args->L) = (args->gvalues[b] + args->otherGvalues[b]);
+                    pthread_spin_lock(args->m);
+                    if ((args->gvalues[b] < maxWT &&
+                         args->otherGvalues[b] < maxWT) &&
+                        (*(args->L) >
+                         (args->gvalues[b] + args->otherGvalues[b]))) {
+                        *(args->common_pos) = b;
+                        *(args->L) = (args->gvalues[b] + args->otherGvalues[b]);
+                    }
+                    pthread_spin_unlock(args->m);
                 }
-                pthread_spin_unlock(args->m);
             }
         }
     }
@@ -115,7 +120,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     printf("## NBA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
            dest);
     int V = GRAPHget_num_nodes(G);
-    int v, i, *parentVertexG, *parentVertexR, common_pos = -1, count = V,
+    int v, i, *parentVertexG, *parentVertexR, common_pos = -1, count = V - 2,
                                               L = maxWT;
     double *costToComeG, *costToComeR, *gvaluesG, *gvaluesR;
     Position pos_source = GRAPHget_node_position(G, source);
