@@ -9,4 +9,6 @@ double POSITIONcompute_manhattan_distance(Position p1, Position p2);
 int POSITIONcmp(Position p1, Position p2);
 void POSITIONcpy(Position p1, Position p2);
 void POSITIONprint(Position p, FILE* fout);
+double POSITIONget_latitude(Position p);
+double POSITIONget_longitude(Position p);
 #endif

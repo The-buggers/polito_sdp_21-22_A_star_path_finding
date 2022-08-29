@@ -30,6 +30,12 @@ double POSITIONcompute_manhattan_distance(Position p1, Position p2) {
 int POSITIONcmp(Position p1, Position p2) {
     return (p1->x == p2->x && p1->y == p2->y);
 }
+double POSITIONget_latitude(Position p) {
+    return p->y;
+}
+double POSITIONget_longitude(Position p) {
+    return p->x;
+}
 void POSITIONcpy(Position p1, Position p2) {
     p1->x = p2->x;
     p1->y = p2->y;

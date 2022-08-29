@@ -424,7 +424,7 @@ resource contention that exists among all the threads (when N threads whant to a
 $k$ of the file only $1$ can do it and others $N-1$ wait). The advantage is that the file
 will be read \textit{sequentially} but in a multithread fashion (line $k$ of the file
 is always read before line $k+1$) and this results in a easier implementation.
-\paragraph{Results on BAY}
+\paragraph{Results on FLA}
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{par_read_1_time.png}
@@ -472,7 +472,7 @@ both for the \textit{nodes-threads} and for the \textit{edges-threads}).
   \label{parread3}
 \end{figure}
 Each thread terminates when it has no more partitions to read.\\
-\paragraph{Results on BAY}
+\paragraph{Results on FLA}
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{par_read_3_time.png}
@@ -481,9 +481,15 @@ Each thread terminates when it has no more partitions to read.\\
 \end{figure}
 We can realize from figure \ref{parread3time} that the number of partitions (setted equal
 both for \textit{nodes section} and \textit{edges section}) has not a high impact.
-What has an interesting impact is the number of threads. With a small number we are able
-to reduce the reading time w.r.t the sequential approach while when increasing the 
-number of threads results in too much overhead with consequent performance degradation.
+What has more impact is the number of threads, an increasing number of threads gives increasing
+bad performances while with a small number of threads we are able to obtain better results
+w.r.t the first approach but worse result w.r.t the sequential reading. The reason of this
+behaviour could be due to the fact that there is not a completly parallel work of the threads
+since the access to Graph's data structure has to be done in mutual exclusion so we 
+have benefits in dividing the threads in \textit{edges} threads and \textit{nodes} threads (something
+that didn't happen in the first approach) but the mutual exclusion access to the Graph
+makes the overhead due to threads creation and management not being able to obtain good
+performances
 \subsection{Final results}
 \begin{figure}[ht!]
   \centering
@@ -491,15 +497,60 @@ number of threads results in too much overhead with consequent performance degra
   \caption{RA(Read Approach) 1,2,3 compared with sequential reading}
   \label{parreadalltime}
 \end{figure}
-For the sake of completeness we have also test the most promising reading approaches
-on FLA graph to check if they still perform well
+For the sake of completeness we have also test the most promising reading approach
+on all the three maps (BAY, FLA, USA) and results are showed in table \ref{readresultsfinal}
+where the speed-up with respect to the sequential reading time is evident.
+\begin{table}[ht!]
+  \centering
+    \caption{RA2 results against sequential reading}
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{}    & \textbf{\begin{tabular}[c]{@{}l@{}}RA2\\ (2 threads)\end{tabular}} & \textbf{Sequential} & \textbf{Speed-Up} \\ \hline
+    \textbf{BAY} & 0.1936s                                                            & 0.9366s             & 79.3\%            \\ \hline
+    \textbf{FLA} & 0.5103s                                                            & 3.0650s             & 83.4\%            \\ \hline
+    \textbf{USA} & 14.1492s                                                           & 56.4445s            & 74.9\%            \\ \hline
+    \end{tabular}
+    \label{readresultsfinal}
+\end{table}
 
-\section{Parallel A*: two examinated approaches}
-(Explanation)
+\section{Parallel A*: three examinated approaches}
+The goal of the project was to find one or more parallel versions of the A* algorithm 
+and showing their performances w.r.t. the sequential version. We have choosen three approaches
+to face the problem of parallelizing the A* algorithm: a trivial one that simply
+works as the sequential algorithm but gives the possibility of executing it in a multithread
+fashion by sharing the common data structure (the \textit{OPEN SET}) among a variable number
+of threads; a second one that (known in literature as HDA*) that puts in action a more
+complex way of parallelizing the algorithm by defining a hash-based work distribution strategy and
+finally a third approach that makes use of the parallelism in order to make the work of
+finding the shortest path from \textit{source} to \textit{dest} divided between only two threads
+where one looks for the path from \textit{source} to \textit{dest} and the other one looks
+for the path from \textit{dest} to \textit{source} in the reversed graph (the MBA* algorithm).
+
 \subsection{First Attempt In Parallelizing A*}
-(Explanation + Pseudocode?)
+
 \subsection{HDA*}
-(Introduction + map with colored points)
+The Hash-Distributed-A* (HDA*) algorithm works in a completly different way w.r.t. the 
+first attempt algorithm. It is based on the fact that each thread is \textit{owner} of a
+specific set of nodes of the Graph: given a node $n$ it is defined a hash function $f:\;f(n) = t$
+where $t \in \{1..N\}$ with $N$ the number of threads. When a thread extracts from the \textit{OPEN SET}
+(expand) a node all its neighbors are added to the \textit{OPEN SET} of the owner thread. One important
+fact is that HDA* doesn't provide the same guarantees of the sequential algorithm:
+\begin{itemize}
+  \item In sequential A* if it's provided an heuristic function that is both \textit{admissible}
+        and \textit{consistent} we have the guarantee that each node will be only expanded once
+        and that the first time we expand that node we have found a shortest path to it.
+  \item In HDA* we loose these guarantees: since we don't know in which order nodes will be processed
+        it could happen that a longest path to \textit{dest} is found before the shortest one so
+        a node could be opened more than once and expanding the \textit{dest} node doesn't
+        mean that we have terminated
+\end{itemize}
+\paragraph{Distributed Termination Condition}
+If in the sequential algorithm expanding the node \textit{dest} triggers the end of the algorithm (despite
+the fact that the \textit{OPEN SET} could be not empty) in HDA* this is not valid anymore: when a thread
+is working on its \textit{OPEN SET} is is expanding nodes putting their neighbors in the correct
+\textit{OPEN SET} of another thread. When thread $t_i$ has its \textit{OPEN SET} empty it could think
+to have finished its work but this is not true because another thread $t_j$ could be sending
+to $t_i$ some nodes to be still processed in the meanwhile.
 \subsubsection{Message Passing Model}
 (Explanation + Pseudocode?)
 \subsubsection{Shared Address Space Model}
