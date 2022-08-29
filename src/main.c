@@ -7,7 +7,7 @@
 #include "./DijkstraEngine/Dijkstra.h"
 #include "./Graph/Graph.h"
 #define MAXC 11
-#define PARALLELREADTYPE 0
+#define PARALLELREADTYPE 4
 void start_timer(struct timespec* begin);
 double stop_timer(struct timespec begin);
 
@@ -39,6 +39,13 @@ int main(int argc, char* argv[]) {
     // ######################################
     printf("Parallel read type: 2\n");
     G = GRAPHload_parallel2(argv[1], 2);
+#elif PARALLELREADTYPE == 4
+    // ######################################
+    // ### TEST PARALLEL READ - VERSION 4 ###
+    // ######################################
+    Graph R;
+    printf("Parallel read type: 4\n");
+    GRAPHload_parallel4(argv[1], 2, &G, &R);
 #elif PARALLELREADTYPE == 1
     // ######################################
     // ### TEST PARALLEL READ - VERSION 1 ###
@@ -55,6 +62,15 @@ int main(int argc, char* argv[]) {
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
 
     start_timer(&begin);
+    // ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+    // ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
+    // ASTARshortest_path_sas_sf_v2(G, source, dest,
+    // heuristic_type,num_threads); ASTARshortest_path_sas_b(G, source, dest,
+    // heuristic_type,num_threads); ASTARshortest_path_fa(G, source, dest,
+    // heuristic_type,num_threads); ASTARshortest_path_mp(G, source, dest,
+    // heuristic_type,num_threads);
+    ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
+    // DIJKSTRA_shortest_path_sequential(G, source, dest);
     //ASTARshortest_path_sequential(G, source, dest, heuristic_type);
     // ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     // ASTARshortest_path_sas_sf_v2(G, source, dest, heuristic_type,
