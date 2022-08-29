@@ -17,7 +17,7 @@ struct arg_t {
     int *common_pos;
     Graph G;
     Position pos_dest;
-    pthread_mutex_t *m;
+    pthread_spinlock_t *m;
     int source;
     int dest;
     int *parentVertex;
@@ -69,13 +69,13 @@ static void *nba(void *arg) {
         args->expanded_nodes[a]++;
 #endif
 
-        pthread_mutex_lock(args->m);
+        pthread_spin_lock(args->m);
         if (*(args->count) - 1 == 0) {
-            pthread_mutex_unlock(args->m);
+            pthread_spin_unlock(args->m);
             break;
         } else {
             *(args->count) -= 1;
-            pthread_mutex_unlock(args->m);
+            pthread_spin_unlock(args->m);
         }
 
         // For each successor 'b' of node 'a':
@@ -96,14 +96,14 @@ static void *nba(void *arg) {
                     PQinsert(open_list, fvalues, b);
                 }
 
-                pthread_mutex_lock(args->m);
+                pthread_spin_lock(args->m);
                 if ((args->gvalues[b] < maxWT &&
                      args->otherGvalues[b] < maxWT) &&
                     (*(args->L) > (args->gvalues[b] + args->otherGvalues[b]))) {
                     *(args->common_pos) = b;
                     *(args->L) = (args->gvalues[b] + args->otherGvalues[b]);
                 }
-                pthread_mutex_unlock(args->m);
+                pthread_spin_unlock(args->m);
             }
         }
     }
@@ -121,7 +121,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
     pthread_t *threads;
-    pthread_mutex_t m;
+    pthread_spinlock_t m;
     struct arg_t *args;
 
     threads = (pthread_t *)malloc(N * sizeof(pthread_t));
@@ -149,7 +149,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         gvaluesR[i] = maxWT;
     }
 
-    pthread_mutex_init(&m, NULL);
+    pthread_spin_init(&m, 0);
 
     for (i = 0; i < N; i++) {
         if (i == 0) {
