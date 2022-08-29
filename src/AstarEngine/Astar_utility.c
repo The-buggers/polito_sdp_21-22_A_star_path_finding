@@ -53,12 +53,10 @@ void reconstruct_path_ab_ba(int *parentVertexG, int *parentVertexR, int source,
     printf("+-----------------------------------+\n");
     printf("Path from %d to %d: [ ", source, dest);
     reconstruct_path_r(parentVertexG, comm, costToComeG, &cost);
-    // printf("cost1: \n\n%lf\n", cost);
     tot_cost = tot_cost + cost;
     cost = 0;
     printf("\n+\n");
     reconstruct_path_rev_r(parentVertexR, comm, costToComeR, &cost, 1);
-    // printf("cost2: %lf\n", cost);
     tot_cost = tot_cost + cost;
     printf("]");
 
@@ -71,10 +69,8 @@ static void reconstruct_path_rev_r(int *parentVertex, int j, double *costToCome,
     if (parentVertex[j] == -1) {
         return;
     } else {
-        if (iter != 1) {
-            printf("%d, ", j);
-            *tot_cost = *tot_cost + costToCome[j];
-        }
+        printf("%d, ", j);
+        *tot_cost = *tot_cost + costToCome[j];
         if (parentVertex[parentVertex[j]] == -1) {
             printf("%d, ", parentVertex[j]);
             *tot_cost = *tot_cost + costToCome[parentVertex[j]];
