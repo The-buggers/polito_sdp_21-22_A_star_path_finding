@@ -36,7 +36,7 @@ struct arg_t {
     int *expanded_nodes;
 #endif
 };
-pthread_barrier_t barr;
+
 static void *nba(void *arg);
 
 static void *nba(void *arg) {
@@ -64,8 +64,7 @@ static void *nba(void *arg) {
         compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
     args->gvalues[args->source] = 0;
     PQinsert(open_list, fvalues, args->source);
-
-    pthread_barrier_wait(&barr);
+    *(args->F) = args->hvalues[args->source];
 
     while (!PQempty(open_list))  // while OPEN list not empty
     {
@@ -77,7 +76,7 @@ static void *nba(void *arg) {
 
         if (args->M[a] == 1) {
             // For each successor 'b' of node 'a':
-            if ((fvalues[a] < *(args->L)) ||
+            if ((fvalues[a] < *(args->L)) &&
                 (args->gvalues[a] + *(args->otherF) - args->otherHvalues[a] <
                  *(args->L))) {
                 for (t = GRAPHget_list_node_head(args->G, a);
@@ -139,7 +138,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     int v, i, *parentVertexG, *parentVertexR, *M, common_pos = -1, found = 0,
                                                   L = maxWT;
     double *costToComeG, *costToComeR, *gvaluesG, *gvaluesR, *hvaluesG,
-        *hvaluesR, FG = maxWT, FR = maxWT;
+        *hvaluesR, FG, FR;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
     pthread_t *threads;
@@ -176,7 +175,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     }
 
     pthread_spin_init(&m, 0);
-    pthread_barrier_init(&barr, NULL, 2);
+
     for (i = 0; i < N; i++) {
         if (i == 0) {
             args[i].G = G;
