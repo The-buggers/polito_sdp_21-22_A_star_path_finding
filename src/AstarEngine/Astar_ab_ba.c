@@ -66,7 +66,7 @@ static void *nba(void *arg) {
     PQinsert(open_list, fvalues, args->source);
     *(args->F) = args->hvalues[args->source];
 
-    while (!PQempty(open_list))  // while OPEN list not empty
+    while (*(args->found) == 0)  // while OPEN list not empty
     {
         // Take from OPEN list the node with min f(n) (min priority)
         f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
@@ -123,10 +123,14 @@ static void *nba(void *arg) {
             args->M[a] = 0;
             pthread_spin_unlock(args->m);
         }
-        *(args->F) = fvalues[PQshowMin(open_list)];
-        if (*(args->found) > 0) break;
+        if (!PQempty(open_list)) {
+            *(args->F) = fvalues[PQshowMin(open_list)];
+        } else {
+            pthread_spin_lock(args->m);
+            *(args->found) = 1;
+            pthread_spin_unlock(args->m);
+        }
     }
-    *(args->found) = 1;
     pthread_exit(NULL);
 }
 
