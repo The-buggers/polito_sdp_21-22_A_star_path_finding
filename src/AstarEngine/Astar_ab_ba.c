@@ -21,10 +21,10 @@ struct arg_t {
     int source;
     int dest;
     int *parentVertex;
-    int *otherParentVertex;
     double *gvalues;
     double *otherGvalues;
-    int *count;
+    int *M;
+    int *found;
     int *L;
     double *costToCome;
     char heuristic_type;
@@ -69,49 +69,53 @@ static void *nba(void *arg) {
         args->expanded_nodes[a]++;
 #endif
 
-        pthread_spin_lock(args->m);
-        *(args->count) = *(args->count) - 1;
-        if (*(args->count) < 1) {
-            pthread_spin_unlock(args->m);
-            break;
-        } else {
-            pthread_spin_unlock(args->m);
-        }
+        if (args->M[a] == 1) {
+            // For each successor 'b' of node 'a':
+            for (t = GRAPHget_list_node_head(args->G, a);
+                 t != GRAPHget_list_node_tail(args->G, a);
+                 t = LINKget_next(t)) {
+                b = LINKget_node(t);
+                a_b_wt = LINKget_wt(t);
+                // Compute f(b) = g(b) + h(b) = [g(a) + w(a,b)] + h(b)
+                g_b = args->gvalues[a] + a_b_wt;
+                f_b = g_b + hvalues[b];
 
-        // For each successor 'b' of node 'a':
-        for (t = GRAPHget_list_node_head(args->G, a);
-             t != GRAPHget_list_node_tail(args->G, a); t = LINKget_next(t)) {
-            b = LINKget_node(t);
-            a_b_wt = LINKget_wt(t);
-            // Compute f(b) = g(b) + h(b) = [g(a) + w(a,b)] + h(b)
-            g_b = args->gvalues[a] + a_b_wt;
-            f_b = g_b + hvalues[b];
+                if (args->M[b] == 1) {
+                    if (g_b < args->gvalues[b]) {
+                        args->parentVertex[b] = a;
+                        args->costToCome[b] = a_b_wt;
+                        args->gvalues[b] = g_b;
+                        fvalues[b] = f_b;
+                        if (PQsearch(open_list, b) == -1) {
+                            PQinsert(open_list, fvalues, b);
+                        } else
+                            PQchange(open_list, fvalues, b);
 
-            if (g_b < args->gvalues[b]) {
-                args->parentVertex[b] = a;
-                args->costToCome[b] = a_b_wt;
-                args->gvalues[b] = g_b;
-                fvalues[b] = f_b;
-                if (PQsearch(open_list, b) == -1) {
-                    PQinsert(open_list, fvalues, b);
-                }
-
-                if ((args->gvalues[b] < maxWT &&
-                     args->otherGvalues[b] < maxWT) &&
-                    (*(args->L) > (args->gvalues[b] + args->otherGvalues[b]))) {
-                    pthread_spin_lock(args->m);
-                    if ((args->gvalues[b] < maxWT &&
-                         args->otherGvalues[b] < maxWT) &&
-                        (*(args->L) >
-                         (args->gvalues[b] + args->otherGvalues[b]))) {
-                        *(args->common_pos) = b;
-                        *(args->L) = (args->gvalues[b] + args->otherGvalues[b]);
+                        if ((args->gvalues[b] < maxWT &&
+                             args->otherGvalues[b] < maxWT) &&
+                            (*(args->L) >
+                             (args->gvalues[b] + args->otherGvalues[b]))) {
+                            if ((args->gvalues[b] < maxWT &&
+                                 args->otherGvalues[b] < maxWT) &&
+                                (*(args->L) >
+                                 (args->gvalues[b] + args->otherGvalues[b]))) {
+                                pthread_spin_lock(args->m);
+                                *(args->common_pos) = b;
+                                *(args->L) =
+                                    (args->gvalues[b] + args->otherGvalues[b]);
+                                pthread_spin_unlock(args->m);
+                            }
+                        }
                     }
-                    pthread_spin_unlock(args->m);
                 }
             }
+            pthread_spin_lock(args->m);
+            args->M[a] = 0;
+            pthread_spin_unlock(args->m);
         }
+        if (*(args->found) > 0) break;
     }
+    *(args->found) = 1;
     pthread_exit(NULL);
 }
 
@@ -120,8 +124,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     printf("## NBA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
            dest);
     int V = GRAPHget_num_nodes(G);
-    int v, i, *parentVertexG, *parentVertexR, common_pos = -1, count = V - 2,
-                                              L = maxWT;
+    int v, i, *parentVertexG, *parentVertexR, *M, common_pos = -1, found = 0,
+                                                  L = maxWT;
     double *costToComeG, *costToComeR, *gvaluesG, *gvaluesR;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
@@ -140,6 +144,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     costToComeR = (double *)malloc(V * sizeof(double));
     gvaluesG = (double *)malloc(V * sizeof(double));
     gvaluesR = (double *)malloc(V * sizeof(double));
+    M = (int *)malloc(V * sizeof(int));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
 #endif
@@ -150,6 +155,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     for (i = 0; i < V; i++) {
         parentVertexG[i] = -1;
         parentVertexR[i] = -1;
+        M[i] = 1;
         gvaluesG[i] = maxWT;
         gvaluesR[i] = maxWT;
     }
@@ -163,7 +169,6 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
             args[i].source = source;
             args[i].dest = dest;
             args[i].parentVertex = parentVertexG;
-            args[i].otherParentVertex = parentVertexR;
             args[i].gvalues = gvaluesG;
             args[i].otherGvalues = gvaluesR;
             args[i].costToCome = costToComeG;
@@ -173,7 +178,6 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
             args[i].source = dest;
             args[i].dest = source;
             args[i].parentVertex = parentVertexR;
-            args[i].otherParentVertex = parentVertexG;
             args[i].gvalues = gvaluesR;
             args[i].otherGvalues = gvaluesG;
             args[i].costToCome = costToComeR;
@@ -184,7 +188,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         args[i].common_pos = &common_pos;
         args[i].heuristic_type = heuristic_type;
         args[i].V = V;
-        args[i].count = &count;
+        args[i].found = &found;
+        args[i].M = M;
         args[i].L = &L;
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
