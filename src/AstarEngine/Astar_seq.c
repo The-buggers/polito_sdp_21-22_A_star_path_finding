@@ -6,8 +6,10 @@
 #include "../Graph/Position.h"
 #include "Astar.h"
 #define maxWT DBL_MAX
-void ASTARshortest_path_sequential(Graph G, int source, int dest, char heuristic_type) {
-    printf("## Sequential A* [heuristic: %c] from %d to %d ##\n", heuristic_type, source, dest);
+void ASTARshortest_path_sequential(Graph G, int source, int dest,
+                                   char heuristic_type) {
+    printf("## Sequential A* [heuristic: %c] from %d to %d ##\n",
+           heuristic_type, source, dest);
     int V = GRAPHget_num_nodes(G);
     int v, a, b;
     double f_extracted_node, g_b, f_b, a_b_wt;
@@ -67,14 +69,13 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest, char heuristic
             g_b = gvalues[a] + a_b_wt;
             f_b = g_b + hvalues[b];
 
-            if (g_b < gvalues[b]) { 
+            if (g_b < gvalues[b]) {
                 parentVertex[b] = a;
                 costToCome[b] = a_b_wt;
                 gvalues[b] = g_b;
                 fvalues[b] = f_b;
-                if (PQsearch(open_list, b) == -1) {
-                    PQinsert(open_list, fvalues, b);
-                }
+
+                PQinsert(open_list, fvalues, b);
             }
         }
     }
@@ -87,14 +88,15 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest, char heuristic
 #if COLLECT_STAT
     int n = 0, tot = 0;
     FILE *fp = fopen("./stats/stat_astar_seq.txt", "w+");
-        for (v = 0; v < V; v++) {
+    for (v = 0; v < V; v++) {
         if (expanded_nodes[v] != 0) {
             n++;
             tot += expanded_nodes[v];
             fprintf(fp, "%d\n", v);
         }
     }
-    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n, V, tot);
+    printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n,
+           V, tot);
     fclose(fp);
     free(expanded_nodes);
 #endif
