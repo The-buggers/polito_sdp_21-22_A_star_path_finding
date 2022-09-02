@@ -47,7 +47,7 @@ static void *nba(void *arg) {
     double f_extracted_node, g_b, f_b, a_b_wt;
     link t;
 
-    while (*(args->found) == 0)  // while OPEN list not empty
+    while (*(args->found) == 0)  // while not finished
     {
         // Take from OPEN list the node with min f(n) (min priority)
         f_extracted_node =
@@ -55,8 +55,9 @@ static void *nba(void *arg) {
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
 #endif
-
+        pthread_spin_lock(args->m);
         if (args->M[a] == 1) {
+            pthread_spin_unlock(args->m);
             // For each successor 'b' of node 'a':
             if ((args->fvalues[a] < *(args->L)) &&
                 (args->gvalues[a] + *(args->otherF) - args->otherHvalues[a] <
@@ -70,47 +71,44 @@ static void *nba(void *arg) {
                     g_b = args->gvalues[a] + a_b_wt;
                     f_b = g_b + args->hvalues[b];
 
+                    pthread_spin_lock(args->m);
                     if (args->M[b] == 1 &&
                         args->gvalues[b] > args->gvalues[a] + a_b_wt) {
-                        if (g_b < args->gvalues[b]) {
-                            args->parentVertex[b] = a;
-                            args->costToCome[b] = a_b_wt;
-                            args->gvalues[b] = g_b;
-                            args->fvalues[b] = f_b;
-                            if (PQsearch(args->open_list, b) == -1) {
-                                PQinsert(args->open_list, args->fvalues, b);
-                            } else
-                                PQchange(args->open_list, args->fvalues, b);
+                        pthread_spin_unlock(args->m);
+                        args->parentVertex[b] = a;
+                        args->costToCome[b] = a_b_wt;
+                        args->gvalues[b] = g_b;
+                        args->fvalues[b] = f_b;
+                        if (PQsearch(args->open_list, b) == -1) {
+                            PQinsert(args->open_list, args->fvalues, b);
+                        } else
+                            PQchange(args->open_list, args->fvalues, b);
 
-                            if ((args->gvalues[b] < maxWT &&
-                                 args->otherGvalues[b] < maxWT) &&
-                                (*(args->L) >
-                                 (args->gvalues[b] + args->otherGvalues[b]))) {
-                                if ((args->gvalues[b] < maxWT &&
-                                     args->otherGvalues[b] < maxWT) &&
-                                    (*(args->L) > (args->gvalues[b] +
-                                                   args->otherGvalues[b]))) {
-                                    pthread_spin_lock(args->m);
-                                    *(args->common_pos) = b;
-                                    *(args->L) = (args->gvalues[b] +
-                                                  args->otherGvalues[b]);
-                                    pthread_spin_unlock(args->m);
-                                }
+                        if (*(args->L) >
+                            (args->gvalues[b] + args->otherGvalues[b])) {
+                            pthread_spin_lock(args->m);
+                            if (*(args->L) >
+                                (args->gvalues[b] + args->otherGvalues[b])) {
+                                *(args->common_pos) = b;
+                                *(args->L) =
+                                    (args->gvalues[b] + args->otherGvalues[b]);
                             }
+                            pthread_spin_unlock(args->m);
                         }
-                    }
+                    } else
+                        pthread_spin_unlock(args->m);
                 }
             }
             pthread_spin_lock(args->m);
             args->M[a] = 0;
             pthread_spin_unlock(args->m);
-        }
+        } else
+            pthread_spin_unlock(args->m);
+
         if (!PQempty(args->open_list)) {
             *(args->F) = args->fvalues[PQshowMin(args->open_list)];
         } else {
-            pthread_spin_lock(args->m);
-            *(args->found) = 1;
-            pthread_spin_unlock(args->m);
+            *(args->found) = *(args->found) + 1;
         }
     }
     pthread_exit(NULL);
