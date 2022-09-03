@@ -18,7 +18,9 @@
 \BOOKMARK [3][-]{subsubsection.7.2.1}{Message Passing Model}{subsection.7.2}% 18
 \BOOKMARK [3][-]{subsubsection.7.2.2}{Shared Address Space Model}{subsection.7.2}% 19
 \BOOKMARK [2][-]{subsection.7.3}{Results}{section.7}% 20
-\BOOKMARK [1][-]{section.8}{Complete Results}{}% 21
-\BOOKMARK [1][-]{section.9}{Final Considerations}{}% 22
-\BOOKMARK [1][-]{section.10}{DIMACS Benchmark}{}% 23
-\BOOKMARK [1][-]{section.11}{Future Works}{}% 24
+\BOOKMARK [2][-]{subsection.7.4}{Parallel Bidirectional Search}{section.7}% 21
+\BOOKMARK [3][-]{subsubsection.7.4.1}{Results}{subsection.7.4}% 22
+\BOOKMARK [1][-]{section.8}{Complete Results}{}% 23
+\BOOKMARK [1][-]{section.9}{Final Considerations}{}% 24
+\BOOKMARK [1][-]{section.10}{DIMACS Benchmark}{}% 25
+\BOOKMARK [1][-]{section.11}{Future Works}{}% 26
