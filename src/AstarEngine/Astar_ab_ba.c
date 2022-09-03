@@ -12,14 +12,12 @@
 // Thread argument data structure
 struct arg_t {
     int index;
-    // int num_threads;
-    // int V;
+    int V;
     int *common_pos;
     Graph G;
-    // Position pos_dest;
+    Position pos_dest;
     pthread_spinlock_t *m;
-    // int source;
-    // int dest;
+    int source;
     PQ open_list;
     int *parentVertex;
     double *gvalues;
@@ -40,12 +38,37 @@ struct arg_t {
 };
 
 static void *nba(void *arg);
-
+pthread_barrier_t barr;
 static void *nba(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
-    int a, b, z;
+    int v, a, b;
     double f_extracted_node, g_b, f_b, a_b_wt;
+    Position p;
     link t;
+
+    // SETUP
+    // - Insert all the nodes in the priority queue
+    // - compute h(n) for each node
+    // - initialize f(n) to maxWT
+    // - initialize g(n) to maxWT
+    for (v = 0; v < args->V; v++) {
+        args->parentVertex[v] = -1;
+        if (args->index == 0) args->M[v] = 1;
+        p = GRAPHget_node_position(args->G, v);
+        args->hvalues[v] = heuristic(p, args->pos_dest, args->heuristic_type);
+        args->fvalues[v] = maxWT;
+        args->gvalues[v] = maxWT;
+    }
+#if COLLECT_STAT
+    int *expanded_nodes = (int *)calloc(V, sizeof(int));
+#endif
+    args->fvalues[args->source] =
+        compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
+    args->gvalues[args->source] = 0;
+    PQinsert(args->open_list, args->fvalues, args->source);
+    *(args->F) = args->hvalues[args->source];
+
+    pthread_barrier_wait(&barr);
 
     while (*(args->found) == 0)  // while not finished
     {
@@ -86,14 +109,14 @@ static void *nba(void *arg) {
 
                         if (*(args->L) >
                             (args->gvalues[b] + args->otherGvalues[b])) {
-                            // pthread_spin_lock(args->m);
+                            pthread_spin_lock(args->m);
                             if (*(args->L) >
                                 (args->gvalues[b] + args->otherGvalues[b])) {
                                 *(args->common_pos) = b;
                                 *(args->L) =
                                     (args->gvalues[b] + args->otherGvalues[b]);
                             }
-                            // pthread_spin_unlock(args->m);
+                            pthread_spin_unlock(args->m);
                         }
                     }  // else
                     // pthread_spin_unlock(args->m);
@@ -124,7 +147,6 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         *fvaluesR, *hvaluesG, *hvaluesR, FG, FR, L = maxWT;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
-    Position pG, pR;
     pthread_t *threads;
     pthread_spinlock_t m;
     struct arg_t *args;
@@ -137,6 +159,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     if (threads == NULL) return NULL;
     args = (struct arg_t *)malloc(N * sizeof(struct arg_t));
     if (args == NULL) return NULL;
+
+    pthread_barrier_init(&barr, NULL, 2);
 
     parentVertexG = (int *)malloc(V * sizeof(int));
     costToComeG = (double *)malloc(V * sizeof(double));
@@ -158,36 +182,6 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         (fvaluesG == NULL) || (fvaluesR == NULL) || (M == NULL))
         return;
 
-    // SETUP
-    // - Insert all the nodes in the priority queue
-    // - compute h(n) for each node
-    // - initialize f(n) to maxWT
-    // - initialize g(n) to maxWT
-    for (i = 0; i < V; i++) {
-        parentVertexG[i] = -1;
-        parentVertexR[i] = -1;
-        M[i] = 1;
-        gvaluesG[i] = maxWT;
-        gvaluesR[i] = maxWT;
-        pG = GRAPHget_node_position(G, i);
-        pR = GRAPHget_node_position(R, i);
-        hvaluesG[i] = heuristic(pG, pos_dest, heuristic_type);
-        fvaluesG[i] = maxWT;
-        hvaluesR[i] = heuristic(pR, pos_source, heuristic_type);
-        fvaluesR[i] = maxWT;
-    }
-    // For G
-    fvaluesG[source] =
-        compute_f(hvaluesG[source], 0);  // g(n) = 0 for n == source
-    gvaluesG[source] = 0;
-    PQinsert(open_listG, fvaluesG, source);
-    FG = hvaluesG[source];
-    // For R
-    fvaluesR[dest] = compute_f(hvaluesR[dest], 0);  // g(n) = 0 for n == source
-    gvaluesR[dest] = 0;
-    PQinsert(open_listR, fvaluesR, dest);
-    FR = hvaluesR[dest];
-
     pthread_spin_init(&m, 0);
 
     for (i = 0; i < N; i++) {
@@ -200,6 +194,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
             args[i].hvalues = hvaluesG;
             args[i].otherHvalues = hvaluesR;
             args[i].fvalues = fvaluesG;
+            args[i].source = source;
+            args[i].pos_dest = pos_dest;
             args[i].F = &FG;
             args[i].otherF = &FR;
             args[i].costToCome = costToComeG;
@@ -212,11 +208,14 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
             args[i].hvalues = hvaluesR;
             args[i].otherHvalues = hvaluesG;
             args[i].fvalues = fvaluesR;
+            args[i].source = dest;
+            args[i].pos_dest = pos_source;
             args[i].F = &FR;
             args[i].otherF = &FG;
             args[i].costToCome = costToComeR;
         }
         args[i].index = i;
+        args[i].V = V;
         args[i].m = &m;
         args[i].common_pos = &common_pos;
         args[i].heuristic_type = heuristic_type;
