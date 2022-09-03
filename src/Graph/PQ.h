@@ -9,4 +9,5 @@ int PQextractMin(PQ pq, double *mindist);
 void PQchange(PQ pq, double *mindist, int k);
 int PQshowMin(PQ pq);
 int PQsearch(PQ pq, int k);
+int PQremove(PQ pq, double *mindist, int k);
 #endif

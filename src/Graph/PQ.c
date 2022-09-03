@@ -94,3 +94,13 @@ void PQchange(PQ pq, double *mindist, int k) {
     Heapify(pq, mindist, pos);
     return;
 }
+int PQremove(PQ pq, double *mindist, int k) {
+    int z, val;
+    z = pq->qp[k];
+    Swap(pq, z, pq->heapsize - 1);
+    val = pq->A[pq->heapsize - 1];
+    pq->qp[pq->heapsize - 1] = -1;
+    pq->heapsize--;
+    Heapify(pq, mindist, z);
+    return val;
+}
