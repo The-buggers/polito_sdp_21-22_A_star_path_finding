@@ -17,14 +17,13 @@ struct arg_t {
     Graph G;
     Position pos_dest;
     pthread_spinlock_t *m;
+    pthread_barrier_t *barr;
     int source;
-    PQ open_list;
     int *parentVertex;
     double *gvalues;
     double *otherGvalues;
     double *hvalues;
     double *otherHvalues;
-    double *fvalues;
     double *F;
     double *otherF;
     int *M;
@@ -38,11 +37,12 @@ struct arg_t {
 };
 
 static void *nba(void *arg);
-pthread_barrier_t barr;
+
 static void *nba(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int v, a, b;
-    double f_extracted_node, g_b, f_b, a_b_wt;
+    double f_extracted_node, g_b, f_b, a_b_wt, *fvalues;
+    PQ open_list;
     Position p;
     link t;
 
@@ -51,30 +51,32 @@ static void *nba(void *arg) {
     // - compute h(n) for each node
     // - initialize f(n) to maxWT
     // - initialize g(n) to maxWT
+    open_list = PQinit(args->V);
+    fvalues = (double *)malloc(args->V * sizeof(double));
+
     for (v = 0; v < args->V; v++) {
         args->parentVertex[v] = -1;
         if (args->index == 0) args->M[v] = 1;
         p = GRAPHget_node_position(args->G, v);
         args->hvalues[v] = heuristic(p, args->pos_dest, args->heuristic_type);
-        args->fvalues[v] = maxWT;
         args->gvalues[v] = maxWT;
+        fvalues[v] = maxWT;
     }
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
 #endif
-    args->fvalues[args->source] =
+    fvalues[args->source] =
         compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
     args->gvalues[args->source] = 0;
-    PQinsert(args->open_list, args->fvalues, args->source);
+    PQinsert(open_list, fvalues, args->source);
     *(args->F) = args->hvalues[args->source];
 
-    pthread_barrier_wait(&barr);
+    pthread_barrier_wait(args->barr);
 
     while (*(args->found) == 0)  // while not finished
     {
         // Take from OPEN list the node with min f(n) (min priority)
-        f_extracted_node =
-            args->fvalues[a = PQextractMin(args->open_list, args->fvalues)];
+        f_extracted_node = fvalues[a = PQextractMin(open_list, fvalues)];
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
 #endif
@@ -82,7 +84,7 @@ static void *nba(void *arg) {
         if (args->M[a] == 1) {
             // pthread_spin_unlock(args->m);
             //  For each successor 'b' of node 'a':
-            if ((args->fvalues[a] < *(args->L)) &&
+            if ((fvalues[a] < *(args->L)) &&
                 (args->gvalues[a] + *(args->otherF) - args->otherHvalues[a] <
                  *(args->L))) {
                 for (t = GRAPHget_list_node_head(args->G, a);
@@ -101,11 +103,11 @@ static void *nba(void *arg) {
                         args->parentVertex[b] = a;
                         args->costToCome[b] = a_b_wt;
                         args->gvalues[b] = g_b;
-                        args->fvalues[b] = f_b;
-                        if (PQsearch(args->open_list, b) == -1)
-                            PQinsert(args->open_list, args->fvalues, b);
+                        fvalues[b] = f_b;
+                        if (PQsearch(open_list, b) == -1)
+                            PQinsert(open_list, fvalues, b);
                         else
-                            PQchange(args->open_list, args->fvalues, b);
+                            PQchange(open_list, fvalues, b);
 
                         if (*(args->L) >
                             (args->gvalues[b] + args->otherGvalues[b])) {
@@ -118,18 +120,13 @@ static void *nba(void *arg) {
                             }
                             pthread_spin_unlock(args->m);
                         }
-                    }  // else
-                    // pthread_spin_unlock(args->m);
+                    }
                 }
             }
-            // pthread_spin_lock(args->m);
             args->M[a] = 0;
-            // pthread_spin_unlock(args->m);
-        }  // else
-        // pthread_spin_unlock(args->m);
-
-        if (!PQempty(args->open_list)) {
-            *(args->F) = args->fvalues[PQshowMin(args->open_list)];
+        }
+        if (!PQempty(open_list)) {
+            *(args->F) = fvalues[PQshowMin(open_list)];
         } else {
             *(args->found) = *(args->found) + 1;
         }
@@ -143,24 +140,19 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
            dest);
     int V = GRAPHget_num_nodes(G);
     int i, *parentVertexG, *parentVertexR, *M, common_pos = -1, found = 0;
-    double *costToComeG, *costToComeR, *gvaluesG, *gvaluesR, *fvaluesG,
-        *fvaluesR, *hvaluesG, *hvaluesR, FG, FR, L = maxWT;
+    double *costToComeG, *costToComeR, *gvaluesG, *gvaluesR, *hvaluesG,
+        *hvaluesR, FG, FR, L = maxWT;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
     pthread_t *threads;
     pthread_spinlock_t m;
+    pthread_barrier_t barr;
     struct arg_t *args;
-    PQ open_listG, open_listR;
-
-    open_listG = PQinit(V);
-    open_listR = PQinit(V);
 
     threads = (pthread_t *)malloc(N * sizeof(pthread_t));
     if (threads == NULL) return NULL;
     args = (struct arg_t *)malloc(N * sizeof(struct arg_t));
     if (args == NULL) return NULL;
-
-    pthread_barrier_init(&barr, NULL, 2);
 
     parentVertexG = (int *)malloc(V * sizeof(int));
     costToComeG = (double *)malloc(V * sizeof(double));
@@ -170,8 +162,6 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     gvaluesR = (double *)malloc(V * sizeof(double));
     hvaluesG = (double *)malloc(V * sizeof(double));
     hvaluesR = (double *)malloc(V * sizeof(double));
-    fvaluesG = (double *)malloc(V * sizeof(double));
-    fvaluesR = (double *)malloc(V * sizeof(double));
     M = (int *)malloc(V * sizeof(int));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
@@ -179,21 +169,20 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     if ((parentVertexG == NULL) || (parentVertexR == NULL) ||
         (costToComeG == NULL) || (costToComeR == NULL) || (gvaluesG == NULL) ||
         (gvaluesR == NULL) || (hvaluesG == NULL) || (hvaluesR == NULL) ||
-        (fvaluesG == NULL) || (fvaluesR == NULL) || (M == NULL))
+        (M == NULL))
         return;
 
-    pthread_spin_init(&m, 0);
+    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
+    pthread_barrier_init(&barr, NULL, 2);
 
     for (i = 0; i < N; i++) {
         if (i == 0) {
             args[i].G = G;
-            args[i].open_list = open_listG;
             args[i].parentVertex = parentVertexG;
             args[i].gvalues = gvaluesG;
             args[i].otherGvalues = gvaluesR;
             args[i].hvalues = hvaluesG;
             args[i].otherHvalues = hvaluesR;
-            args[i].fvalues = fvaluesG;
             args[i].source = source;
             args[i].pos_dest = pos_dest;
             args[i].F = &FG;
@@ -201,13 +190,11 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
             args[i].costToCome = costToComeG;
         } else {
             args[i].G = R;
-            args[i].open_list = open_listR;
             args[i].parentVertex = parentVertexR;
             args[i].gvalues = gvaluesR;
             args[i].otherGvalues = gvaluesG;
             args[i].hvalues = hvaluesR;
             args[i].otherHvalues = hvaluesG;
-            args[i].fvalues = fvaluesR;
             args[i].source = dest;
             args[i].pos_dest = pos_source;
             args[i].F = &FR;
@@ -217,6 +204,7 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
         args[i].index = i;
         args[i].V = V;
         args[i].m = &m;
+        args[i].barr = &barr;
         args[i].common_pos = &common_pos;
         args[i].heuristic_type = heuristic_type;
         args[i].found = &found;
@@ -233,8 +221,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     if (common_pos != -1) {
         printf("L: %lf\n", L);
         printf("Common node: %d\n", common_pos);
-        // reconstruct_path_ab_ba(parentVertexG, parentVertexR, source,
-        // common_pos, dest, costToComeG, costToComeR);
+        reconstruct_path_ab_ba(parentVertexG, parentVertexR, source, common_pos,
+                               dest, costToComeG, costToComeR);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");
