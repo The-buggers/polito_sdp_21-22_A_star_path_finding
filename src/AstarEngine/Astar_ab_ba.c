@@ -79,11 +79,10 @@ static void *nba(void *arg) {
                         args->costToCome[b] = a_b_wt;
                         args->gvalues[b] = g_b;
                         args->fvalues[b] = f_b;
-                        if (PQsearch(args->open_list, b) != -1) {
-                            z = PQremove(args->open_list, args->fvalues, b);
-                            if (z != b) return;
-                        }
-                        PQinsert(args->open_list, args->fvalues, b);
+                        if (PQsearch(args->open_list, b) == -1)
+                            PQinsert(args->open_list, args->fvalues, b);
+                        else
+                            PQchange(args->open_list, args->fvalues, b);
 
                         if (*(args->L) >
                             (args->gvalues[b] + args->otherGvalues[b])) {
