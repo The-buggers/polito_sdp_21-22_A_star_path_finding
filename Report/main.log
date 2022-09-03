@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  29 AUG 2022 12:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  3 SEP 2022 16:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1268,7 +1268,7 @@ Underfull \hbox (badness 3058) in paragraph at lines 180--183
 \OT1/txr/m/n/10 (+20) (\OML/txmi/m/it/10 index; longitude; latitude\OT1/txr/m/n/10 (+20) )$ \T1/txr/m/n/10 (+20) where $\OML/txmi/m/it/10 index$ \T1/txr/m/n/10 (+20) is a nat-
  []
 
-<./Pictures/haversine.png, id=103, 210.7875pt x 210.7875pt>
+<./Pictures/haversine.png, id=111, 210.7875pt x 210.7875pt>
 File: ./Pictures/haversine.png Graphic file (type png)
 <use ./Pictures/haversine.png>
 Package pdftex.def Info: ./Pictures/haversine.png  used on input line 194.
@@ -1306,10 +1306,10 @@ Underfull \hbox (badness 1946) in paragraph at lines 223--225
 \T1/txr/m/n/10 (+20) (source, des-ti-na-tion) it is gen-er-ated a graph of
  []
 
-<./Pictures/google_maps.png, id=123, 639.38875pt x 408.52625pt>
+<./Pictures/google_maps.png, id=131, 639.38875pt x 408.52625pt>
 File: ./Pictures/google_maps.png Graphic file (type png)
 <use ./Pictures/google_maps.png>
-Package pdftex.def Info: ./Pictures/google_maps.png  used on input line 272.
+Package pdftex.def Info: ./Pictures/google_maps.png  used on input line 282.
 (pdftex.def)             Requested size: 188.66904pt x 120.54536pt.
 
 Package Fancyhdr Warning: \headheight is too small (10.84006pt): 
@@ -1324,96 +1324,93 @@ We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
 [2 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/haversine.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/google_maps.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 297--300
+Underfull \hbox (badness 10000) in paragraph at lines 307--310
 []\T1/txr/m/n/10 (+20) The global \T1/txr/m/it/10 (+20) par-entVer-tex \T1/txr/m/n/10 (+20) ta-ble (where
  []
 
 
-Underfull \hbox (badness 3291) in paragraph at lines 297--300
+Underfull \hbox (badness 3291) in paragraph at lines 307--310
 \T1/cmtt/m/n/10 parentVertex[i] \T1/txr/m/n/10 (+20) con-tains the par-ent node of
  []
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 361.
+               Default added (so using `tbp') on input line 369.
 
 
-Overfull \hbox (19.33138pt too wide) in paragraph at lines 363--370
+Overfull \hbox (19.33138pt too wide) in paragraph at lines 371--378
 [][] 
  []
 
 
-Overfull \hbox (11.40132pt too wide) in paragraph at lines 384--391
+Overfull \hbox (11.40132pt too wide) in paragraph at lines 392--399
 [][] 
  []
 
-<./Pictures/dijkstra_astar.png, id=136, 703.62875pt x 386.44376pt>
+<./Pictures/dijkstra_astar.png, id=144, 703.62875pt x 386.44376pt>
 File: ./Pictures/dijkstra_astar.png Graphic file (type png)
 <use ./Pictures/dijkstra_astar.png>
-Package pdftex.def Info: ./Pictures/dijkstra_astar.png  used on input line 400.
+Package pdftex.def Info: ./Pictures/dijkstra_astar.png  used on input line 408.
 (pdftex.def)             Requested size: 251.55872pt x 138.1585pt.
-
-Underfull \vbox (badness 2961) has occurred while \output is active []
-
- [3]
-<./Pictures/par_read_1_time.png, id=147, 878.28125pt x 542.025pt>
+[3]
+<./Pictures/par_read_1_time.png, id=155, 878.28125pt x 542.025pt>
 File: ./Pictures/par_read_1_time.png Graphic file (type png)
 <use ./Pictures/par_read_1_time.png>
-Package pdftex.def Info: ./Pictures/par_read_1_time.png  used on input line 430.
+Package pdftex.def Info: ./Pictures/par_read_1_time.png  used on input line 438.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/par_read_2_time.png, id=148, 878.28125pt x 542.025pt>
+<./Pictures/par_read_2_time.png, id=156, 878.28125pt x 542.025pt>
 File: ./Pictures/par_read_2_time.png Graphic file (type png)
 <use ./Pictures/par_read_2_time.png>
-Package pdftex.def Info: ./Pictures/par_read_2_time.png  used on input line 439.
+Package pdftex.def Info: ./Pictures/par_read_2_time.png  used on input line 447.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/par_read_3.png, id=150, 546.04pt x 287.0725pt>
+<./Pictures/par_read_3.png, id=158, 546.04pt x 287.0725pt>
 File: ./Pictures/par_read_3.png Graphic file (type png)
 <use ./Pictures/par_read_3.png>
-Package pdftex.def Info: ./Pictures/par_read_3.png  used on input line 470.
+Package pdftex.def Info: ./Pictures/par_read_3.png  used on input line 478.
 (pdftex.def)             Requested size: 251.55872pt x 132.25206pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 460--475
+Underfull \hbox (badness 10000) in paragraph at lines 468--483
 
  []
 
 [4 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/dijkstra_astar.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_1_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_2_time.png>]
-<./Pictures/par_read_3_time.png, id=161, 547.04375pt x 674.52pt>
+<./Pictures/par_read_3_time.png, id=169, 547.04375pt x 674.52pt>
 File: ./Pictures/par_read_3_time.png Graphic file (type png)
 <use ./Pictures/par_read_3_time.png>
-Package pdftex.def Info: ./Pictures/par_read_3_time.png  used on input line 478.
+Package pdftex.def Info: ./Pictures/par_read_3_time.png  used on input line 486.
 (pdftex.def)             Requested size: 251.55872pt x 310.18004pt.
-<./Pictures/par_read_all_time.png, id=163, 878.28125pt x 542.025pt>
+<./Pictures/par_read_all_time.png, id=171, 878.28125pt x 542.025pt>
 File: ./Pictures/par_read_all_time.png Graphic file (type png)
 <use ./Pictures/par_read_all_time.png>
-Package pdftex.def Info: ./Pictures/par_read_all_time.png  used on input line 496.
+Package pdftex.def Info: ./Pictures/par_read_all_time.png  used on input line 504.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
  [5 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_all_time.png>] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.bbl
 
 Package natbib Warning: Empty `thebibliography' environment on input line 8.
 
 ) [6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 597.
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 597.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 610.
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 610.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.xwm) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 597.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 597.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 610.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 610.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: FA2F714D646043CF355AA388161DCE23;1580.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 597.
+(rerunfilecheck)             Checksum: 9A39D011523457A187D2B8678654FE27;1726.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 610.
  ) 
 Here is how much of TeX's memory you used:
  29760 strings out of 480608
- 545886 string characters out of 5903629
+ 545928 string characters out of 5903629
  963932 words of memory out of 5000000
- 44675 multiletter control sequences out of 15000+600000
- 603325 words of font info for 319 fonts, out of 8000000 for 9000
+ 44677 multiletter control sequences out of 15000+600000
+ 603062 words of font info for 316 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 76i,19n,96p,604b,1165s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 76i,16n,96p,604b,1167s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/bitstrea/charter/bchb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtcxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxbsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1728.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txex.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.pdf" (6 pages, 1855503 bytes).
+Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.pdf" (6 pages, 1856259 bytes).
 PDF statistics:
- 236 PDF objects out of 1000 (max. 8388607)
- 197 compressed objects within 2 object streams
- 46 named destinations out of 1000 (max. 500000)
- 36597 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 245 PDF objects out of 1000 (max. 8388607)
+ 205 compressed objects within 3 object streams
+ 48 named destinations out of 1000 (max. 500000)
+ 36613 words of extra memory for PDF output out of 42996 (max. 10000000)
 

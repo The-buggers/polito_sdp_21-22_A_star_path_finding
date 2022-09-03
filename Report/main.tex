@@ -246,22 +246,32 @@ To analyze the performance of the different versions of A* algorithms we have us
 	\centering
 	\begin{tabular}{ |l|l|l|l| }
 		\hline
-		Nodes & Edges & Source & Dest \\ 
+		\textit{Nodes} & \textit{Edges} & \textit{Source} & \textit{Dest} \\ 
     \hline
 		\multicolumn{4}{ |c| }{\bf{Random map}} \\
 		\hline
 		\multirow{1}{*}{}
 		 101& - & 0 & 100\\
 		\hline
-		\multicolumn{4}{ |c| }{\bf{California(BAY) map}} \\
+		\multicolumn{4}{ |c| }{\bf{California(BAY)}} \\
 		\hline
 		\multirow{1}{*}{}
 		321270& 800172 & 321269 & 263446\\
 		\hline
-		\multicolumn{4}{ |c| }{\bf{Florida(FLA) map}} \\
+		\multicolumn{4}{ |c| }{\bf{Florida(FLA)}} \\
 		\hline
 		\multirow{1}{*}{}
-		1070376& 2712798 & 0 & 103585\\
+		1070376 & 2712798 & 0 & 103585\\
+		\hline
+    \multicolumn{4}{ |c| }{\bf{Western USA(W)}} \\
+		\hline
+		\multirow{1}{*}{}
+		6262104 & 15248146 & 1523755 & 1953083\\
+		\hline
+    \multicolumn{4}{ |c| }{\bf{Full USA(USA)}} \\
+		\hline
+		\multirow{1}{*}{}
+		23947347 & 58333344 & 14130775 & 810300\\
 		\hline
 	\end{tabular}
 \end{table}
@@ -348,9 +358,7 @@ $openSet := \{(s, f[s])\}$\;
       $costToCome[b] \gets wt$\;
       $g[b] \gets tentativeScore$\;
       $f[b] \gets g[b] + h[b]$\;
-      \If{$!openSet.CONTAINS(b)$}{
-        $openSet.PUSH((b, f[b]))$\;
-      }
+      $openSet.PUSH((b, f[b]))$\;
     }
   }
 }
@@ -542,12 +550,12 @@ fact is that HDA* doesn't provide the same guarantees of the sequential algorith
   \item In HDA* we loose these guarantees: since we don't know in which order nodes will be processed
         it could happen that a longest path to \textit{dest} is found before the shortest one so
         a node could be opened more than once and expanding the \textit{dest} node doesn't
-        mean that we have terminated
+        mean that we have terminated.
 \end{itemize}
 \paragraph{Distributed Termination Condition}
 If in the sequential algorithm expanding the node \textit{dest} triggers the end of the algorithm (despite
 the fact that the \textit{OPEN SET} could be not empty) in HDA* this is not valid anymore: when a thread
-is working on its \textit{OPEN SET} is is expanding nodes putting their neighbors in the correct
+is working on its \textit{OPEN SET} it is expanding nodes putting their neighbors in the
 \textit{OPEN SET} of another thread. When thread $t_i$ has its \textit{OPEN SET} empty it could think
 to have finished its work but this is not true because another thread $t_j$ could be sending
 to $t_i$ some nodes to be still processed in the meanwhile.
@@ -561,6 +569,11 @@ to $t_i$ some nodes to be still processed in the meanwhile.
 \subsection{Results}
 (Plots with the comparison of all the models with sequential A* on
 random, BAY, FLA)
+
+\subsection{Parallel Bidirectional Search}
+(Explanation + Pseudocode)
+\subsubsection{Results}
+(Plots to show thread 1 and 2 works, plots of time)
 
 \section{Complete Results}
 (Tables with numbers)
