@@ -55,10 +55,10 @@ static void *nba(void *arg) {
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
 #endif
-        pthread_spin_lock(args->m);
+        // pthread_spin_lock(args->m);
         if (args->M[a] == 1) {
-            pthread_spin_unlock(args->m);
-            // For each successor 'b' of node 'a':
+            // pthread_spin_unlock(args->m);
+            //  For each successor 'b' of node 'a':
             if ((args->fvalues[a] < *(args->L)) &&
                 (args->gvalues[a] + *(args->otherF) - args->otherHvalues[a] <
                  *(args->L))) {
@@ -71,10 +71,10 @@ static void *nba(void *arg) {
                     g_b = args->gvalues[a] + a_b_wt;
                     f_b = g_b + args->hvalues[b];
 
-                    pthread_spin_lock(args->m);
+                    // pthread_spin_lock(args->m);
                     if (args->M[b] == 1 &&
                         args->gvalues[b] > args->gvalues[a] + a_b_wt) {
-                        pthread_spin_unlock(args->m);
+                        // pthread_spin_unlock(args->m);
                         args->parentVertex[b] = a;
                         args->costToCome[b] = a_b_wt;
                         args->gvalues[b] = g_b;
@@ -86,24 +86,24 @@ static void *nba(void *arg) {
 
                         if (*(args->L) >
                             (args->gvalues[b] + args->otherGvalues[b])) {
-                            pthread_spin_lock(args->m);
+                            // pthread_spin_lock(args->m);
                             if (*(args->L) >
                                 (args->gvalues[b] + args->otherGvalues[b])) {
                                 *(args->common_pos) = b;
                                 *(args->L) =
                                     (args->gvalues[b] + args->otherGvalues[b]);
                             }
-                            pthread_spin_unlock(args->m);
+                            // pthread_spin_unlock(args->m);
                         }
-                    } else
-                        pthread_spin_unlock(args->m);
+                    }  // else
+                    // pthread_spin_unlock(args->m);
                 }
             }
-            pthread_spin_lock(args->m);
+            // pthread_spin_lock(args->m);
             args->M[a] = 0;
-            pthread_spin_unlock(args->m);
-        } else
-            pthread_spin_unlock(args->m);
+            // pthread_spin_unlock(args->m);
+        }  // else
+        // pthread_spin_unlock(args->m);
 
         if (!PQempty(args->open_list)) {
             *(args->F) = args->fvalues[PQshowMin(args->open_list)];
@@ -234,8 +234,8 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     if (common_pos != -1) {
         printf("L: %lf\n", L);
         printf("Common node: %d\n", common_pos);
-        reconstruct_path_ab_ba(parentVertexG, parentVertexR, source, common_pos,
-                               dest, costToComeG, costToComeR);
+        // reconstruct_path_ab_ba(parentVertexG, parentVertexR, source,
+        // common_pos, dest, costToComeG, costToComeR);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");

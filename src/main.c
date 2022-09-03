@@ -60,21 +60,22 @@ int main(int argc, char* argv[]) {
     G = GRAPHload_sequential(argv[1]);
 #endif
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
-
-    start_timer(&begin);
-    // ASTARshortest_path_sequential(G, source, dest, heuristic_type);
-    // ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
-    // ASTARshortest_path_sas_sf_v2(G, source, dest,
-    // heuristic_type,num_threads); ASTARshortest_path_sas_b(G, source, dest,
-    // heuristic_type,num_threads); ASTARshortest_path_fa(G, source, dest,
-    // heuristic_type,num_threads); ASTARshortest_path_mp(G, source, dest,
-    // heuristic_type,num_threads);
-    ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
-    // DIJKSTRA_shortest_path_sequential(G, source, dest);
-    // ASTARshortest_path_nps(G, source, dest, heuristic_type);
-    // ASTARshortest_path_phs(G, source, dest, heuristic_type);
-    printf("A* algorithm time: %.9f seconds\n#threads: %d\n", stop_timer(begin),
-           num_threads);
+    for (int i = 0; i < 10; i++) {
+        start_timer(&begin);
+        // ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+        // ASTARshortest_path_sas_sf(G, source, dest, heuristic_type,
+        // num_threads); ASTARshortest_path_sas_sf_v2(G, source, dest,
+        // heuristic_type,num_threads); ASTARshortest_path_sas_b(G, source,
+        // dest, heuristic_type,num_threads); ASTARshortest_path_fa(G, source,
+        // dest, heuristic_type,num_threads); ASTARshortest_path_mp(G, source,
+        // dest, heuristic_type,num_threads);
+        ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
+        // DIJKSTRA_shortest_path_sequential(G, source, dest);
+        // ASTARshortest_path_nps(G, source, dest, heuristic_type);
+        // ASTARshortest_path_phs(G, source, dest, heuristic_type);
+        printf("A* algorithm time: %.9f seconds\n#threads: %d\n",
+               stop_timer(begin), num_threads);
+    }
     // fprintf(fperf, "%.9f\n", stop_timer(begin));
     fclose(fperf);
     return 0;
