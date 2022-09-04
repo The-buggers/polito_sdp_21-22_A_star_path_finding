@@ -1,7 +1,7 @@
 #ifndef ASTAR_H
 #define ASTAR_H
 #define DEBUG_ASTAR 0
-#define COLLECT_STAT 0
+#define COLLECT_STAT 1
 #include "../Graph/Graph.h"
 #include "../Graph/PQ.h"
 #include "../Graph/Position.h"

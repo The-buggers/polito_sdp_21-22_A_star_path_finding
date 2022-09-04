@@ -63,7 +63,7 @@ static void *nba(void *arg) {
         fvalues[v] = maxWT;
     }
 #if COLLECT_STAT
-    int *expanded_nodes = (int *)calloc(V, sizeof(int));
+    int *expanded_nodes = (int *)calloc(args->V, sizeof(int));
 #endif
     fvalues[args->source] =
         compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
@@ -228,11 +228,11 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
 #if COLLECT_STAT
     int n = 0, tot = 0;
     FILE *fp = fopen("./stats/stat_astar_ab_ba.txt", "w+");
-    for (v = 0; v < V; v++) {
-        if (expanded_nodes[v] != 0) {
+    for (i = 0; i < V; i++) {
+        if (expanded_nodes[i] != 0) {
             n++;
-            tot += expanded_nodes[v];
-            fprintf(fp, "%d\n", v);
+            tot += expanded_nodes[i];
+            fprintf(fp, "%d\n", i);
         }
     }
     printf("Distict expanded nodes: %d [of %d]\nTotal expanded nodes: %d\n", n,
