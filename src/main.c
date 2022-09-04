@@ -6,76 +6,123 @@
 #include "./AstarEngine/Astar.h"
 #include "./DijkstraEngine/Dijkstra.h"
 #include "./Graph/Graph.h"
-#define MAXC 11
-#define PARALLELREADTYPE 4
+#define MAXC 10
+#define MEASURE_ALGORITHM 1
 void start_timer(struct timespec* begin);
 double stop_timer(struct timespec begin);
 
 int main(int argc, char* argv[]) {
-    Graph G;
+    Graph G, R;
     FILE* fperf;
     struct timespec begin, end;
+    int reading_type, reading_threads;
+    char algo_type[MAXC], heuristic_type;
     int partitions_nodes, partitions_edges, th_nodes, th_edges, source, dest,
         num_threads;
-    char heuristic_type;
 
-    // Get command line parameters
-    source = atoi(argv[2]);
-    dest = atoi(argv[3]);
-    num_threads = atoi(argv[4]);
-    heuristic_type = argv[5][0];
-    fperf = fopen("out.txt", "a");
-    // Start computation
+    /////////////////
+    /// READING ////
+    ////////////////
+    reading_type = atoi(argv[2]);
     start_timer(&begin);
-#if PARALLELREADTYPE == 3
-    // ######################################
-    // ### TEST PARALLEL READ - VERSION 3 ###
-    // ######################################
-    printf("Parallel read type: 3\n");
-    G = GRAPHload_parallel3(argv[1], 3, 3, 2, 2);
-#elif PARALLELREADTYPE == 2
-    // ######################################
-    // ### TEST PARALLEL READ - VERSION 2 ###
-    // ######################################
-    printf("Parallel read type: 2\n");
-    G = GRAPHload_parallel2(argv[1], 2);
-#elif PARALLELREADTYPE == 4
-    // ######################################
-    // ### TEST PARALLEL READ - VERSION 4 ###
-    // ######################################
-    Graph R;
-    printf("Parallel read type: 4\n");
-    GRAPHload_parallel4(argv[1], 2, &G, &R);
-#elif PARALLELREADTYPE == 1
-    // ######################################
-    // ### TEST PARALLEL READ - VERSION 1 ###
-    // ######################################
-    printf("Parallel read type: 1\n");
-    G = GRAPHload_parallel1(argv[1], num_threads);
-#elif PARALLELREADTYPE == 0
-    // ############################
-    // ### TEST SEQUENTIAL READ ###
-    // ############################
-    printf("Sequential read\n");
-    G = GRAPHload_sequential(argv[1]);
-#endif
+    switch(reading_type){
+        case 3:
+            // parallel reading approach 3
+            partitions_nodes = atoi(argv[3]);
+            partitions_edges = atoi(argv[4]);
+            th_nodes = atoi(argv[5]);
+            th_edges = atoi(argv[6]);
+            strcpy(algo_type, argv[7]);
+            if(strcmp(algo_type, "seq")!=0 && strcmp(algo_type, "dijkstra")!=0 && strcmp(algo_type, "pnba")!=0){
+                num_threads = atoi(argv[8]);
+                source = atoi(argv[9]);
+                dest = atoi(argv[10]);
+                heuristic_type = argv[11][0];
+            }else{
+                source = atoi(argv[8]);
+                dest = atoi(argv[9]);
+                heuristic_type = argv[10][0];
+            }
+            printf("Parallel Reading Approach: 3\n");
+            G = GRAPHload_parallel3(argv[1], partitions_nodes, partitions_edges, th_nodes, th_edges);
+        break;
+        case 0: 
+            // sequential reading
+            strcpy(algo_type, argv[3]);
+            if(strcmp(algo_type, "seq")!=0 && strcmp(algo_type, "dijkstra")!=0 && strcmp(algo_type, "pnba")!=0){
+                num_threads = atoi(argv[4]);
+                source = atoi(argv[5]);
+                dest = atoi(argv[6]);
+                heuristic_type = argv[7][0];
+            }else{
+                source = atoi(argv[4]);
+                dest = atoi(argv[5]);
+                heuristic_type = argv[6][0];
+            }
+            printf("Sequential Reading\n");
+            G = GRAPHload_sequential(argv[1]);
+        break;
+        case 4:
+            // parallel reading approach 2 for PNBA*
+            reading_threads = atoi(argv[3]);
+            strcpy(algo_type, argv[4]);
+            if(strcmp(algo_type, "seq")!=0 && strcmp(algo_type, "dijkstra")!=0 && strcmp(algo_type, "pnba")!=0){
+                num_threads = atoi(argv[5]);
+                source = atoi(argv[6]);
+                dest = atoi(argv[7]);
+                heuristic_type = argv[8][0];
+            }else{
+                source = atoi(argv[5]);
+                dest = atoi(argv[6]);
+                heuristic_type = argv[7][0];
+            }
+            printf("Parallel Reading Approach: 2 - Read G and R\n");
+            GRAPHload_parallel4(argv[1], reading_threads, &G, &R);
+        default:
+            // reading approach 1,2
+            reading_threads = atoi(argv[3]);
+            strcpy(algo_type, argv[4]);
+            if(strcmp(algo_type, "seq")!=0 && strcmp(algo_type, "dijkstra")!=0 && strcmp(algo_type, "pnba")!=0){
+                num_threads = atoi(argv[5]);
+                source = atoi(argv[6]);
+                dest = atoi(argv[7]);
+                heuristic_type = argv[8][0];
+            }else{
+                source = atoi(argv[5]);
+                dest = atoi(argv[6]);
+                heuristic_type = argv[7][0];
+            }
+            printf("Parallel Reading Approach: %d\n", reading_type);
+            G = GRAPHload_parallel2(argv[1], reading_threads);
+        break;
+    }
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
+    fperf = fopen("out.txt", "a");
+
+#if MEASURE_ALGORITHM
+    //////////////////
+    /// ALGORITHM ////
+    //////////////////
     start_timer(&begin);
-    // ASTARshortest_path_sequential(G, source, dest, heuristic_type);
-    // ASTARshortest_path_sas_sf(G, source, dest, heuristic_type,
-    // num_threads); ASTARshortest_path_sas_sf_v2(G, source, dest,
-    // heuristic_type,num_threads); ASTARshortest_path_sas_b(G, source,
-    // dest, heuristic_type,num_threads); ASTARshortest_path_fa(G, source,
-    // dest, heuristic_type,num_threads); ASTARshortest_path_mp(G, source,
-    // dest, heuristic_type,num_threads);
-    ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
-    // DIJKSTRA_shortest_path_sequential(G, source, dest);
-    // ASTARshortest_path_nps(G, source, dest, heuristic_type);
-    // ASTARshortest_path_phs(G, source, dest, heuristic_type);
-    printf("A* algorithm time: %.9f seconds\n#threads: %d\n", stop_timer(begin),
-           num_threads);
+    if(strcmp(algo_type, "seq")==0){
+        ASTARshortest_path_sequential(G, source, dest, heuristic_type);
+    }else if(strcmp(algo_type, "dijkstra")==0){
+        DIJKSTRA_shortest_path_sequential(G, source, dest);
+    }else if(strcmp(algo_type, "fa")==0){
+        ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
+    }else if(strcmp(algo_type, "sf")==0){
+        ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
+    }else if(strcmp(algo_type, "b")==0){
+        ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
+    }else if(strcmp(algo_type, "sf2")==0){
+        ASTARshortest_path_sas_sf_v2(G, source, dest, heuristic_type, num_threads);
+    }else if(strcmp(algo_type, "pnba")==0){
+        ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
+    }
+    printf("A* algorithm time: %.9f seconds\n#threads: %d\n", stop_timer(begin), num_threads);
     // fprintf(fperf, "%.9f\n", stop_timer(begin));
     fclose(fperf);
+#endif
     return 0;
 }
 
