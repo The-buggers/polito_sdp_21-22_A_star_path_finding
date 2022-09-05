@@ -36,7 +36,7 @@ static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, k_a, k_b;
     Position p;
-    double f_extracted_node, g_b, f_b, a_b_wt, tot_cost = 0;
+    double g_b, f_b, a_b_wt, tot_cost = 0;
     link t;
     int *open_set_empty = args->open_set_empty, count;
 
@@ -48,19 +48,15 @@ static void *hda(void *arg) {
             if (PQempty(args->open_lists[args->index])) {
                 pthread_mutex_unlock(&(args->mut_threads[args->index]));
                 break;
-            } else
+            } else {
+                open_set_empty[args->index] = 0;
                 pthread_mutex_unlock(&(args->mut_threads[args->index]));
-
-            pthread_mutex_lock(&(args->mut_threads[args->index]));
-            open_set_empty[args->index] = 0;
-            pthread_mutex_unlock(&(args->mut_threads[args->index]));
+            }
 
             // POP the node with min f(n)
             pthread_mutex_lock(&(args->mut_threads[args->index]));
-            f_extracted_node =
-                args->t_fvalues[args->index]
-                               [a = PQextractMin(args->open_lists[args->index],
-                                                 args->t_fvalues[args->index])];
+            a = PQextractMin(args->open_lists[args->index],
+                             args->t_fvalues[args->index]);
             pthread_mutex_unlock(&(args->mut_threads[args->index]));
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
@@ -68,12 +64,12 @@ static void *hda(void *arg) {
 
             // NEW: duplicate check
             // pthread_mutex_lock(&(args->mut_nodes[a]));
-            if (args->closed_set[a] != -1 &&
-                args->closed_set[a] <= args->gvalues[a]) {
-                // pthread_mutex_unlock(&(args->mut_nodes[a]));
-                continue;
-            }
-            args->closed_set[a] = args->gvalues[a];
+            // if (args->closed_set[a] != -1 &&
+            //     args->closed_set[a] <= args->gvalues[a]) {
+            // pthread_mutex_unlock(&(args->mut_nodes[a]));
+            //     continue;
+            // }
+            // args->closed_set[a] = args->gvalues[a];
             // pthread_mutex_unlock(&(args->mut_nodes[a]));
 
             // For each successor 'b' of node 'a':
@@ -84,7 +80,6 @@ static void *hda(void *arg) {
                 a_b_wt = LINKget_wt(t);
 
                 // Compute the owner of a (k_a == index) and b (k_b)
-                k_a = hash_function2(a, args->num_threads, args->V);
                 k_b = hash_function2(b, args->num_threads, args->V);
 
                 // Acquire the lock for vertex a and take g(a)
@@ -95,12 +90,13 @@ static void *hda(void *arg) {
                 f_b = g_b + args->hvalues[b];
 
                 // NEW: duplicate check
-                pthread_mutex_lock(&(args->mut_nodes[b]));
-                if (args->closed_set[b] != -1 && args->closed_set[b] <= g_b) {
-                    pthread_mutex_unlock(&(args->mut_nodes[b]));
-                    continue;
-                }
-                pthread_mutex_unlock(&(args->mut_nodes[b]));
+                // pthread_mutex_lock(&(args->mut_nodes[b]));
+                // if (args->closed_set[b] != -1 && args->closed_set[b] <= g_b)
+                // {
+                //     pthread_mutex_unlock(&(args->mut_nodes[b]));
+                //     continue;
+                // }
+                // pthread_mutex_unlock(&(args->mut_nodes[b]));
 
                 // Update gvalues, fvalues, parentVertex, costToCome
                 pthread_mutex_lock(&(args->mut_nodes[b]));
@@ -111,11 +107,7 @@ static void *hda(void *arg) {
                     args->gvalues[b] = g_b;
                     pthread_mutex_lock(&(args->mut_threads[k_b]));
                     args->t_fvalues[k_b][b] = f_b;
-                    // if (PQsearch(args->open_lists[k_b], b) == -1)
                     PQinsert(args->open_lists[k_b], args->t_fvalues[k_b], b);
-                    // else
-                    //     PQchange(args->open_lists[k_b], args->t_fvalues[k_b],
-                    //              b);
                     pthread_mutex_unlock(&(args->mut_threads[k_b]));
                 }
                 pthread_mutex_unlock(&(args->mut_nodes[b]));
@@ -131,12 +123,9 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&(args->mut_threads[args->index]));
 
             // If all the threads have the message queue empty terminate
-            for (i = 0, count = 0; i < args->num_threads; i++) {
+            for (i = 0, count = 0; i < args->num_threads; i++)
                 count += open_set_empty[i];
-            }
-            if (count == args->num_threads) {
-                break;
-            }
+            if (count == args->num_threads) break;
         }
     }
     pthread_exit(NULL);
