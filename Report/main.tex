@@ -8,10 +8,11 @@
 \documentclass[twocolumn, switch]{article} % Method A for two-column formatting
 
 \usepackage{preprint}
-
+\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
 %% Math packages
-\usepackage{amsmath, amsthm, amssymb, amsfonts, algorithm2e, algpseudocode, graphicx, caption, subcaption, multirow}
+\usepackage{amsmath, comment, amsthm, amssymb, amsfonts, algorithm2e, algpseudocode, multicol,  graphicx, caption, subcaption, multirow}
 \RestyleAlgo{ruled}
+%\SetAlFnt{\scriptsize}
 \graphicspath{ {./Pictures/} }
 %% Bibliography options
 \usepackage[numbers,square]{natbib}
@@ -585,7 +586,7 @@ its owner $t_j$ a message is sent to $t_j$. Since the message
 queue is unique for all the threads each thread needs to be able to process
 only messages directed to it. Each thread mantains all the data structures as private (\textit{OPEN SET},
 \textit{parentVertex}, \textit{costToCome}) and the only way it has communicate with other threads
-is via message passing.
+is via message passing. The termination condition that has been implemented is the Barrier Method (B).
 \paragraph{Message Structure} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
 \begin{itemize}
   \item Message id: the identifier of the owener thread $t_j$
@@ -597,16 +598,104 @@ is via message passing.
 \paragraph{Message Based Path Reconstruction}
 What it makes not trivial the path reconstruction phase in the Message Passing model
 is that $parentVertex$ and $costToCome$ data structures are not shared but they are private
-for each thread. Path reconstruction needs to be done in a message passing fashion starting
+for each thread. This means that thread $t_i$ will have inside $parentVertex_i$, once the algorithm is terminated, 
+a consistent value of $parentVertex_i[n]$ only for the nodes $n$ it is the owner of. This implies that if
+we want to know which is the parent node of node $n$ in the final path this information
+is stored in $parentVertex_i[n]$ (where $t_i$ is the parent of $n$). Path reconstruction needs to be done in a message passing fashion starting
 from the destination's thread owner $t_d$. What happens is that $t_d$ sends a message to
-the owner of $parentVertex_d[dest] = parent_dest$ that we call $t_k$. In this way $t_k$ will send a message
-to $parentVertex_k[parent_dest] = parent_parent_dest$ and so on and so forth till we have reach
-the first node of the path.
+the owner of $parentVertex_d[dest]$ (abbreviated as $pV_d[dest]$) that we call $t_k$. Immediately after $t_k$ will send a message
+to $pV_k[pV_d[dest]]$ and so on and so forth till we have reached the first node of the path (the one with $pV_x[firstnode] = -1$ where
+$t_x$ is the owner of $firstnode$).
 \subsubsection{Shared Address Space Model}
-\paragraph{Barrier(SAS-B)}
-(Explanation + Pseudocode?)
-\paragraph{Barrier(SAS-SF)}
-(Explanation + Pseudocode?)
+This approach applies the explained concepts of HDA* by using a communication method
+among threads that exploits the shared address space (SAS). There is:
+\begin{itemize}
+  \item A global array of \textit{OPEN SETs} that here we call $A$ where
+        $A[i]$ contains a pointer to the \textit{OPEN SET} of thread $t_i$ and the size
+        of $A$ is $N$ (the number of threads).
+  \item The $parentVertex$ and $costToCome$ data structures are shared among all the threads.
+\end{itemize}
+This approach clearly requires locks so that the operations on the shared data structures
+can happen in mutual exclusion. In particular we need:
+\begin{itemize}
+  \item One lock $L1$ for each \textit{OPEN SET} so for each $A[i] \;\forall i \in \{1..N\}$.
+  \item One lock $L2$ for each node of the graph in order to correctly update $parentVertex$ and $costToCome$ data structures.
+\end{itemize}
+With SAS both the barrier (B) and the sum-flag (SF) distributed termination conditions
+have been implemented to compare their performances.
+The pseudocode in \ref{sas} better details all the opearations.
+\subsection{Pseudocode}
+\begin{comment}
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm*}[] 
+\caption{SAS-HDA*}\label{sas}
+\KwData{Graph G(V,E), Source s, Destination d, Heurstic h}
+\KwResult{Best path from s to d and relative cost}
+\SetKwFunction{FMain}{HDAWrapper}
+  \SetKwProg{Fn}{Function}{:}{}
+  \Fn{\FMain{$source$, $dest$, $N$, $heuristic$}}{
+        $g[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
+        $h[i] \gets heuristic(i, dest) \; \forall i \in V$\;
+        $parentVertex[i] \gets -1 \; \forall i \in V$\;
+        $t\_owner \gets hash(source, num\_threads)$\;
+        $f[t\_owner][source] \gets h[s]$\;
+        $g[source] \gets 0$\;
+        $openSet[t\_owner] := \{(source, f[t\_owner][source])\}$\;
+        Initialize $N$ $mutex\_threads$\;
+        Initialize $V$ $mutex\_nodes$\;
+        Launch $N$ threads\;
+        Join $N$ threads\;
+        Reconstruct final path\;
+        \KwRet\;
+}
+\SetKwFunction{FHDA}{HDA}
+  \SetKwProg{Fn}{Function}{:}{}
+  \Fn{\FHDA{$index$, $dest$, $N$, $heuristic$}}{
+    \While{$1$}{
+      \While{$!openSet[index].EMPTY()$}{
+        LOCK($mutex\_threads[index]$)
+        $a \gets openSet.POP()$\;
+        UNLOCK($mutex\_threads[index]$)
+      }
+      \If($a$ is duplicate){
+        continue\;
+      }
+      \ForEach{neighbor $b$ of $a$}{
+        $wt \gets weight(a, b)$\;
+        $tentativeScore \gets g[a] + wt$\;
+        \If{$tentativeScore$ is less than $g[b]$}{
+          $owner\_a \gets hash(a,N)$\;
+          $owner\_b \gets hash(b,N)$\;
+          \If($b$ is duplicate){
+            continue\;
+          }
+          LOCK($mutex\_nodes[a]$)
+          $tentativeScore \gets g[a] + wt$\;
+          UNLOCK($mutex\_nodes[a]$)
+
+          LOCK($mutex\_nodes[b]$)
+          \If{$tentativeScore$ is less than $g[b]$}{
+            $parentVertex[b] \gets a$\;
+            $costToCome[b] \gets wt$\;
+            $g[b] \gets tentativeScore$\;
+            $f[b] \gets g[b] + h[b]$\;
+            LOCK($mutex\_threads[owner\_b]$)
+            $f[owner\_b][b] \gets f[b]$\;
+            $openSet.PUSH((b, f[b]))$\;
+            UNLOCK($mutex\_threads[owner\_b]$)
+          }
+          UNLOCK($mutex\_nodes[a]$)
+        }
+      }
+
+      \If{$openSet[index].EMPTY()$ and $parentVertex[b] != -1$}{
+        Terminate according to B or SF\;
+      }
+    }
+        \KwRet\;
+}
+\end{algorithm*}
+\end{comment}
 \subsection{Results}
 (Plots with the comparison of all the models with sequential A* on
 random, BAY, FLA)

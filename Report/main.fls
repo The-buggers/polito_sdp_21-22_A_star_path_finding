@@ -159,6 +159,8 @@ INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amsmath/amsbsy.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amsmath/amsbsy.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amsmath/amsopn.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amsmath/amsopn.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/comment/comment.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/comment/comment.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amscls/amsthm.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amscls/amsthm.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/amssymb.sty
@@ -179,6 +181,8 @@ INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algpseudocode.st
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/tools/multicol.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/tools/multicol.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/caption/caption.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/caption/caption.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/caption/caption3.sty
