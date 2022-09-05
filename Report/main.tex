@@ -553,6 +553,24 @@ fact is that HDA* doesn't provide the same guarantees of the sequential algorith
         a node could be opened more than once and expanding the \textit{dest} node doesn't
         mean that we have terminated.
 \end{itemize}
+\paragraph{Hash Function}
+The way how the threads divide among themself the work to be done happens using
+a \textit{hash function}. The hash function that we have employeed is simply
+\begin{center}
+  $hash(node\_index, num\_threads) = node\_index \;\%\; num\_threads$
+\end{center}
+As we will realize togheter this fully equal work distribution could be not the
+optimal choice in a road network. 
+\begin{figure}[ht!]
+  \centering
+  \small
+  \includegraphics[width=0.5\linewidth]{hda_work_BAY.png}
+  \caption{HDA* work distribution among 3 threads in BAY map}
+  \label{hdawork}
+\end{figure}
+As we can see in figure \ref{hdawork} with 3 thread the work distribution is so equal
+among the 3 threads that the way how each thread works for finding an optimal path
+to destination could be not the best choice??.
 \paragraph{Distributed Termination Condition}
 If in the sequential algorithm expanding the node \textit{dest} triggers the end of the algorithm (despite
 the fact that the \textit{OPEN SET} could be not empty) in HDA* this is not valid anymore: when a thread
