@@ -26,6 +26,7 @@ double heuristic_haversine(Position source, Position dest);
 double heuristic(Position p1, Position p2, char heuristic_type);
 double compute_f(double h, double g);
 int hash_function(int index, int Nthread);
+int hash_function2(int index, int Nthread, int V);
 void reconstruct_path(int *parentVertex, int source, int dest,
                       double *costToCome);
 void reconstruct_path_ab_ba(int *parentVertexG, int *parentVertexR, int source,

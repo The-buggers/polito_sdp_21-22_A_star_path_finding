@@ -10,6 +10,13 @@ double heuristic_haversine(Position source, Position dest) {
 double compute_f(double h, double g) { return h + g; }
 
 int hash_function(int index, int Nthread) { return index % Nthread; }
+int hash_function2(int index, int Nthread, int V) {
+    int nxt = V / Nthread;
+    for (int i = 1; i <= Nthread; i++) {
+        if (index < (nxt * i)) return i - 1;
+    }
+    return 0;
+}
 
 double heuristic(Position p1, Position p2, char heuristic_type) {
     if (heuristic_type == 'h') {
