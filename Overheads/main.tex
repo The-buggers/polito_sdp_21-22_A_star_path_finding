@@ -1,4 +1,7 @@
-\documentclass{beamer}
+\documentclass[12pt]{beamer}
+%\usepackage{amsmath, comment, amsthm, amssymb, amsfonts, multicol,  graphicx, caption, subcaption, multirow}
+\usepackage{algorithm,algorithmic}
+
 \usetheme{Boadilla}
 \title{Parallel A* Project}
 \subtitle{System And Device Programming}
@@ -8,14 +11,14 @@
 
 %\usetheme{lucid}
 \begin{document}
-	\frame {
+	\begin{frame}
 		\titlepage
-	}
-	\frame {
+	\end{frame}
+	\begin{frame}
 		\frametitle{Introduction}
 		\[\frac{-b \pm \sqrt{b^2 - c}}{2a}\]
-	}
-	\frame{
+	\end{frame}
+	\begin{frame}
 		\frametitle{Sample Page 2}
 		\framesubtitle{An Example of Lists}
 		\begin{itemize}
@@ -23,9 +26,21 @@
 			\item 2
 			\item 3
 		\end{itemize}
-	}
-	\frame{
-	    \frametitle{Paragraph Content}
-	    This is a paragraph.
-	}
+	\end{frame}
+	\begin{frame}
+		\frametitle{Sample Page 2}
+		\begin{algorithm}[H]
+			\begin{algorithmic}[1]
+			\FOR{$i=1$ to $N$}
+			\FOR{$j=1$ to $JJJJ$}
+			\STATE $energy[i*JJJ+j] =$ 
+			$ interpolate(AAA[i*JJJ+j], ZZZ)$
+			\ENDFOR
+			\ENDFOR
+			\end{algorithmic}
+			\caption{pseudocode for the calculation of }
+			\label{alg:seq}
+			\end{algorithm}
+	\end{frame}
+
 \end{document}
