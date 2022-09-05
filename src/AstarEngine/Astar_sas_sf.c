@@ -16,6 +16,7 @@ struct arg_t {
     Position pos_dest;
     pthread_cond_t *cond;
     pthread_mutex_t *mut;
+    pthread_mutex_t *node;
     pthread_mutex_t *m;
     pthread_barrier_t *barr;
     int *wait_flags;
@@ -45,21 +46,8 @@ static void *hda(void *arg) {
     // - compute h(n) for each node
     // - initialize f(n) to maxWT
     // - initialize g(n) to maxWT
-    for (i = 0; i < args->V; i++) {
-        args->previous[i] = -1;
-        args->hvalues[i] = heuristic(GRAPHget_node_position(args->G, i),
-                                     args->pos_dest, args->heuristic_type);
-        args->fvalues[i] = maxWT;
-        args->gvalues[i] = maxWT;
-        args->closed_set[i] = -1.0;
-    }
-    args->fvalues[args->source] =
-        compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
-    args->gvalues[args->source] = 0;
-    PQinsert(args->open_lists[hash_function(args->source, args->num_threads)],
-             args->fvalues, args->source);
 
-    // pthread_barrier_wait(args->barr);
+    pthread_barrier_wait(args->barr);
 
     // START
     while (1)  // while OPEN list not empty
@@ -70,25 +58,29 @@ static void *hda(void *arg) {
             args->wait_flags[args->index] = 1;
 
             pthread_mutex_lock(args->m);
-            *(args->stop_flag) += 1;
+            *(args->stop_flag) = *(args->stop_flag) + 1;
             pthread_mutex_unlock(args->m);
 
-#if DEBUG_ASTAR_SAS
-            printf("T %d signal end\n", args->index);
-#endif
+            // pthread_mutex_lock(args->m);
             if (*(args->stop_flag) == args->num_threads) {
+                // pthread_mutex_unlock(args->m);
+#if DEBUG_ASTAR
+                printf("T %d starts waiting\n", args->index);
+#endif
                 for (i = 0; i < args->num_threads; i++)
                     pthread_cond_signal(&(args->cond[i]));
                 pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
             }
+            // else
+            //     pthread_mutex_unlock(args->m);
             pthread_cond_wait(&(args->cond[args->index]),
                               &(args->mut[args->index]));
 
             if (*(args->stop_flag) == args->num_threads) {
                 pthread_mutex_unlock(&(args->mut[args->index]));
                 pthread_exit(NULL);
-            };
+            }
         }
         pthread_mutex_unlock(&(args->mut[args->index]));
 
@@ -97,52 +89,51 @@ static void *hda(void *arg) {
         f_extracted_node =
             args->fvalues[a = PQextractMin(args->open_lists[args->index],
                                            args->fvalues)];
+        pthread_mutex_unlock(&(args->mut[args->index]));
 #if COLLECT_STAT
         args->expanded_nodes[a]++;
-#endif
-        pthread_mutex_unlock(&(args->mut[args->index]));
-#if DEBUG_ASTAR_SAS
-        printf("T %d extracts node %d\n", args->index, a);
 #endif
         // For each successor 'b' of node 'a':
         for (t = GRAPHget_list_node_head(args->G, a);
              t != GRAPHget_list_node_tail(args->G, a); t = LINKget_next(t)) {
             b = LINKget_node(t);
             a_b_wt = LINKget_wt(t);
-            // Compute owers
-            owner_a = hash_function(a, args->num_threads);
-            owner_b = hash_function(b, args->num_threads);
-            // Compute f(b) = g(b) + h(b) = [g(a) + w(a,b)] + h(b)
-            pthread_mutex_lock(&(args->mut[owner_a]));
+
+            pthread_mutex_lock(&(args->node[a]));
             g_b = args->gvalues[a] + a_b_wt;
-            pthread_mutex_unlock(&(args->mut[owner_a]));
+            pthread_mutex_unlock(&(args->node[a]));
             f_b = g_b + args->hvalues[b];
 
-            pthread_mutex_lock(&(args->mut[owner_b]));
-            if (g_b < args->gvalues[b] && f_b < args->fvalues[b]) {
-#if DEBUG_ASTAR_SAS
-                printf("T %d extract %d from %d\n", args->index, b, a);
-#endif
+            pthread_mutex_lock(&(args->node[b]));
+            if (g_b < args->gvalues[b]) {
+                // Compute owers
+                owner_b = hash_function(b, args->num_threads);
+                // Compute f(b) = g(b) + h(b) = [g(a) + w(a,b)] + h(b)
                 args->previous[b] = a;
                 args->cost[b] = a_b_wt;
+
+                pthread_mutex_lock(&(args->mut[owner_b]));
                 args->gvalues[b] = g_b;
                 args->fvalues[b] = f_b;
 
+                // if (PQsearch(args->open_lists[owner_b], b) == -1)
                 PQinsert(args->open_lists[owner_b], args->fvalues, b);
+                // else
+                //     PQchange(args->open_lists[owner_b], args->fvalues, b);
+                pthread_mutex_unlock(&(args->mut[owner_b]));
 
-#if DEBUG_ASTAR_SAS
-                printf("T %d signals %d\n", args->index, owner_b);
-#endif
                 pthread_cond_signal(&(args->cond[owner_b]));
-
+#if DEBUG_ASTAR
+                printf("T %d awakes T %d\n", args->index, owner_b);
+#endif
                 if (args->wait_flags[owner_b] == 1) {
                     pthread_mutex_lock(args->m);
-                    *(args->stop_flag) -= 1;
+                    *(args->stop_flag) = *(args->stop_flag) - 1;
                     pthread_mutex_unlock(args->m);
+                    args->wait_flags[owner_b] = 0;
                 }
-                args->wait_flags[owner_b] = 0;
             }
-            pthread_mutex_unlock(&(args->mut[owner_b]));
+            pthread_mutex_unlock(&(args->node[b]));
         }
     }
 }
@@ -155,7 +146,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     int i, num_threads_nodes, *previous, *wait_flags, *closed_set,
         stop_flag = 0;
     pthread_cond_t *cond;
-    pthread_mutex_t *mut, m;
+    pthread_mutex_t *mut, *node, m;
     pthread_barrier_t barr;
     double *fvalues, *hvalues, *gvalues, *cost,
         tot_cost = 0;  // f(n) for each node n
@@ -163,20 +154,16 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     struct arg_t *args;
     Position pos_source = GRAPHget_node_position(G, source);
     Position pos_dest = GRAPHget_node_position(G, dest);
-    num_threads_nodes = (int)ceil(((float)V) / num_threads);
 
     // Matrix of priority queues
     PQ *open_lists = (PQ *)malloc(num_threads * sizeof(PQ));
-    for (i = 0; i < num_threads; i++) {
-        open_lists[i] = (PQ)malloc(
-            num_threads_nodes * (sizeof(int *) + sizeof(int *) + sizeof(int)));
-        open_lists[i] = PQinit(V);
-    }
+    for (i = 0; i < num_threads; i++) open_lists[i] = PQinit(V);
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
     cond = (pthread_cond_t *)malloc(num_threads * sizeof(pthread_cond_t));
     mut = (pthread_mutex_t *)malloc(num_threads * sizeof(pthread_mutex_t));
+    node = (pthread_mutex_t *)malloc(V * sizeof(pthread_mutex_t));
     wait_flags = (int *)malloc(num_threads * sizeof(int));
     previous = (int *)malloc(V * sizeof(int));
     fvalues = (double *)malloc(V * sizeof(double));
@@ -195,6 +182,18 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         (gvalues == NULL) || (cost == NULL) || (threads == NULL) ||
         (args == NULL))
         return;
+    // SETUP
+    for (i = 0; i < V; i++) {
+        previous[i] = -1;
+        hvalues[i] =
+            heuristic(GRAPHget_node_position(G, i), pos_dest, heuristic_type);
+        fvalues[i] = maxWT;
+        gvalues[i] = maxWT;
+        closed_set[i] = -1;
+    }
+    fvalues[source] = compute_f(hvalues[source], 0);
+    gvalues[source] = 0;
+    PQinsert(open_lists[hash_function(source, num_threads)], fvalues, source);
 
     pthread_barrier_init(&barr, NULL, num_threads);
 
@@ -203,6 +202,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         pthread_cond_init(&cond[i], NULL);
         pthread_mutex_init(&mut[i], NULL);
     }
+    for (i = 0; i < V; i++) pthread_mutex_init(&node[i], NULL);
+
     pthread_mutex_init(&m, NULL);
 
     for (i = 0; i < num_threads; i++) {
@@ -213,6 +214,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         args[i].open_lists = open_lists;
         args[i].cond = cond;
         args[i].mut = mut;
+        args[i].node = node;
         args[i].m = &m;
         args[i].wait_flags = wait_flags;
         args[i].V = V;
@@ -237,11 +239,12 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
         pthread_join(threads[i], NULL);
         pthread_cond_destroy(&cond[i]);
         pthread_mutex_destroy(&mut[i]);
-        free(open_lists[i]);
+        // free(open_lists[i]);
     }
 
     if (gvalues[dest] < maxWT) {
-        reconstruct_path(previous, source, dest, cost);
+        double t = reconstruct_path(previous, source, dest, cost);
+        printf("COSTO: %lf\n", t);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");
