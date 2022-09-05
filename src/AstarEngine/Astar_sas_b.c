@@ -42,7 +42,7 @@ static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, k_a, k_b;
     Position p;
-    double f_extracted_node, g_b, f_b, a_b_wt, tot_cost = 0;
+    double g_b, f_b, a_b_wt, tot_cost = 0;
     link t;
     barrier_t *bar = args->bar;
     int *open_set_empty = args->open_set_empty;
@@ -53,32 +53,18 @@ static void *hda(void *arg) {
 
     // If i am the owner of the source node: set g(source) = 0, f(source) =
     // g(source) + h(source) = h(source)
-    if (hash_function(args->source, args->num_threads) == args->index) {
-        // Modify gvalues[source], t_fvalues[index][source], open_list[index]
-        pthread_mutex_lock(&(args->mut_nodes[args->source]));  // lock_n(source)
-        pthread_mutex_lock(&(args->mut_threads[args->index]));  // lock_t(index)
-        args->gvalues[args->source] = 0;
-        args->t_fvalues[args->index][args->source] =
-            compute_f(args->hvalues[args->source], 0);
-        PQinsert(args->open_lists[args->index], args->t_fvalues[args->index],
-                 args->source);
-        pthread_mutex_unlock(&(args->mut_nodes[args->source]));
-        pthread_mutex_unlock(&(args->mut_threads[args->index]));
-    }
 
     // Start HDA*
     while (1) {
         while (!PQempty(args->open_lists[args->index])) {
             // POP the node with min f(n)
             pthread_mutex_lock(&(args->mut_threads[args->index]));
-            f_extracted_node =
-                args->t_fvalues[args->index]
-                               [a = PQextractMin(args->open_lists[args->index],
-                                                 args->t_fvalues[args->index])];
+            a = PQextractMin(args->open_lists[args->index],
+                             args->t_fvalues[args->index]);
+            pthread_mutex_unlock(&(args->mut_threads[args->index]));
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
 #endif
-            pthread_mutex_unlock(&(args->mut_threads[args->index]));
 
             // NEW: duplicate check
             pthread_mutex_lock(&(args->mut_nodes[a]));
@@ -98,8 +84,8 @@ static void *hda(void *arg) {
                 a_b_wt = LINKget_wt(t);
 
                 // Compute the owner of a (k_a == index) and b (k_b)
-                k_a = hash_function(a, args->num_threads);
-                k_b = hash_function(b, args->num_threads);
+                k_a = hash_function2(a, args->num_threads, args->V);
+                k_b = hash_function2(b, args->num_threads, args->V);
 
                 // Acquire the lock for vertex a and take g(a)
                 pthread_mutex_lock(&(args->mut_nodes[a]));
@@ -243,9 +229,15 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
         closed_set[v] = -1.0;
         pthread_mutex_init(&mut_nodes[v], NULL);
     }
+    gvalues[source] = 0;
+    t_fvalues[hash_function2(source, num_threads, V)][source] =
+        compute_f(hvalues[source], 0);
+    PQinsert(open_lists[hash_function2(source, num_threads, V)],
+             t_fvalues[hash_function2(source, num_threads, V)], source);
+
+    for (i = 0; i < num_threads; i++) pthread_mutex_init(&mut_threads[i], NULL);
 
     for (i = 0; i < num_threads; i++) {
-        pthread_mutex_init(&mut_threads[i], NULL);
         args[i].index = i;
         args[i].num_threads = num_threads;
         args[i].open_lists = open_lists;
