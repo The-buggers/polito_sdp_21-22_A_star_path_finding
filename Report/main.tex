@@ -541,7 +541,7 @@ The Hash-Distributed-A* (HDA*) algorithm works in a completly different way w.r.
 first attempt algorithm. It is based on the fact that each thread is \textit{owner} of a
 specific set of nodes of the Graph: given a node $n$ it is defined a hash function $f:\;f(n) = t$
 where $t \in \{1..N\}$ with $N$ the number of threads. When a thread extracts from the \textit{OPEN SET}
-(expand) a node all its neighbors are added to the \textit{OPEN SET} of the owner thread. One important
+(expands) a node all its neighbors are added to the \textit{OPEN SET} of the owner thread. One important
 fact is that HDA* doesn't provide the same guarantees of the sequential algorithm:
 \begin{itemize}
   \item In sequential A* if it's provided an heuristic function that is both \textit{admissible}
@@ -557,10 +557,51 @@ If in the sequential algorithm expanding the node \textit{dest} triggers the end
 the fact that the \textit{OPEN SET} could be not empty) in HDA* this is not valid anymore: when a thread
 is working on its \textit{OPEN SET} it is expanding nodes putting their neighbors in the
 \textit{OPEN SET} of another thread. When thread $t_i$ has its \textit{OPEN SET} empty it could think
-to have finished its work but this is not true because another thread $t_j$ could be sending
-to $t_i$ some nodes to be still processed in the meanwhile.
+to have finished its work but this might not be true because another thread $t_j$ could be sending
+to $t_i$ some nodes that have to be be processed in the meanwhile. We have employed two
+different approaches for the distributed termination condition that are:
+\begin{itemize}
+  \item Barrier method (B): when a thread realizes that its \textit{OPEN SET} is
+        empty and the cost to reach $dest$ is less than $DOUBLE_MAX$ a barrier is 
+        hitten and when all the threads have hitten the barrier
+        each one makes a check to confirm(or not) that all the \textit{OPEN SETs} of all
+        the threads are still empty. If this is not true it means that there are nodes
+        that have still to be processed and the best path to $dest$ found so far could
+        not be the optimal one otherwise all the threads can terminate.
+  \item Sum-Flag method (SF): the idea behind the sum flag method comes from the fact that
+        the Barrier mechanism could be quite expensive. In this termination condition method
+        each thread keeps a binary flag saying whether its \textit{OPEN SET} is empty
+        or not. When no more nodes are inside it the flag is set and if $\sum_{i=1}^{N}flag[i] = N$
+        we can terminate.
+\end{itemize}
+What it differentiates the algorithms we have implemented is not only
+the distributed termination condition (B or SF) but also the way how the threads
+communicate with each other. This can be done using a shared address space (SAS) approach (that will
+need to cope with mutual exclusion) or a message passing (MP) model.
 \subsubsection{Message Passing Model}
-(Explanation + Pseudocode?)
+One way of achieving the communication among threads is message passing. This mechanism is based
+on Message Queues: when thread $t_i$ expands a node and computes(through the hash function) 
+its owner $t_j$ a message is sent to $t_j$. Since the message
+queue is unique for all the threads each thread needs to be able to process
+only messages directed to it. Each thread mantains all the data structures as private (\textit{OPEN SET},
+\textit{parentVertex}, \textit{costToCome}) and the only way it has communicate with other threads
+is via message passing.
+\paragraph{Message Structure} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
+\begin{itemize}
+  \item Message id: the identifier of the owener thread $t_j$
+  \item The index of the node $n$
+  \item The parent node of $n$ (the one expanded from the \textit{OPEN SET} of $t_i$)
+  \item The value of $g(n)$ according to $t_i$
+  \item The value of $f(n)$ according to $t_i$
+\end{itemize}
+\paragraph{Message Based Path Reconstruction}
+What it makes not trivial the path reconstruction phase in the Message Passing model
+is that $parentVertex$ and $costToCome$ data structures are not shared but they are private
+for each thread. Path reconstruction needs to be done in a message passing fashion starting
+from the destination's thread owner $t_d$. What happens is that $t_d$ sends a message to
+the owner of $parentVertex_d[dest] = parent_dest$ that we call $t_k$. In this way $t_k$ will send a message
+to $parentVertex_k[parent_dest] = parent_parent_dest$ and so on and so forth till we have reach
+the first node of the path.
 \subsubsection{Shared Address Space Model}
 \paragraph{Barrier(SAS-B)}
 (Explanation + Pseudocode?)
