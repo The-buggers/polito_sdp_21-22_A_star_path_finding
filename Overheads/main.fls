@@ -245,14 +245,12 @@ INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamericononline.20.pd
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamericononline.20.pdf
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithm.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithm.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/float/float.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithmic.sty
-INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithmic.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerthemeBoadilla.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerthemeBoadilla.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamercolorthemerose.sty
@@ -331,18 +329,48 @@ INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/sansmathaccent/mathker
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmss10.tfm
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmss12.tfm
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmssi12.tfm
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/google_maps.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/google_maps.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/google_maps.png
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmss10.tfm
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/dijkstra_astar.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/dijkstra_astar.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/dijkstra_astar.png
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmtt12.tfm
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_1_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_1_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_1_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_2_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_2_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_2_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_all_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_all_time.png
+INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_all_time.png
 OUTPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.nav
 OUTPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc
 OUTPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.snm
 INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.aux
 INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.out
 INPUT /Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.out
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb

@@ -1,1 +1,8 @@
-\beamer@slide {alg:seq}{4}
+\beamer@slide {testpaths}{12}
+\beamer@slide {astardijkstra}{18}
+\beamer@slide {parread1time}{20}
+\beamer@slide {parread2time}{22}
+\beamer@slide {parread3}{24}
+\beamer@slide {parread3time}{25}
+\beamer@slide {parreadalltime}{26}
+\beamer@slide {readresultsfinal}{27}

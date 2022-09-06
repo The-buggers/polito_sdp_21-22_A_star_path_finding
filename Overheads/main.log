@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  5 SEP 2022 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  6 SEP 2022 14:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -498,32 +498,30 @@ Package: amsthm 2017/10/31 v2.20.4
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerbasethemes.sty)) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerthemedefault.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerfontthemedefault.sty) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamercolorthemedefault.sty) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerinnerthemedefault.sty
 \beamer@dima=\dimen275
 \beamer@dimb=\dimen276
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty))) (/usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithm.sty
-Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
- (/usr/local/texlive/2020/texmf-dist/tex/latex/float/float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count310
-\float@exts=\toks44
-\float@box=\box73
-\@float@everytoks=\toks45
-\@floatcapt=\box74
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerouterthemedefault.sty))) (/usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count310
+\c@ALG@rem=\count311
+\c@ALG@nested=\count312
+\ALG@tlm=\skip63
+\ALG@thistlm=\skip64
+\c@ALG@Lnr=\count313
+\c@ALG@blocknr=\count314
+\c@ALG@storecount=\count315
+\c@ALG@tmpcounter=\count316
+\ALG@tmplength=\skip65
 )
-\@float@every@algorithm=\toks46
-\c@algorithm=\count311
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/algorithms/algorithmic.sty
-Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
-\c@ALC@unique=\count312
-\c@ALC@line=\count313
-\c@ALC@rem=\count314
-\c@ALC@depth=\count315
-\ALC@tlm=\skip63
-\algorithmicindent=\skip64
+Document Style - pseudocode environments for use with the `algorithmicx' style
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerthemeBoadilla.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamercolorthemerose.sty) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerinnerthemerounded.sty) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamercolorthemedolphin.sty) (/usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamerouterthemeinfolines.sty)) (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count316
-\l__pdf_internal_box=\box75
+\l__kernel_color_stack_int=\count317
+\l__pdf_internal_box=\box73
 ) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.aux)
 \openout1 = `main.aux'.
 
@@ -580,24 +578,24 @@ LaTeX Font Info:    ... okay on input line 13.
 
 (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count317
+\scratchcounter=\count318
 \scratchdimen=\dimen277
-\scratchbox=\box76
-\nofMPsegments=\count318
-\nofMParguments=\count319
-\everyMPshowfont=\toks47
-\MPscratchCnt=\count320
+\scratchbox=\box74
+\nofMPsegments=\count319
+\nofMParguments=\count320
+\everyMPshowfont=\toks44
+\MPscratchCnt=\count321
 \MPscratchDim=\dimen278
-\MPnumerator=\count321
-\makeMPintoPDFobject=\count322
-\everyMPtoPDFconversion=\toks48
+\MPnumerator=\count322
+\makeMPintoPDFobject=\count323
+\everyMPtoPDFconversion=\toks45
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 )) ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box77
+\AtBeginShipoutBox=\box75
 Package hyperref Info: Link coloring OFF on input line 13.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -606,7 +604,7 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count323
+\c@section@level=\count324
 )
 LaTeX Info: Redefining \ref on input line 13.
 LaTeX Info: Redefining \pageref on input line 13.
@@ -689,18 +687,6 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [1
 
 {/usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 20.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 20.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on input line 20.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
-File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/mathkerncmss.
-)
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -715,11 +701,280 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [3
 
 ]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on input line 44.
+ (/usr/local/texlive/2020/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
+File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/mathkerncmss.
+)
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [4
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[5
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[6
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[7
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[8
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[9
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[10
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[11
+
+]
+<../Report/Pictures/google_maps.png, id=326, 715.67375pt x 606.265pt>
+File: ../Report/Pictures/google_maps.png Graphic file (type png)
+<use ../Report/Pictures/google_maps.png>
+Package pdftex.def Info: ../Report/Pictures/google_maps.png  used on input line 141.
+(pdftex.def)             Requested size: 255.5217pt x 216.45131pt.
+
+Overfull \vbox (34.79614pt too high) detected at line 141
+ []
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[12
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/google_maps.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[13
+
+]
+
+LaTeX Font Warning: Font shape `OT1/cmss/m/sc' in size <12> not available
+(Font)              Font shape `OT1/cmr/m/sc' tried instead on input line 191.
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[14
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[15
+
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[16
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[17
+
+]
+<../Report/Pictures/dijkstra_astar.png, id=490, 703.62875pt x 386.44376pt>
+File: ../Report/Pictures/dijkstra_astar.png Graphic file (type png)
+<use ../Report/Pictures/dijkstra_astar.png>
+Package pdftex.def Info: ../Report/Pictures/dijkstra_astar.png  used on input line 235.
+(pdftex.def)             Requested size: 340.6956pt x 187.11247pt.
+
+Overfull \vbox (6.06563pt too high) detected at line 235
+ []
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[18
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/dijkstra_astar.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[19
+
+]
+<../Report/Pictures/par_read_1_time.png, id=548, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/par_read_1_time.png Graphic file (type png)
+<use ../Report/Pictures/par_read_1_time.png>
+Package pdftex.def Info: ../Report/Pictures/par_read_1_time.png  used on input line 259.
+(pdftex.def)             Requested size: 340.6956pt x 210.26408pt.
+
+Overfull \vbox (12.47975pt too high) detected at line 259
+ []
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[20
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_1_time.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[21
+
+]
+<../Report/Pictures/par_read_2_time.png, id=604, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/par_read_2_time.png Graphic file (type png)
+<use ../Report/Pictures/par_read_2_time.png>
+Package pdftex.def Info: ../Report/Pictures/par_read_2_time.png  used on input line 274.
+(pdftex.def)             Requested size: 340.6956pt x 210.26408pt.
+
+Overfull \vbox (12.47975pt too high) detected at line 274
+ []
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[22
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_2_time.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[23
+
+]
+<../Report/Pictures/par_read_3.png, id=659, 546.04pt x 287.0725pt>
+File: ../Report/Pictures/par_read_3.png Graphic file (type png)
+<use ../Report/Pictures/par_read_3.png>
+Package pdftex.def Info: ../Report/Pictures/par_read_3.png  used on input line 295.
+(pdftex.def)             Requested size: 255.5217pt x 134.33711pt.
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[24
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3.png>]
+<../Report/Pictures/par_read_3_time.png, id=689, 547.04375pt x 674.52pt>
+File: ../Report/Pictures/par_read_3_time.png Graphic file (type png)
+<use ../Report/Pictures/par_read_3_time.png>
+Package pdftex.def Info: ../Report/Pictures/par_read_3_time.png  used on input line 305.
+(pdftex.def)             Requested size: 170.3478pt x 210.04593pt.
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[25
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_3_time.png>]
+<../Report/Pictures/par_read_all_time.png, id=719, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/par_read_all_time.png Graphic file (type png)
+<use ../Report/Pictures/par_read_all_time.png>
+Package pdftex.def Info: ../Report/Pictures/par_read_all_time.png  used on input line 315.
+(pdftex.def)             Requested size: 340.6956pt x 210.26408pt.
+
+Overfull \vbox (29.21724pt too high) detected at line 315
+ []
+
+
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[26
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/par_read_all_time.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[27
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[28
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[29
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[30
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[31
 
 ]
 \tf@nav=\write6
@@ -731,27 +986,27 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `main.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 46.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 46.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 370.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 370.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 46.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 46.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 370.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 370.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 18221 strings out of 480608
- 352300 string characters out of 5903629
- 596718 words of memory out of 5000000
- 33642 multiletter control sequences out of 15000+600000
- 539688 words of font info for 50 fonts, out of 8000000 for 9000
+ 18740 strings out of 480608
+ 361657 string characters out of 5903629
+ 605575 words of memory out of 5000000
+ 34092 multiletter control sequences out of 15000+600000
+ 541129 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 58i,15n,67p,953b,576s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (4 pages, 85081 bytes).
+ 58i,15n,67p,945b,553s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (31 pages, 1780004 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 137 compressed objects within 2 object streams
- 10 named destinations out of 1000 (max. 500000)
- 49 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 936 PDF objects out of 1000 (max. 8388607)
+ 856 compressed objects within 9 object streams
+ 71 named destinations out of 1000 (max. 500000)
+ 108 words of extra memory for PDF output out of 10000 (max. 10000000)
 
