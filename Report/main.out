@@ -17,8 +17,9 @@
 \BOOKMARK [3][-]{subsubsection.7.1.2}{Shared Address Space Model}{subsection.7.1}% 17
 \BOOKMARK [2][-]{subsection.7.2}{Results}{section.7}% 18
 \BOOKMARK [2][-]{subsection.7.3}{Parallel Bidirectional Search}{section.7}% 19
-\BOOKMARK [3][-]{subsubsection.7.3.1}{Results}{subsection.7.3}% 20
-\BOOKMARK [1][-]{section.8}{Complete Results}{}% 21
-\BOOKMARK [1][-]{section.9}{Final Considerations}{}% 22
-\BOOKMARK [1][-]{section.10}{DIMACS Benchmark}{}% 23
-\BOOKMARK [1][-]{section.11}{Future Works}{}% 24
+\BOOKMARK [2][-]{subsection.7.4}{New Bidirectional A*\(NBA*\)}{section.7}% 20
+\BOOKMARK [2][-]{subsection.7.5}{Parallel New Bidirectional A*\(PNBA*\)}{section.7}% 21
+\BOOKMARK [1][-]{section.8}{Complete Results}{}% 22
+\BOOKMARK [1][-]{section.9}{Final Considerations}{}% 23
+\BOOKMARK [1][-]{section.10}{DIMACS Benchmark}{}% 24
+\BOOKMARK [1][-]{section.11}{Future Works}{}% 25
