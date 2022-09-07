@@ -119,24 +119,23 @@
 %% %%%%%%%%%%%%%%%%%%%%%%% %%
 \section{Introduction: about the A* algorithm}
 A* is a graph-traversal and path-search algorithm. It is used in many contexts of computer science and 
-not only. It can be considered as a general case of the Dijkstra algorithm and it achieves better performaces
-with respect to it. It is a Greedy-best-first-search algorithm that uses an heuristic function to guide
+not only. It can be considered as a general case of the Dijkstra algorithm. It is a Greedy-best-first-search algorithm that uses an heuristic function to guide
 itself. What it does is combining:
 \begin{itemize}
-  \item Dijkstra approach: favore nodes closed to the starting point(source)
-  \item Greedy-best-first-search approach: favore nodes closed to the final point(destination)
+  \item Dijkstra approach: favoring nodes closed to the starting point(source)
+  \item Greedy-best-first-search approach: favoring nodes closed to the final point(destination)
 \end{itemize}
 Using the standard terminology we have:
 \begin{itemize}
-  \item $g(n)$: exact cost of moving from source to n
-  \item $h(n)$: heuristic estimated cost of moving from a node n(source included) to the destination
-  \item $f(n) = g(n) + h(n)$: in this way we are able to combine the actual cost with the estimated one
+  \item $g(n)$: exact cost of moving from source to $n$.
+  \item $h(n)$: heuristic estimated cost of moving from a node $n$ to the destination.
+  \item $f(n) = g(n) + h(n)$: combination of the actual cost with the estimated one.
 \end{itemize}
-At each (main loop) iteration the node $n$ that has the minimum $f(n)$ is examinated.
+At each iteration the node $n$ that has the minimum $f(n)$ is examinated(expanded).
 \subsection{Heuristic design}
-\paragraph{Premises} We are going to work with weighted oriented graph where $V$ is the set on nodes/vertices
+\paragraph{Premises} We are going to work with weighted oriented graphs where $V$ is the set on nodes/vertices
 and $E$ is the set of edges of the form $(x,y)$ to indicate that an oriented edge from $x$ to $y$ exists and it
-has weight $cost(x, y)$.
+has weight indicated as $cost(x, y)$.
 \paragraph{Heuristic properties} 
 The heurstic function represents the acutal core of the A* algorithm. It represents a prior-knowledge that
 we have about the cost of the path from every node (source included) to the destination. 
@@ -144,12 +143,12 @@ we have about the cost of the path from every node (source included) to the dest
   \item If we have not this prior information($h(n) = 0 \;\forall n \in V$) we are turning the A* algorithm into
         Dijkstra (this is why A* can be considered as a more general case of Dijkstra algorithm) but we always
         have the guarantee of finding the shortest path. 
-  \item Admissible Heuristic: if $h(n) < cost(n, dest) \;\forall n \in V$ (so the we never over-estimate the distance to
+  \item \textit{Admissible} Heuristic: if $h(n) < cost(n, dest) \;\forall n \in V$ (so the we never over-estimate the distance to
         get to the destination from a node $n$) A* will always find the shortest path and the heuristic
         function is called \textit{admissible}. The more inaccurate
-        is the estimation the more nodes A* will need to expand (with the upper bound of expanding every
-        nodes in the graph if $h(n) = 0$).
-  \item Consistent Heuristic: if $h(x) \le cost(x, y) + h(y)$ for every edge $(x, y)$ (so the triangular
+        is the estimation the more nodes A* will need to expand (with the upper bound of expanded nodes
+        if $h(n) = 0$).
+  \item \textit{Consistent} Heuristic: if $h(x) \le cost(x, y) + h(y)$ for every edge $(x, y)$ (so the triangular
         inequality is satisfied) A* has the guarantee to find an optimal path without processing
         any node more than once. 
 \end{itemize}
@@ -175,17 +174,17 @@ road-realated points of interest and edges $(x,y) \in E$ represent the unidirect
 Each edge $(x, y)$ is associated to a weight that is the great-circle distance between $x$ and $y$ measured
 in meters.
 \paragraph{Benchmark} We will exploit the DIMACS benchmark to make robust estimates of the designed algortithms.
-Starting from the FIPS system format files provided we have adopted them (as better explained in section ...) to provide
+Starting from the FIPS system format files provided we have adapted them (as better explained in section 3) to provide
 to the algorithms a file containing information structured as:
 \begin{itemize}
   \item Nodes: each node $n$ is defined as $(index, longitude, latitude)$ where $index$ is a natural progressive
         number starting from $0$ used to univocally identify the node and $(longitude, latitude)$ are the geographical
         coordinates of the node.
-  \item Edges: each edge $(x, y)$ is defined as $(x, y, weight)$ that represent a unidirectional connection
+  \item Edges: each edge $(x, y)$ is defined as $(x, y, weight)$ and it represents a unidirectional connection
         from $x$ to $y$ (a road) with length $weight$ (great-circle distance from $x$ to $y$).
 \end{itemize}
 \subsection{Heuristic function: the great-circle distance}
-As previoulsly discussed the A* needs an admssible and consistent heuristic to properly work and this
+As previoulsly discussed the A* algorithm needs an admssible and consistent heuristic to properly work and this
 function is tipically problem-specific. Given the type of problem we are going to apply A* to we are going
 to use a measure of geographical distance that extends the concept of heuclidean distance between two points:
 the great circle distance (that is the shortest distance over the earth surface measured along the
@@ -196,8 +195,8 @@ earth surface itself).
   \caption{Great circle distance from P to Q}
   \label{haversine}
 \end{figure}
-We will employee the Haversine formula to compute the distance from node $(\phi_1,\lambda_1)$
-and $(\phi_1,\lambda_1)$ where $\phi$ is the latitude and $\lambda$ is the longitude:
+We will employee the \textbf{Haversine formula} to compute the distance from node $(\phi_1,\lambda_1)$
+and node $(\phi_1,\lambda_1)$ where $\phi$ is the latitude and $\lambda$ is the longitude:
 \begin{center}
   $d = R \cdot c$\\
   where $c = 2 \cdot atan2(\sqrt{a},\sqrt{1-a})$\\
@@ -210,7 +209,7 @@ and $(\phi_1,\lambda_1)$ where $\phi$ is the latitude and $\lambda$ is the longi
 %% %%%%%%%%%%%%%%%%%%%%%% %%
 \section{Graph file input}
 \paragraph{File input format} 
-Now we start discussing the A* alogorithm implementation and to do that we need to specify which 
+Now we start discussing the A* algorithm implementation and to do that we need to specify which 
 types of files we will need to provide to the algorithm to load the graph of interest. Each file has 
 the format:
 \begin{itemize}
@@ -218,23 +217,23 @@ the format:
     \item N following lines: nodes appearing as $(index[int], longitude[double], latidue[double])$
     \item E following lines (with E unknown): edges appearing as $(x[int], y[int], weight[double])$
 \end{itemize}
-\paragraph{Random test graph} We have tested the designed algorithms also a random generated graph that
-is build starting from: 
+\paragraph{Random test graph} We have tested the designed algorithms also on a random generated graph that
+is built starting from these information: 
 \begin{itemize}
   \item Which path we want to find: given the couple (source, destination) it is generated a graph of
         $max(source, destination) + 1$ nodes.
-  \item How many paths at most have to be generated from source to destination
-  \item The maximum length of these paths (that will be randomly chosen for each path)
+  \item How many paths at most have to be generated from source to destination.
+  \item The maximum length of these paths (that will be randomly chosen for each path).
 \end{itemize}
 In this way we have ad-hoc files to stress the algorithm having the guarantee that more than one path
-exists from source to destination (other more standart approach exist for random graph generation but we
+exists from source to destination (other more standart approaches exist for random graph generation but we
 have implemented this custom one for this reason). To be consistent with benchmark files also these
-random graphs represents geographic points with longitude and latitude.
+random graphs represent geographic points identified by longitude and latitude.
 \paragraph{DIMACS benchmark} 
 The benchmark files we have used come from the DIMACS benchmark. Here each geographic map is described by:
 \begin{itemize}
-  \item \textit{.co} file: a file containing the coordinates of the nodes following the FIPS system notation
-  \item \textit{.gr} file: a file containing the edges and the relative weight(distance) expressed in meters
+  \item \textit{.co} file: a file containing the coordinates of the nodes following the FIPS system notation.
+  \item \textit{.gr} file: a file containing the edges and the relative weight(distance) expressed in meters.
 \end{itemize}
 The generation of a file consistent with the format described above happens by merging these files 
 into a new one (in binary format). One of the challenge we are going to undertake is the one of
@@ -276,8 +275,6 @@ To analyze the performance of the different versions of A* algorithms we have us
 		\hline
 	\end{tabular}
 \end{table}
-The paths on benchmark graphs BAY and FLA have been choosen ad-hoc to traverse the entire map with
-a reasonable long path.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=0.8\linewidth]{google_maps.png}
@@ -297,15 +294,14 @@ The first step consists of a pre-computation of:
         structure \texttt{h} to do this.
   \item The initial values of $f(n)$ and $g(n)$ that will be set to $DOUBLE\_MAX$ for each
         node except for the source node that will have $f(source) = h(source)$ because 
-        $g(soruce)$ is clearly $0$. We thus keep global data structures \texttt{f} and \texttt{g} to do this. 
-        $f(source) = g(source) + h(source) = 0 + h(source) = h(source)$.
+        $g(soruce)$ is clearly $0$. We thus keep global data structures \texttt{f} and \texttt{g} to do this.
 \end{itemize}
-We will also need two additional global data structures:
+We will also need two additional data structures:
 \begin{itemize}
-  \item The global \textit{costToCome} table (where \texttt{costToCome[i]} contains the current
+  \item The \textit{costToCome} table (where \texttt{costToCome[i]} contains the current
         best cost to reach node \texttt{i}) that is initialized
         to $DOUBLE\_MAX$.
-  \item The global \textit{parentVertex} table (where \texttt{parentVertex[i]} contains the
+  \item The \textit{parentVertex} table (where \texttt{parentVertex[i]} contains the
         parent node of node \texttt{i} according to the current best path found to reach
         the destination) that is initialized with $-1$.
 \end{itemize}
@@ -330,7 +326,6 @@ that the first time a node is extracted from the \textit{open set} we have found
 is why when the destination node is extracted we can terminate having found the best path). So despite
 the node may be added to the \textit{open set} more than once (when discovered as a neighbor of different nodes)
 it will be only expanded once.
-\subsection{Pseudocode}
 \SetKwComment{Comment}{/* }{ */}
 \begin{algorithm}[ht!] 
 \caption{Sequential A*}\label{alg:two}
@@ -369,48 +364,75 @@ $openSet := \{(s, f[s])\}$\;
 We are now going to run the sequential A* algorithm.
 \begin{table}[]
   \caption{Sequential algorithms performance}
+  \label{seqtimes}
   \begin{tabular}{|l|l|l|l|l|l|}
   \hline
   \textbf{}    & \textbf{File Size} & \textbf{Reading} & \textbf{A*} & \textbf{Total} & \textbf{\begin{tabular}[c]{@{}l@{}}Reading \\ Impact\end{tabular}} \\ \hline
-  \textbf{RND} & 2876B              & 0.0011s          & 0.0862s     & 1.1714s        & 1.2872\%                                                           \\ \hline
-  \textbf{BAY} & 20.51MB            & 0.9365s          & 0.2349s     & 1.1714s        & 79.9477\%                                                          \\ \hline
-  \textbf{FLA} & 69.09MB            & 3.0728s          & 0.5893s     & 3.6621s        & 83.9075\%                                                          \\ \hline
+  \textbf{RND} & 2876B                & 0.0011s           & 0.0519s      & 0.0530s          & 2.1\%                                                           \\ \hline
+  \textbf{BAY} & 20.51MB              & 0.9538s           & 0.2197s      & 1.1735s          & 81.3\%                                                         \\ \hline
+  \textbf{FLA} & 69.09MB              & 3.1551s           & 0.7174s      & 3.8725s          & 81.5\%                                                           \\ \hline
+  \textbf{W}   & 394.26MB             & 18.3065s          & 2.5890s      & 20.8955s         & 87.6\%                                                           \\ \hline
+  \textbf{USA} & 1292.40MB            & 56.9942s          & 13.6716s     & 70.6658s         & 80.6\%                                                           \\ \hline
   \end{tabular}
 \end{table}
-We can realize that (despite for the random graph that is too small to appreciate this result) the 
+We can realize that from table \ref{seqtimes} (despite for the random graph that is too small to appreciate this result) the 
 reading time has a very high impact on the overall execution time of the algorithm and in section 6
 we will investigate three different techniques for parallelizing the reading of the file. 
+% %%%%%%%%%%%%%%%%%%%%%%%%% %
+% CHAPTER 5: A* vs DIJKSTRA %
+% %%%%%%%%%%%%%%%%%%%%%%%%% %
 \section{A* and Dijkstra: a comparison}
 As already mentioned the Dijkstra algorithm can be considered as a particular case of A* where we
-don't any prior knowledge about the distances of the nodes (heuristic $h(n) = 0 \;\forall n \in V$).
+don't have any prior knowledge about the distances beteween the nodes ($h(n) = 0 \;\forall n \in V$).
 We have also seen that the more precise is the heuristic function we provide the less nodes the algorithm
 will expand to get to the destination obtaining the best path. To investigate this point we have run
-Dijkstra algorithm on the same graph (here we only consider BAY and FLA) comparing the number of 
-expanded nodes by the two algorithms:
+Dijkstra algorithm on the same graph comparing the number of expanded nodes by the two algorithms:
 
 \begin{table}[ht!]
   \caption{Expanded nodes vs total nodes for Dijkstra and A*}
   \begin{tabular}{|l|l|l|}
   \hline
   \textbf{Expanded nodes} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
-  \textbf{RND}            & 15 of 101         & 13 of 101         \\ \hline
-  \textbf{BAY}            & 318725 of 321270  & 156950 of 321270  \\ \hline
-  \textbf{FLA}            & 996956 of 1070376 & 591926 of 1070376 \\ \hline
+  \textbf{RND}            & 15 of 101           & 13 of 101         \\ \hline
+  \textbf{BAY}            & 318725 of 321270    & 157137 of 321270  \\ \hline
+  \textbf{FLA}            & 996956 of 1070376   & 592480 of 1070376 \\ \hline
+  \textbf{W}              & 5470394 of 1070376  & 1600083 of 1070376 \\ \hline
+  \textbf{USA}            & 16676528 of 1070376 & 8998767 of 1070376 \\ \hline
   \end{tabular}
 \end{table}
-
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{astar_dijkstra/expanded_nodes.png}
+  \caption{Expanded nodes: A* vs Dijkstra}
+  \label{histogramnodes}
+\end{figure}
 The number of expanded nodes is clearly much higher when Dijkstra algorithm is used and the picture
-\ref{astardijkstra} cleary show in \textcolor{blue}{blue} the nodes expanded by the sequntial A* algorithm
-while the \textcolor{red}{red} show the nodes expanded by the Dijkstra algorithm. In the BAY map Dijkstra
-expands $50\%$ nodes more than A* while in FLA it is less evident since Dijkstra expands $38\%$ of nodes
-more than A*.
+\ref{astardijkstramap} cleary show in \textcolor{blue}{blue} the nodes expanded by the sequntial A* algorithm
+while the \textcolor{red}{red} show the nodes expanded by the Dijkstra algorithm.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{dijkstra_astar.png}
   \caption{Test paths on BAY(left) and FLA(right)}
-  \label{astardijkstra}
+  \label{astardijkstramap}
 \end{figure}
-
+In figure \ref{astardijkstratime} we can notice that the execution time is not necessary much better for A*.
+This could depend both on the path we are looking for and on the precision of the heuristic function with
+respect to the cost of the optimal path. From figure \ref{astardijkstracpumem} we realize that considering 
+CPU and Memory usage A* needs more memory
+because of the higher number of data structures allocated buy the less number of nodes expanded makes
+the CPU usage inferior w.r.t Dijkstra algorithm.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{astar_dijkstra/execution_time.png}
+  \caption{Execution time: A* vs Dijkstra}
+  \label{astardijkstratime}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{astar_dijkstra/cpumem.png}
+  \caption{Exploited resources: A* vs Dijkstra}
+  \label{astardijkstracpumem}
+\end{figure}
 \section{Parallel reading of the input file}
 As we have seen in section 5 the time spent by the algorithm to read the input graph
 (the input binary file) used by the A* algorithm is very high w.r.t. the total
@@ -421,6 +443,7 @@ section a given thread is working on because different data structures of the gr
 be loaded in the two sections (the symbol table when reading a \textit{node line} and the linked list when
 reading a \textit{edge line}).
 \subsection{Parallel Read: approach 1}
+\begin{comment}
 In this first approach we have implemeted a solution on which:
 \begin{itemize}
   \item $N$ threads runs freely to read the entire file
@@ -440,17 +463,19 @@ is always read before line $k+1$) and this results in a easier implementation.
   \caption{Performance of approach 1 for different number of threads}
   \label{parread1time}
 \end{figure}
+\end{comment}
 \subsection{Parallel Read: approach 2}
 (Explanation)
-\paragraph{Results on BAY}
+\paragraph{Results on FLA} 
+As we can notice from figure \ref{parread2time}...
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{par_read_2_time.png}
-  \caption{Performance of approach 2 for different number of threads}
+  \caption{Performance of approach 2 for different number of threads on FLA}
   \label{parread2time}
 \end{figure}
 \subsection{Parallel Read: approach 3}
-This is the approach that generalize the first one by:
+This is the approach is characterized by:
 \begin{itemize}
   \item Letting threads differentiate among \textit{nodes section} and 
         \textit{edges section} to be able to read them togheter.
@@ -485,7 +510,7 @@ Each thread terminates when it has no more partitions to read.\\
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{par_read_3_time.png}
-  \caption{Performance of approach 3 for different number of threads and partitions}
+  \caption{Performance of approach 3 for different number of threads and partitions on FLA}
   \label{parread3time}
 \end{figure}
 We can realize from figure \ref{parread3time} that the number of partitions (setted equal
@@ -503,11 +528,11 @@ performances
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{par_read_all_time.png}
-  \caption{RA(Read Approach) 1,2,3 compared with sequential reading}
+  \caption{RA(Read Approach) 1,2,3 compared with sequential reading on FLA}
   \label{parreadalltime}
 \end{figure}
 For the sake of completeness we have also test the most promising reading approach
-on all the three maps (BAY, FLA, USA) and results are showed in table \ref{readresultsfinal}
+on all the maps (BAY, FLA, W, USA) and results are showed in table \ref{readresultsfinal}
 where the speed-up with respect to the sequential reading time is evident.
 \begin{table}[ht!]
   \centering
@@ -517,39 +542,35 @@ where the speed-up with respect to the sequential reading time is evident.
     \textbf{}    & \textbf{\begin{tabular}[c]{@{}l@{}}RA2\\ (2 threads)\end{tabular}} & \textbf{Sequential} & \textbf{Speed-Up} \\ \hline
     \textbf{BAY} & 0.1936s                                                            & 0.9366s             & 79.3\%            \\ \hline
     \textbf{FLA} & 0.5103s                                                            & 3.0650s             & 83.4\%            \\ \hline
+    \textbf{W} & 14.1492s                                                           & 56.4445s            & 74.9\%            \\ \hline
     \textbf{USA} & 14.1492s                                                           & 56.4445s            & 74.9\%            \\ \hline
     \end{tabular}
     \label{readresultsfinal}
 \end{table}
 
-\section{Parallel A*: three examinated approaches}
+\section{Parallel A*: two examinated approaches}
 The goal of the project was to find one or more parallel versions of the A* algorithm 
-and showing their performances w.r.t. the sequential version. We have choosen three approaches
-to face the problem of parallelizing the A* algorithm: a trivial one that simply
-works as the sequential algorithm but gives the possibility of executing it in a multithread
-fashion by sharing the common data structure (the \textit{OPEN SET}) among a variable number
-of threads; a second one that (known in literature as HDA*) that puts in action a more
+and showing their performances w.r.t. the sequential version. We have choosen two approaches
+to face the problem of parallelizing the A* algorithm: a first approach(known in literature as HDA*) that puts in action a
 complex way of parallelizing the algorithm by defining a hash-based work distribution strategy and
-finally a third approach that makes use of the parallelism in order to make the work of
-finding the shortest path from \textit{source} to \textit{dest} divided between only two threads
+a second approach that makes use of the parallelism in order to make the work of
+finding the shortest path from \textit{source} to \textit{dest} split between only two threads
 where one looks for the path from \textit{source} to \textit{dest} and the other one looks
-for the path from \textit{dest} to \textit{source} in the reversed graph (the MBA* algorithm).
-
-\subsection{First Attempt In Parallelizing A*}
+for the path from \textit{dest} to \textit{source} in the reversed graph (the PNBA* algorithm).
 
 \subsection{HDA*}
 The Hash-Distributed-A* (HDA*) algorithm works in a completly different way w.r.t. the 
 first attempt algorithm. It is based on the fact that each thread is \textit{owner} of a
 specific set of nodes of the Graph: given a node $n$ it is defined a hash function $f:\;f(n) = t$
-where $t \in \{1..N\}$ with $N$ the number of threads. When a thread extracts from the \textit{OPEN SET}
-(expands) a node all its neighbors are added to the \textit{OPEN SET} of the owner thread. One important
-fact is that HDA* doesn't provide the same guarantees of the sequential algorithm:
+where $t \in \{1..N\}$ with $N$ the number of threads. When a thread extracts from the \textit{open set}
+(expands) a node all its neighbors are added to the \textit{open set} of the owner thread of the expanded node. 
+One important fact is that HDA* doesn't provide the same guarantees of the sequential algorithm:
 \begin{itemize}
   \item In sequential A* if it's provided an heuristic function that is both \textit{admissible}
         and \textit{consistent} we have the guarantee that each node will be only expanded once
         and that the first time we expand that node we have found a shortest path to it.
   \item In HDA* we loose these guarantees: since we don't know in which order nodes will be processed
-        it could happen that a longest path to \textit{dest} is found before the shortest one so
+        it could happen that a longer path to \textit{dest} is found before the shortest one so
         a node could be opened more than once and expanding the \textit{dest} node doesn't
         mean that we have terminated.
 \end{itemize}
@@ -573,26 +594,39 @@ among the 3 threads that the way how each thread works for finding an optimal pa
 to destination could be not the best choice??.
 \paragraph{Distributed Termination Condition}
 If in the sequential algorithm expanding the node \textit{dest} triggers the end of the algorithm (despite
-the fact that the \textit{OPEN SET} could be not empty) in HDA* this is not valid anymore: when a thread
-is working on its \textit{OPEN SET} it is expanding nodes putting their neighbors in the
-\textit{OPEN SET} of another thread. When thread $t_i$ has its \textit{OPEN SET} empty it could think
+the fact that the \textit{open set} could be not empty) in HDA* this is not valid anymore: when a thread
+is working on its \textit{open set} it is expanding nodes putting their neighbors in the
+\textit{open set} of another thread. When thread $t_i$ has its \textit{open set} empty it could think
 to have finished its work but this might not be true because another thread $t_j$ could be sending
 to $t_i$ some nodes that have to be be processed in the meanwhile. We have employed two
 different approaches for the distributed termination condition that are:
 \begin{itemize}
-  \item Barrier method (B): when a thread realizes that its \textit{OPEN SET} is
-        empty and the cost to reach $dest$ is less than $DOUBLE_MAX$ a barrier is 
+  \item Barrier method (B): when a thread realizes that its \textit{open set} is
+        empty a barrier is 
         hitten and when all the threads have hitten the barrier
-        each one makes a check to confirm(or not) that all the \textit{OPEN SETs} of all
+        each one makes a check to confirm(or not) that all the \textit{open sets} of all
         the threads are still empty. If this is not true it means that there are nodes
         that have still to be processed and the best path to $dest$ found so far could
         not be the optimal one otherwise all the threads can terminate.
   \item Sum-Flag method (SF): the idea behind the sum flag method comes from the fact that
         the Barrier mechanism could be quite expensive. In this termination condition method
-        each thread keeps a binary flag saying whether its \textit{OPEN SET} is empty
+        each thread keeps a binary flag saying whether its \textit{open set} is empty
         or not. When no more nodes are inside it the flag is set and if $\sum_{i=1}^{N}flag[i] = N$
-        we can terminate.
+        all the threads can correctly terminate.
 \end{itemize}
+\paragraph{Duplicate node checking}
+The loose of guarantees explained before has also to do with the \textit{closed set} handling. In particular
+when a node $n$ is expanded by thread $t_i$ it is done a check wheter this node is inside the \textit{closed set}
+of thread $t_i$ or not. This is not sufficient: we also need to check whether the cost associated to that node 
+when it was previously added to the \textit{closed set} is less or equal to the cost computed at time $n$ is re-expanded. 
+This is called duplicate checking so, a node $n$ is a duplicate of node $m$ if:
+\begin{itemize} 
+  \item $n$ is equal to $m$
+  \item $closedSet$ of thread $t_i$ contains the node $m$
+  \item $g(m) \le g(n)$
+\end{itemize}
+A duplicate node can be discarded.
+\paragraph{Working methodology}
 What it differentiates the algorithms we have implemented is not only
 the distributed termination condition (B or SF) but also the way how the threads
 communicate with each other. This can be done using a shared address space (SAS) approach (that will
@@ -602,47 +636,45 @@ One way of achieving the communication among threads is message passing. This me
 on Message Queues: when thread $t_i$ expands a node and computes(through the hash function) 
 its owner $t_j$ a message is sent to $t_j$. Since the message
 queue is unique for all the threads each thread needs to be able to process
-only messages directed to it. Each thread mantains all the data structures as private (\textit{OPEN SET},
+only messages directed to it. Each thread mantains all the data structures as private (\textit{open set},
 \textit{parentVertex}, \textit{costToCome}) and the only way it has communicate with other threads
 is via message passing. The termination condition that has been implemented is the Barrier Method (B).
 \paragraph{Message Structure} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
 \begin{itemize}
-  \item Message id: the identifier of the owener thread $t_j$
+  \item Message id: the identifier of the owner thread $t_j$
   \item The index of the node $n$
-  \item The parent node of $n$ (the one expanded from the \textit{OPEN SET} of $t_i$)
+  \item The parent node of $n$ (the one expanded from the \textit{open set} of $t_i$)
   \item The value of $g(n)$ according to $t_i$
   \item The value of $f(n)$ according to $t_i$
 \end{itemize}
 \paragraph{Message Based Path Reconstruction}
 What it makes not trivial the path reconstruction phase in the Message Passing model
-is that $parentVertex$ and $costToCome$ data structures are not shared but they are private
-for each thread. This means that thread $t_i$ will have inside $parentVertex_i$, once the algorithm is terminated, 
+is that $parentVertex$ and $costToCome$ data structures are not shared among threds. 
+This means that thread $t_i$ will have inside $parentVertex_i$, once the algorithm is terminated, 
 a consistent value of $parentVertex_i[n]$ only for the nodes $n$ it is the owner of. This implies that if
 we want to know which is the parent node of node $n$ in the final path this information
 is stored in $parentVertex_i[n]$ (where $t_i$ is the parent of $n$). Path reconstruction needs to be done in a message passing fashion starting
 from the destination's thread owner $t_d$. What happens is that $t_d$ sends a message to
 the owner of $parentVertex_d[dest]$ (abbreviated as $pV_d[dest]$) that we call $t_k$. Immediately after $t_k$ will send a message
-to $pV_k[pV_d[dest]]$ and so on and so forth till we have reached the first node of the path (the one with $pV_x[firstnode] = -1$ where
-$t_x$ is the owner of $firstnode$).
+to $pV_k[pV_d[dest]]$ and so on and so forth till we have reached the first node of the path (the one with $pV_x[source] = -1$ where
+$t_x$ is the owner of $source$).
 \subsubsection{Shared Address Space Model}
 This approach applies the explained concepts of HDA* by using a communication method
 among threads that exploits the shared address space (SAS). There is:
 \begin{itemize}
-  \item A global array of \textit{OPEN SETs} that here we call $A$ where
-        $A[i]$ contains a pointer to the \textit{OPEN SET} of thread $t_i$ and the size
+  \item A global array of \textit{open sets} that here we call $A$ where
+        $A[i]$ contains a pointer to the \textit{open set} of thread $t_i$ and the size
         of $A$ is $N$ (the number of threads).
   \item The $parentVertex$ and $costToCome$ data structures are shared among all the threads.
 \end{itemize}
 This approach clearly requires locks so that the operations on the shared data structures
 can happen in mutual exclusion. In particular we need:
 \begin{itemize}
-  \item One lock $L1$ for each \textit{OPEN SET} so for each $A[i] \;\forall i \in \{1..N\}$.
+  \item One lock $L1$ for each \textit{open set} so for each $A[i] \;\forall i \in \{1..N\}$.
   \item One lock $L2$ for each node of the graph in order to correctly update $parentVertex$ and $costToCome$ data structures.
 \end{itemize}
 With SAS both the barrier (B) and the sum-flag (SF) distributed termination conditions
 have been implemented to compare their performances.
-The pseudocode in \ref{sas} better details all the opearations.
-\subsection{Pseudocode}
 \begin{comment}
 \SetKwComment{Comment}{/* }{ */}
 \begin{algorithm*}[] 
@@ -715,8 +747,78 @@ The pseudocode in \ref{sas} better details all the opearations.
 \end{algorithm*}
 \end{comment}
 \subsection{Results}
-(Plots with the comparison of all the models with sequential A* on
-random, BAY, FLA)
+These are the troubles found during implementation and testing:
+\begin{itemize}
+  \item The SAS-MP variant of HDA* is not scalable. This is due to the fact that we
+        have used Linux Message Queues that have a limited size (few bytes) and when
+        the communication overhead becomes huge the queue gets full causing a impressive
+        slowdown. For the sake of completeness we have decided to report the results on the
+        RND map. (RND map was indeed used almost only to show the SAS-MP performaces).
+  \item The SAS HDA* that exploits the Barrier termination condition (SAS-B) is more scalable
+        than SAS-MP but the termination condition is not well-performing in large graphs. This 
+        happens because a thread has no way to cut off the barrier if it's receiving work from
+        another thread but it has to wait until all the threads have reached the barrier. Despite
+        the fact that we notice an improvement when the number of threads increases the execution
+        time is too large from map W on.
+  \item The SAS HDA* that exploits the Sum-Flag termination condition (SAS-SF) behaves overall better.
+        Despite the fact on maps BAY, FLA, W it is difficult to notice the improvements when
+        the number of threads increase this is more evident on USA map. Performances are always
+        better compared to the SAS-B algorithm.
+  \item TODO resource considerations (not meaningful on RND map)
+\end{itemize}
+HDA* has been proven not to work well in our application. We have tried to explain thse 
+results by observing that:
+\begin{itemize}
+  \item The hash function we have adopted could not be optimal for this type of problem. It
+        is happening that instead of helping the algorithm in exploring the nodes towards the destination
+        we are making its work more complex by randomly assigning the work to the different threads.
+        What could be helpfull would be choosing another strategy (another hash function) able to 
+        divide the work in a more reasonable way among threads (for instance tring to assign near nodes
+        to the same threads maybe by pre-clustering the nodes of the map in a number of clusters
+        equal to the number of threads). This could lead to obtain better performances but we
+        suppose that the sequential algorithm would still be the "best case" instead of the "worst case"
+        in terms of execution time.
+  \item The termination condition is clearly a bottleneck, in particular if the Barrier method
+        is used. This can be less evident with a small maps but we can appreciate it on bigger graphs.
+        Anyway, having more threads improves time execution but has the drawback of consuming more
+        memory and CPU.      
+\end{itemize}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/rnd.png}
+  \caption{HDA* on RND map}
+  \label{hdarnd}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/bay.png}
+  \caption{HDA* on BAY map}
+  \label{hdabay}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/fla.png}
+  \caption{HDA* on FLA map}
+  \label{hdafla}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/w.png}
+  \caption{HDA* on W map}
+  \label{hdaw}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/usa.png}
+  \caption{HDA* on USA map}
+  \label{hdausa}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/tot.png}
+  \caption{HDA* overall performances}
+  \label{hdatot}
+\end{figure}
 
 \subsection{Parallel Bidirectional Search}
 (Explanation + Pseudocode)
