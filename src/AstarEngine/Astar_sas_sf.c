@@ -1,9 +1,7 @@
-#include <fcntl.h>
 #include <float.h>
 #include <math.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <sys/mman.h>
 #include <sys/shm.h>
 
 #include "./Astar.h"
@@ -25,7 +23,7 @@ struct arg_t {
     double *best_dest_cost;
     pthread_spinlock_t *m;
     sem_t *w;
-    sem_t *meR;
+    pthread_mutex_t *meR;
     int *nR;
 #if COLLECT_STAT
     int *expanded_nodes;
@@ -49,7 +47,7 @@ static void *hda(void *arg) {
     int *parentVertex, *closed_set;
     double *hvalues, *gvalues, *fvalues, *costToCome;
     PQ open_list;
-    struct mess_t *data = *(args->data);
+    struct mess_t *data = *args->data;
 
     open_list = PQinit(args->V);
     parentVertex = (int *)malloc(args->V * sizeof(int));
@@ -79,14 +77,13 @@ static void *hda(void *arg) {
     }
     pthread_barrier_wait(&barr);
     // Start HDA*
-    // printf("T: %d starts\n", args->index);
     while (1) {
         // break;
         while (data != (*args->data)) {
-            sem_wait(args->meR);
-            *(args->nR)++;
+            pthread_mutex_lock(args->meR);
+            (*args->nR)++;
             if (*(args->nR) == 1) sem_wait(args->w);
-            sem_post(args->meR);
+            pthread_mutex_unlock(args->meR);
 
             if (hash_function(data->n, args->num_threads) == args->index) {
                 if (closed_set[data->n] != 1 && data->g < gvalues[data->n]) {
@@ -102,17 +99,16 @@ static void *hda(void *arg) {
                         PQchange(open_list, fvalues, data->n);
                     // printf("T: %d PQ Insert: %d\n", args->index, data->n);
                 }
-                // data->n = 0;
-                // data->prev = 0;
             }
             data++;
-            sem_wait(args->meR);
-            *(args->nR)--;
+
+            pthread_mutex_lock(args->meR);
+            (*args->nR)--;
             if (*(args->nR) == 0) sem_post(args->w);
-            sem_post(args->meR);
+            pthread_mutex_unlock(args->meR);
         }
 
-        if (PQempty(open_list) && *(args->best_dest_cost) < maxWT) {
+        if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
             // pthread_spin_lock(&(args->mut_threads[args->index]));
             args->open_set_empty[args->index] = 1;
             // pthread_spin_unlock(&(args->mut_threads[args->index]));
@@ -171,10 +167,10 @@ static void *hda(void *arg) {
                     } else {
                         // data = args->data;
                         sem_wait(args->w);
-                        (*(args->data))->n = b;
-                        (*(args->data))->g = g_b;
-                        (*(args->data))->prev = a;
-                        (*(args->data))++;
+                        (*args->data)->n = b;
+                        (*args->data)->g = g_b;
+                        (*args->data)->prev = a;
+                        (*args->data)++;
                         // printf("T: %d Buff Insert: %d\n", args->index, b);
                         sem_post(args->w);
                     }
@@ -199,7 +195,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     struct mess_t *data;
     double best_dest_cost = maxWT;
     pthread_spinlock_t m;
-    sem_t meR, w;
+    pthread_mutex_t meR;
+    sem_t w;
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
@@ -211,7 +208,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     }
 #endif
     pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
-    sem_init(&meR, 0, 1);
+    pthread_mutex_init(&meR, NULL);
     sem_init(&w, 0, 1);
 
     pthread_barrier_init(&barr, NULL, num_threads);
