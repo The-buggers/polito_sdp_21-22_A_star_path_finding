@@ -243,8 +243,7 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     }
 
     if (gvalues[dest] < maxWT) {
-        double t = reconstruct_path(previous, source, dest, cost);
-        printf("COSTO: %lf\n", t);
+        reconstruct_path(previous, source, dest, cost);
     } else {
         printf("+-----------------------------------+\n");
         printf("Path not found\n");
