@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  5 SEP 2022 11:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  7 SEP 2022 13:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -455,7 +455,9 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
 \mathdisplay@stack=\toks36
 LaTeX Info: Redefining \[ on input line 2859.
 LaTeX Info: Redefining \] on input line 2860.
-) (/usr/local/texlive/2020/texmf-dist/tex/latex/amscls/amsthm.sty
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/comment/comment.sty
+\CommentStream=\write4
+ Excluding comment 'comment') (/usr/local/texlive/2020/texmf-dist/tex/latex/amscls/amsthm.sty
 Package: amsthm 2017/10/31 v2.20.4
 \thm@style=\toks37
 \thm@bodyfont=\toks38
@@ -753,38 +755,111 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \ALG@tmplength=\skip97
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/local/texlive/2020/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
+\c@tracingmulticols=\count297
+
+
+Package multicol Warning: May not work with the twocolumn option on input line 141.
+
+\mult@box=\box68
+\multicol@leftmargin=\dimen272
+\c@unbalance=\count298
+\c@collectmore=\count299
+\doublecol@number=\count300
+\multicoltolerance=\count301
+\multicolpretolerance=\count302
+\full@width=\dimen273
+\page@free=\dimen274
+\premulticols=\dimen275
+\postmulticols=\dimen276
+\multicolsep=\skip98
+\multicolbaselineskip=\skip99
+\partial@page=\box69
+\last@line=\box70
+\maxbalancingoverflow=\dimen277
+\mult@rightbox=\box71
+\mult@grightbox=\box72
+\mult@gfirstbox=\box73
+\mult@firstbox=\box74
+\@tempa=\box75
+\@tempa=\box76
+\@tempa=\box77
+\@tempa=\box78
+\@tempa=\box79
+\@tempa=\box80
+\@tempa=\box81
+\@tempa=\box82
+\@tempa=\box83
+\@tempa=\box84
+\@tempa=\box85
+\@tempa=\box86
+\@tempa=\box87
+\@tempa=\box88
+\@tempa=\box89
+\@tempa=\box90
+\@tempa=\box91
+\@tempa=\box92
+\@tempa=\box93
+\@tempa=\box94
+\@tempa=\box95
+\@tempa=\box96
+\@tempa=\box97
+\@tempa=\box98
+\@tempa=\box99
+\@tempa=\box100
+\@tempa=\box101
+\@tempa=\box102
+\@tempa=\box103
+\@tempa=\box104
+\@tempa=\box105
+\@tempa=\box106
+\@tempa=\box107
+\@tempa=\box108
+\@tempa=\box109
+\@tempa=\box110
+\@tempa=\box111
+\c@minrows=\count303
+\c@columnbadness=\count304
+\c@finalcolumnbadness=\count305
+\last@try=\dimen278
+\multicolovershoot=\dimen279
+\multicolundershoot=\dimen280
+\mult@nat@firstbox=\box112
+\colbreak@box=\box113
+\mc@col@check@num=\count306
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/caption/caption.sty
 Package: caption 2020/01/03 v3.4h Customizing captions (AR)
  (/usr/local/texlive/2020/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2020/01/03 v1.8h caption3 kernel (AR)
 Package caption3 Info: TeX engine: e-TeX on input line 61.
-\captionmargin=\dimen272
-\captionmargin@=\dimen273
-\captionwidth=\dimen274
-\caption@tempdima=\dimen275
-\caption@indent=\dimen276
-\caption@parindent=\dimen277
-\caption@hangindent=\dimen278
+\captionmargin=\dimen281
+\captionmargin@=\dimen282
+\captionwidth=\dimen283
+\caption@tempdima=\dimen284
+\caption@indent=\dimen285
+\caption@parindent=\dimen286
+\caption@hangindent=\dimen287
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count297
-\c@continuedfloat=\count298
+\c@caption@flags=\count307
+\c@continuedfloat=\count308
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/caption/subcaption.sty
 Package: subcaption 2020/01/22 v1.3d Sub-captions (AR)
-\c@subfigure=\count299
-\c@subtable=\count300
+\c@subfigure=\count309
+\c@subtable=\count310
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2019/05/31 v2.5 Span multiple rows of a table
-\multirow@colwidth=\skip98
-\multirow@cntb=\count301
-\multirow@dima=\skip99
-\bigstrutjot=\dimen279
+\multirow@colwidth=\skip100
+\multirow@cntb=\count311
+\multirow@dima=\skip101
+\bigstrutjot=\dimen288
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip100
-\bibsep=\skip101
+\bibhang=\skip102
+\bibsep=\skip103
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count302
+\c@NAT@ctr=\count312
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2018/08/11 v1.3c Input encoding file
 \inpenc@prehook=\toks43
@@ -821,9 +896,9 @@ Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2019/11/29 v3.13 Key value format for package options (HO)
 )
-\@linkdim=\dimen280
-\Hy@linkcounter=\count303
-\Hy@pagecounter=\count304
+\@linkdim=\dimen289
+\Hy@linkcounter=\count313
+\Hy@pagecounter=\count314
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2020/01/14 v7.00d Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -833,7 +908,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 ) (/usr/local/texlive/2020/texmf-dist/tex/generic/etexcmds/etexcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
-\Hy@SavedSpaceFactor=\count305
+\Hy@SavedSpaceFactor=\count315
 Package hyperref Info: Option `colorlinks' set `true' on input line 4421.
 Package hyperref Info: Hyper figures OFF on input line 4547.
 Package hyperref Info: Link nesting OFF on input line 4552.
@@ -842,21 +917,21 @@ Package hyperref Info: Plain pages OFF on input line 4562.
 Package hyperref Info: Backreferencing OFF on input line 4567.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4800.
-\c@Hy@tempcnt=\count306
+\c@Hy@tempcnt=\count316
  (/usr/local/texlive/2020/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5159.
-\XeTeXLinkMargin=\dimen281
+\XeTeXLinkMargin=\dimen290
  (/usr/local/texlive/2020/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
  (/usr/local/texlive/2020/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
 ))
-\Fld@menulength=\count307
-\Field@Width=\dimen282
-\Fld@charsize=\dimen283
+\Fld@menulength=\count317
+\Field@Width=\dimen291
+\Fld@charsize=\dimen292
 Package hyperref Info: Hyper figures OFF on input line 6430.
 Package hyperref Info: Link nesting OFF on input line 6435.
 Package hyperref Info: Hyper index ON on input line 6438.
@@ -869,9 +944,9 @@ LaTeX Info: Redefining \pageref on input line 6504.
  (/usr/local/texlive/2020/texmf-dist/tex/generic/atbegshi/atbegshi.sty
 Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
 )
-\Hy@abspage=\count308
-\c@Item=\count309
-\c@Hfootnote=\count310
+\Hy@abspage=\count318
+\c@Item=\count319
+\c@Hfootnote=\count320
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/hpdftex.def
@@ -880,8 +955,8 @@ File: hpdftex.def 2020/01/14 v7.00d Hyperref driver for pdfTeX
 Package: atveryend 2019-12-11 v1.11 Hooks at the very end of document (HO)
 Package atveryend Info: \AP@enddocument detected (standard20110627).
 )
-\Fld@listcount=\count311
-\c@bookmark@seq@number=\count312
+\Fld@listcount=\count321
+\c@bookmark@seq@number=\count322
  (/usr/local/texlive/2020/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
  (/usr/local/texlive/2020/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
@@ -889,84 +964,84 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 286.
 )
-\Hy@SectionHShift=\skip102
+\Hy@SectionHShift=\skip104
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen284
-\lightrulewidth=\dimen285
-\cmidrulewidth=\dimen286
-\belowrulesep=\dimen287
-\belowbottomsep=\dimen288
-\aboverulesep=\dimen289
-\abovetopsep=\dimen290
-\cmidrulesep=\dimen291
-\cmidrulekern=\dimen292
-\defaultaddspace=\dimen293
-\@cmidla=\count313
-\@cmidlb=\count314
-\@aboverulesep=\dimen294
-\@belowrulesep=\dimen295
-\@thisruleclass=\count315
-\@lastruleclass=\count316
-\@thisrulewidth=\dimen296
+\heavyrulewidth=\dimen293
+\lightrulewidth=\dimen294
+\cmidrulewidth=\dimen295
+\belowrulesep=\dimen296
+\belowbottomsep=\dimen297
+\aboverulesep=\dimen298
+\abovetopsep=\dimen299
+\cmidrulesep=\dimen300
+\cmidrulekern=\dimen301
+\defaultaddspace=\dimen302
+\@cmidla=\count323
+\@cmidlb=\count324
+\@aboverulesep=\dimen303
+\@belowrulesep=\dimen304
+\@thisruleclass=\count325
+\@lastruleclass=\count326
+\@thisrulewidth=\dimen305
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/units/nicefrac.sty
 Package: nicefrac 1998/08/04 v0.9b Nice fractions
-\L@UnitsRaiseDisplaystyle=\skip103
-\L@UnitsRaiseTextstyle=\skip104
-\L@UnitsRaiseScriptstyle=\skip105
+\L@UnitsRaiseDisplaystyle=\skip105
+\L@UnitsRaiseTextstyle=\skip106
+\L@UnitsRaiseScriptstyle=\skip107
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/microtype.sty
 Package: microtype 2019/11/18 v2.7d Micro-typographical refinements (RS)
 \MT@toks=\toks45
-\MT@count=\count317
+\MT@count=\count327
 LaTeX Info: Redefining \textls on input line 790.
-\MT@outer@kern=\dimen297
+\MT@outer@kern=\dimen306
 LaTeX Info: Redefining \textmicrotypecontext on input line 1354.
-\MT@listname@count=\count318
+\MT@listname@count=\count328
  (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/microtype-pdftex.def
 File: microtype-pdftex.def 2019/11/18 v2.7d Definitions specific to pdftex (RS)
 LaTeX Info: Redefining \lsstyle on input line 914.
 LaTeX Info: Redefining \lslig on input line 914.
-\MT@outer@space=\skip106
+\MT@outer@space=\skip108
 )
 Package microtype Info: Loading configuration file microtype.cfg.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2019/11/18 v2.7d microtype main configuration file (RS)
 )) (/usr/local/texlive/2020/texmf-dist/tex/latex/lineno/lineno.sty
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
-\linenopenalty=\count319
+\linenopenalty=\count329
 \output=\toks46
-\linenoprevgraf=\count320
-\linenumbersep=\dimen298
-\linenumberwidth=\dimen299
-\c@linenumber=\count321
-\c@pagewiselinenumber=\count322
-\c@LN@truepage=\count323
-\c@internallinenumber=\count324
-\c@internallinenumbers=\count325
-\quotelinenumbersep=\dimen300
-\bframerule=\dimen301
-\bframesep=\dimen302
-\bframebox=\box68
+\linenoprevgraf=\count330
+\linenumbersep=\dimen307
+\linenumberwidth=\dimen308
+\c@linenumber=\count331
+\c@pagewiselinenumber=\count332
+\c@LN@truepage=\count333
+\c@internallinenumber=\count334
+\c@internallinenumbers=\count335
+\quotelinenumbersep=\dimen309
+\bframerule=\dimen310
+\bframesep=\dimen311
+\bframebox=\box114
 LaTeX Info: Redefining \\ on input line 3056.
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count326
+\c@float@type=\count336
 \float@exts=\toks47
-\float@box=\box69
+\float@box=\box115
 \@float@everytoks=\toks48
-\@floatcapt=\box70
+\@floatcapt=\box116
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/lipsum/lipsum.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/l3kernel/expl3.sty
 Package: expl3 2020-03-06 L3 programming layer (loader) 
  (/usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-03-12 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count327
-\l__pdf_internal_box=\box71
+\l__kernel_color_stack_int=\count337
+\l__pdf_internal_box=\box117
 )) (/usr/local/texlive/2020/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 Package: xparse 2020-03-06 L3 Experimental document command parser
-\l__xparse_current_arg_int=\count328
-\g__xparse_grabber_int=\count329
-\l__xparse_m_args_int=\count330
-\l__xparse_v_nesting_int=\count331
+\l__xparse_current_arg_int=\count338
+\g__xparse_grabber_int=\count339
+\l__xparse_m_args_int=\count340
+\l__xparse_v_nesting_int=\count341
 )
 Package: lipsum 2019/01/02 v2.2 150 paragraphs of Lorem Ipsum dummy text
  (/usr/local/texlive/2020/texmf-dist/tex/latex/lipsum/lipsum.ltd.tex
@@ -974,39 +1049,39 @@ File: lipsum.ltd.tex 2019/01/02 v2.2 The Lorem ipsum dummy text
 )) (/usr/local/texlive/2020/texmf-dist/tex/latex/newfloat/newfloat.sty
 Package: newfloat 2019/09/02 v1.1l Defining new floating environments (AR)
 )
-Package newfloat Info: New float `suppfigure' with options `name={Supplementary Figure}' on input line 42.
-\c@suppfigure=\count332
-Package newfloat Info: float type `suppfigure'=4 on input line 42.
-\c@subsuppfigure=\count333
+Package newfloat Info: New float `suppfigure' with options `name={Supplementary Figure}' on input line 43.
+\c@suppfigure=\count342
+Package newfloat Info: float type `suppfigure'=4 on input line 43.
+\c@subsuppfigure=\count343
  (/usr/local/texlive/2020/texmf-dist/tex/latex/sidecap/sidecap.sty
 Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
-\SC@BOXWD=\dimen303
-\SC@CAPWD=\dimen304
-\SC@tempdima=\dimen305
-\SC@tempdimb=\dimen306
-\c@SC@C=\count334
-\SC@BOX=\box72
+\SC@BOXWD=\dimen312
+\SC@CAPWD=\dimen313
+\SC@tempdima=\dimen314
+\SC@tempdimb=\dimen315
+\c@SC@C=\count344
+\SC@BOX=\box118
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2019/10/16 v2.13 Sectioning titles
-\ttl@box=\box73
-\beforetitleunit=\skip107
-\aftertitleunit=\skip108
-\ttl@plus=\dimen307
-\ttl@minus=\dimen308
+\ttl@box=\box119
+\beforetitleunit=\skip109
+\aftertitleunit=\skip110
+\ttl@plus=\dimen316
+\ttl@minus=\dimen317
 \ttl@toksa=\toks49
-\titlewidth=\dimen309
-\titlewidthlast=\dimen310
-\titlewidthfirst=\dimen311
+\titlewidth=\dimen318
+\titlewidthlast=\dimen319
+\titlewidthfirst=\dimen320
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/xwatermark/xwatermark.sty (/usr/local/texlive/2020/texmf-dist/tex/latex/catoptions/catoptions.sty
-\m@one=\count335
-\z@pt=\dimen312
+\m@one=\count345
+\z@pt=\dimen321
 Package: catoptions 2014/08/29 v0.2.7h Securing catcodes and parsing options (AM)
-\cpt@csvdepth=\count336
-\cpt@optdepth=\count337
-\cpt@cnta=\count338
-\indrisdepth=\count339
-\cpt@foreachdepth=\count340
-\cpt@exprcnt=\count341
+\cpt@csvdepth=\count346
+\cpt@optdepth=\count347
+\cpt@cnta=\count348
+\indrisdepth=\count349
+\cpt@foreachdepth=\count350
+\cpt@exprcnt=\count351
 )
 Package: xwatermark 2012/10/23 v1.5.2d A dynamic watermarking scheme (Ahmed Musa)
  (/usr/local/texlive/2020/texmf-dist/tex/latex/base/fix-cm.sty
@@ -1019,66 +1094,66 @@ Package: picture 2019/12/09 v1.5 Dimens for picture macros (HO)
 Package picture Info: Calculation method: calc.
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/ltxkeys/ltxkeys.sty
 Package: ltxkeys 2012/11/17 v0.0.3c A robust key-value parser (AM) (Ahmed Musa)
-\ltxkeys@csvdepth=\count342
-\ltxkeys@keydepth=\count343
+\ltxkeys@csvdepth=\count352
+\ltxkeys@keydepth=\count353
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
-\OuterFrameSep=\skip109
-\fb@frw=\dimen313
-\fb@frh=\dimen314
-\FrameRule=\dimen315
-\FrameSep=\dimen316
+\OuterFrameSep=\skip111
+\fb@frw=\dimen322
+\fb@frh=\dimen323
+\FrameRule=\dimen324
+\FrameSep=\dimen325
 )
-\AtBeginShipoutBox=\box74
-\xwm@boxa=\box75
-\xwm@boxb=\box76
-\xwm@cnta=\count344
-\xwm@wrt=\write4
+\AtBeginShipoutBox=\box120
+\xwm@boxa=\box121
+\xwm@boxb=\box122
+\xwm@cnta=\count354
+\xwm@wrt=\write5
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.xwm)
-\openout4 = `main.xwm'.
+\openout5 = `main.xwm'.
 
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/preprint/authblk.sty
 Package: authblk 2001/02/27 1.3 (PWD)
-\affilsep=\skip110
-\@affilsep=\skip111
-\c@Maxaffil=\count345
-\c@authors=\count346
-\c@affil=\count347
+\affilsep=\skip112
+\@affilsep=\skip113
+\c@Maxaffil=\count355
+\c@authors=\count356
+\c@affil=\count357
 ) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 94.
-LaTeX Font Info:    Trying to load font information for OML+txmi on input line 94.
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 95.
+LaTeX Font Info:    Trying to load font information for OML+txmi on input line 95.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 94.
-LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 94.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 95.
+LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 95.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 94.
-LaTeX Font Info:    Trying to load font information for OMX+txex on input line 94.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 95.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 95.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 95.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 95.
+LaTeX Font Info:    Trying to load font information for OMX+txex on input line 95.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 94.
-LaTeX Font Info:    Trying to load font information for U+txexa on input line 94.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 95.
+LaTeX Font Info:    Trying to load font information for U+txexa on input line 95.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 94.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 94.
-LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 95.
+LaTeX Font Info:    ... okay on input line 95.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1148,16 +1223,16 @@ LaTeX Font Info:    ... okay on input line 94.
 
 ABD: EveryShipout initializing macros (/usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count348
-\scratchdimen=\dimen317
-\scratchbox=\box77
-\nofMPsegments=\count349
-\nofMParguments=\count350
+\scratchcounter=\count358
+\scratchdimen=\dimen326
+\scratchbox=\box123
+\nofMPsegments=\count359
+\nofMParguments=\count360
 \everyMPshowfont=\toks50
-\MPscratchCnt=\count351
-\MPscratchDim=\dimen318
-\MPnumerator=\count352
-\makeMPintoPDFobject=\count353
+\MPscratchCnt=\count361
+\MPscratchDim=\dimen327
+\MPnumerator=\count362
+\makeMPintoPDFobject=\count363
 \everyMPtoPDFconversion=\toks51
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -1170,7 +1245,7 @@ Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: sidecap package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 94.
+Package hyperref Info: Link coloring ON on input line 95.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
  (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
@@ -1178,23 +1253,23 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count354
+\c@section@level=\count364
 )
-LaTeX Info: Redefining \ref on input line 94.
-LaTeX Info: Redefining \pageref on input line 94.
-LaTeX Info: Redefining \nameref on input line 94.
+LaTeX Info: Redefining \ref on input line 95.
+LaTeX Info: Redefining \pageref on input line 95.
+LaTeX Info: Redefining \nameref on input line 95.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.out) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.out)
-\@outlinefile=\write5
-\openout5 = `main.out'.
+\@outlinefile=\write6
+\openout6 = `main.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 94.
+LaTeX Info: Redefining \microtypecontext on input line 95.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 94.
+LaTeX Info: Redefining \showhyphens on input line 95.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1210,27 +1285,27 @@ Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
  ABD: EverySelectfont initializing macros
 LaTeX Info: Redefining \selectfont on input line 126.
 )
-\CenteringLeftskip=\skip112
-\RaggedLeftLeftskip=\skip113
-\RaggedRightLeftskip=\skip114
-\CenteringRightskip=\skip115
-\RaggedLeftRightskip=\skip116
-\RaggedRightRightskip=\skip117
-\CenteringParfillskip=\skip118
-\RaggedLeftParfillskip=\skip119
-\RaggedRightParfillskip=\skip120
-\JustifyingParfillskip=\skip121
-\CenteringParindent=\skip122
-\RaggedLeftParindent=\skip123
-\RaggedRightParindent=\skip124
-\JustifyingParindent=\skip125
+\CenteringLeftskip=\skip114
+\RaggedLeftLeftskip=\skip115
+\RaggedRightLeftskip=\skip116
+\CenteringRightskip=\skip117
+\RaggedLeftRightskip=\skip118
+\RaggedRightRightskip=\skip119
+\CenteringParfillskip=\skip120
+\RaggedLeftParfillskip=\skip121
+\RaggedRightParfillskip=\skip122
+\JustifyingParfillskip=\skip123
+\CenteringParindent=\skip124
+\RaggedLeftParindent=\skip125
+\RaggedRightParindent=\skip126
+\JustifyingParindent=\skip127
 )
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <10> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 108.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 109.
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <12> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 108.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 109.
 LaTeX Font Info:    Font shape `T1/txr/b/sc' in size <12> not available
-(Font)              Font shape `T1/txr/bx/sc' tried instead on input line 108.
+(Font)              Font shape `T1/txr/bx/sc' tried instead on input line 109.
 LaTeX Font Info:    Trying to load font information for TS1+txr on input line 125.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/ts1txr.fd
 File: ts1txr.fd 2000/12/15 v3.1
@@ -1268,7 +1343,7 @@ Underfull \hbox (badness 3058) in paragraph at lines 180--183
 \OT1/txr/m/n/10 (+20) (\OML/txmi/m/it/10 index; longitude; latitude\OT1/txr/m/n/10 (+20) )$ \T1/txr/m/n/10 (+20) where $\OML/txmi/m/it/10 index$ \T1/txr/m/n/10 (+20) is a nat-
  []
 
-<./Pictures/haversine.png, id=111, 210.7875pt x 210.7875pt>
+<./Pictures/haversine.png, id=103, 210.7875pt x 210.7875pt>
 File: ./Pictures/haversine.png Graphic file (type png)
 <use ./Pictures/haversine.png>
 Package pdftex.def Info: ./Pictures/haversine.png  used on input line 194.
@@ -1306,11 +1381,11 @@ Underfull \hbox (badness 1946) in paragraph at lines 223--225
 \T1/txr/m/n/10 (+20) (source, des-ti-na-tion) it is gen-er-ated a graph of
  []
 
-<./Pictures/google_maps.png, id=131, 639.38875pt x 408.52625pt>
+<./Pictures/google_maps.png, id=123, 715.67375pt x 606.265pt>
 File: ./Pictures/google_maps.png Graphic file (type png)
 <use ./Pictures/google_maps.png>
-Package pdftex.def Info: ./Pictures/google_maps.png  used on input line 282.
-(pdftex.def)             Requested size: 188.66904pt x 120.54536pt.
+Package pdftex.def Info: ./Pictures/google_maps.png  used on input line 280.
+(pdftex.def)             Requested size: 201.24773pt x 170.47461pt.
 
 Package Fancyhdr Warning: \headheight is too small (10.84006pt): 
 Make it at least 12.0pt.
@@ -1324,95 +1399,136 @@ We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
 [2 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/haversine.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/google_maps.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 307--310
-[]\T1/txr/m/n/10 (+20) The global \T1/txr/m/it/10 (+20) par-entVer-tex \T1/txr/m/n/10 (+20) ta-ble (where
- []
-
-
-Underfull \hbox (badness 3291) in paragraph at lines 307--310
-\T1/cmtt/m/n/10 parentVertex[i] \T1/txr/m/n/10 (+20) con-tains the par-ent node of
- []
-
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 369.
+               Default added (so using `tbp') on input line 365.
 
 
-Overfull \hbox (19.33138pt too wide) in paragraph at lines 371--378
+Overfull \hbox (34.89139pt too wide) in paragraph at lines 368--377
 [][] 
  []
 
 
-Overfull \hbox (11.40132pt too wide) in paragraph at lines 392--399
+Overfull \hbox (26.40132pt too wide) in paragraph at lines 393--402
 [][] 
  []
 
-<./Pictures/dijkstra_astar.png, id=144, 703.62875pt x 386.44376pt>
+<./Pictures/astar_dijkstra/expanded_nodes.png, id=135, 878.28125pt x 542.025pt>
+File: ./Pictures/astar_dijkstra/expanded_nodes.png Graphic file (type png)
+<use ./Pictures/astar_dijkstra/expanded_nodes.png>
+Package pdftex.def Info: ./Pictures/astar_dijkstra/expanded_nodes.png  used on input line 405.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
+<./Pictures/dijkstra_astar.png, id=137, 703.62875pt x 386.44376pt>
 File: ./Pictures/dijkstra_astar.png Graphic file (type png)
 <use ./Pictures/dijkstra_astar.png>
-Package pdftex.def Info: ./Pictures/dijkstra_astar.png  used on input line 408.
+Package pdftex.def Info: ./Pictures/dijkstra_astar.png  used on input line 414.
 (pdftex.def)             Requested size: 251.55872pt x 138.1585pt.
-[3]
-<./Pictures/par_read_1_time.png, id=155, 878.28125pt x 542.025pt>
-File: ./Pictures/par_read_1_time.png Graphic file (type png)
-<use ./Pictures/par_read_1_time.png>
-Package pdftex.def Info: ./Pictures/par_read_1_time.png  used on input line 438.
+<./Pictures/astar_dijkstra/execution_time.png, id=140, 878.28125pt x 542.025pt>
+File: ./Pictures/astar_dijkstra/execution_time.png Graphic file (type png)
+<use ./Pictures/astar_dijkstra/execution_time.png>
+Package pdftex.def Info: ./Pictures/astar_dijkstra/execution_time.png  used on input line 426.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/par_read_2_time.png, id=156, 878.28125pt x 542.025pt>
+<./Pictures/astar_dijkstra/cpumem.png, id=141, 878.28125pt x 542.025pt>
+File: ./Pictures/astar_dijkstra/cpumem.png Graphic file (type png)
+<use ./Pictures/astar_dijkstra/cpumem.png>
+Package pdftex.def Info: ./Pictures/astar_dijkstra/cpumem.png  used on input line 432.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
+[3]
+Underfull \vbox (badness 2970) has occurred while \output is active []
+
+ Excluding 'comment' comment.
+<./Pictures/par_read_2_time.png, id=154, 878.28125pt x 542.025pt>
 File: ./Pictures/par_read_2_time.png Graphic file (type png)
 <use ./Pictures/par_read_2_time.png>
-Package pdftex.def Info: ./Pictures/par_read_2_time.png  used on input line 447.
+Package pdftex.def Info: ./Pictures/par_read_2_time.png  used on input line 473.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/par_read_3.png, id=158, 546.04pt x 287.0725pt>
+ [4 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/expanded_nodes.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/dijkstra_astar.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/execution_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/cpumem.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_2_time.png>]
+<./Pictures/par_read_3.png, id=169, 546.04pt x 287.0725pt>
 File: ./Pictures/par_read_3.png Graphic file (type png)
 <use ./Pictures/par_read_3.png>
-Package pdftex.def Info: ./Pictures/par_read_3.png  used on input line 478.
+Package pdftex.def Info: ./Pictures/par_read_3.png  used on input line 504.
 (pdftex.def)             Requested size: 251.55872pt x 132.25206pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 468--483
+Underfull \hbox (badness 10000) in paragraph at lines 494--509
 
  []
 
-[4 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/dijkstra_astar.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_1_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_2_time.png>]
-<./Pictures/par_read_3_time.png, id=169, 547.04375pt x 674.52pt>
+<./Pictures/par_read_3_time.png, id=170, 547.04375pt x 674.52pt>
 File: ./Pictures/par_read_3_time.png Graphic file (type png)
 <use ./Pictures/par_read_3_time.png>
-Package pdftex.def Info: ./Pictures/par_read_3_time.png  used on input line 486.
+Package pdftex.def Info: ./Pictures/par_read_3_time.png  used on input line 512.
 (pdftex.def)             Requested size: 251.55872pt x 310.18004pt.
-<./Pictures/par_read_all_time.png, id=171, 878.28125pt x 542.025pt>
+<./Pictures/par_read_all_time.png, id=172, 878.28125pt x 542.025pt>
 File: ./Pictures/par_read_all_time.png Graphic file (type png)
 <use ./Pictures/par_read_all_time.png>
-Package pdftex.def Info: ./Pictures/par_read_all_time.png  used on input line 504.
+Package pdftex.def Info: ./Pictures/par_read_all_time.png  used on input line 530.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
- [5 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_all_time.png>] [6] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.bbl
+[5 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_all_time.png>]
+<./Pictures/hda_work_BAY.png, id=186, 472.76625pt x 548.0475pt>
+File: ./Pictures/hda_work_BAY.png Graphic file (type png)
+<use ./Pictures/hda_work_BAY.png>
+Package pdftex.def Info: ./Pictures/hda_work_BAY.png  used on input line 588.
+(pdftex.def)             Requested size: 125.77936pt x 145.8089pt.
+ [6 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda_work_BAY.png>] Excluding 'comment' comment. [7]
+<./Pictures/hda/rnd.png, id=199, 878.28125pt x 542.025pt>
+File: ./Pictures/hda/rnd.png Graphic file (type png)
+<use ./Pictures/hda/rnd.png>
+Package pdftex.def Info: ./Pictures/hda/rnd.png  used on input line 788.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
+<./Pictures/hda/bay.png, id=200, 466.74374pt x 595.22375pt>
+File: ./Pictures/hda/bay.png Graphic file (type png)
+<use ./Pictures/hda/bay.png>
+Package pdftex.def Info: ./Pictures/hda/bay.png  used on input line 794.
+(pdftex.def)             Requested size: 251.55872pt x 320.80753pt.
+<./Pictures/hda/fla.png, id=201, 491.8375pt x 596.2275pt>
+File: ./Pictures/hda/fla.png Graphic file (type png)
+<use ./Pictures/hda/fla.png>
+Package pdftex.def Info: ./Pictures/hda/fla.png  used on input line 800.
+(pdftex.def)             Requested size: 251.55872pt x 304.95447pt.
+<./Pictures/hda/w.png, id=202, 466.74374pt x 579.16376pt>
+File: ./Pictures/hda/w.png Graphic file (type png)
+<use ./Pictures/hda/w.png>
+Package pdftex.def Info: ./Pictures/hda/w.png  used on input line 806.
+(pdftex.def)             Requested size: 251.55872pt x 312.15167pt.
+<./Pictures/hda/usa.png, id=203, 439.6425pt x 559.08875pt>
+File: ./Pictures/hda/usa.png Graphic file (type png)
+<use ./Pictures/hda/usa.png>
+Package pdftex.def Info: ./Pictures/hda/usa.png  used on input line 812.
+(pdftex.def)             Requested size: 251.55872pt x 319.90382pt.
+<./Pictures/hda/tot.png, id=204, 519.9425pt x 658.46pt>
+File: ./Pictures/hda/tot.png Graphic file (type png)
+<use ./Pictures/hda/tot.png>
+Package pdftex.def Info: ./Pictures/hda/tot.png  used on input line 818.
+(pdftex.def)             Requested size: 251.55872pt x 318.56903pt.
+ (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.bbl
 
 Package natbib Warning: Empty `thebibliography' environment on input line 8.
 
-) [7
+) [8 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/rnd.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/bay.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/fla.png>] [9 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/w.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/usa.png>] [10
 
-]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 651.
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 651.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/tot.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 860.
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 860.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.xwm) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 651.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 651.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 860.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 860.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 9A39D011523457A187D2B8678654FE27;1726.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 651.
+(rerunfilecheck)             Checksum: 1B002827738694BFF5E1A34113DBD82D;1581.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 860.
  ) 
 Here is how much of TeX's memory you used:
- 29773 strings out of 480608
- 546075 string characters out of 5903629
- 964028 words of memory out of 5000000
- 44681 multiletter control sequences out of 15000+600000
- 603500 words of font info for 322 fonts, out of 8000000 for 9000
+ 30047 strings out of 480608
+ 550734 string characters out of 5903629
+ 972642 words of memory out of 5000000
+ 44901 multiletter control sequences out of 15000+600000
+ 606454 words of font info for 340 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 76i,16n,96p,604b,1167s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 76i,17n,96p,661b,1167s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/bitstrea/charter/bchb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtcxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxbsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1728.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txex.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.pdf" (7 pages, 1860587 bytes).
+Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.pdf" (10 pages, 2659749 bytes).
 PDF statistics:
- 252 PDF objects out of 1000 (max. 8388607)
- 211 compressed objects within 3 object streams
- 49 named destinations out of 1000 (max. 500000)
- 36613 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 289 PDF objects out of 1000 (max. 8388607)
+ 227 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 38690 words of extra memory for PDF output out of 42996 (max. 10000000)
 
