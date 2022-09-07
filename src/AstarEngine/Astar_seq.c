@@ -11,7 +11,7 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest,
     printf("## Sequential A* [heuristic: %c] from %d to %d ##\n",
            heuristic_type, source, dest);
     int V = GRAPHget_num_nodes(G);
-    int v, a, b;
+    int v, a, b, *closedSet;
     double f_extracted_node, g_b, f_b, a_b_wt;
     int *parentVertex;
     double *fvalues, *hvalues, *gvalues, *costToCome;  // f(n) for each node n
@@ -23,6 +23,7 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest,
 
     PQ open_list = PQinit(V);
     parentVertex = (int *)malloc(V * sizeof(int));
+    closedSet = (int *)malloc(V * sizeof(int));
     fvalues = (double *)malloc(V * sizeof(double));
     hvalues = (double *)malloc(V * sizeof(double));
     gvalues = (double *)malloc(V * sizeof(double));
@@ -36,6 +37,7 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest,
         hvalues[v] = heuristic(p, pos_dest, heuristic_type);
         fvalues[v] = maxWT;
         gvalues[v] = maxWT;
+        closedSet[v] = 0;
     }
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
@@ -59,11 +61,19 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest,
             reconstruct_path(parentVertex, source, dest, costToCome);
             break;
         }
+        
+        if(closedSet[a] == 1){
+            continue;
+        }
+        closedSet[a] = 1;
 
         // For each successor 'b' of node 'a':
         for (t = GRAPHget_list_node_head(G, a);
              t != GRAPHget_list_node_tail(G, a); t = LINKget_next(t)) {
             b = LINKget_node(t);
+            if(closedSet[b] == 1){
+                continue;
+            }
             a_b_wt = LINKget_wt(t);
             // Compute f(b) = g(b) + h(b) = [g(a) + w(a,b)] + h(b)
             g_b = gvalues[a] + a_b_wt;
