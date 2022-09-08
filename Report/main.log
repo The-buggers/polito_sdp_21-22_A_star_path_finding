@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  7 SEP 2022 16:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  8 SEP 2022 16:31
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1049,9 +1049,9 @@ File: lipsum.ltd.tex 2019/01/02 v2.2 The Lorem ipsum dummy text
 )) (/usr/local/texlive/2020/texmf-dist/tex/latex/newfloat/newfloat.sty
 Package: newfloat 2019/09/02 v1.1l Defining new floating environments (AR)
 )
-Package newfloat Info: New float `suppfigure' with options `name={Supplementary Figure}' on input line 43.
+Package newfloat Info: New float `suppfigure' with options `name={Supplementary Figure}' on input line 42.
 \c@suppfigure=\count342
-Package newfloat Info: float type `suppfigure'=4 on input line 43.
+Package newfloat Info: float type `suppfigure'=4 on input line 42.
 \c@subsuppfigure=\count343
  (/usr/local/texlive/2020/texmf-dist/tex/latex/sidecap/sidecap.sty
 Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
@@ -1119,41 +1119,42 @@ Package: authblk 2001/02/27 1.3 (PWD)
 \c@Maxaffil=\count355
 \c@authors=\count356
 \c@affil=\count357
-) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.aux)
+)
+No file main.aux.
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 95.
-LaTeX Font Info:    Trying to load font information for OML+txmi on input line 95.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omltxmi.fd
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 94.
+LaTeX Font Info:    Trying to load font information for OML+txmi on input line 94.
+(/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 95.
-LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 95.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 94.
+LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 94.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 95.
-LaTeX Font Info:    Trying to load font information for OMX+txex on input line 95.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 94.
+LaTeX Font Info:    Trying to load font information for OMX+txex on input line 94.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 95.
-LaTeX Font Info:    Trying to load font information for U+txexa on input line 95.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 94.
+LaTeX Font Info:    Trying to load font information for U+txexa on input line 94.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 95.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 95.
-LaTeX Font Info:    ... okay on input line 95.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1245,7 +1246,7 @@ Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: sidecap package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 95.
+Package hyperref Info: Link coloring ON on input line 94.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
  (/usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
@@ -1255,21 +1256,20 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count364
 )
-LaTeX Info: Redefining \ref on input line 95.
-LaTeX Info: Redefining \pageref on input line 95.
-LaTeX Info: Redefining \nameref on input line 95.
- (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.out) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.out)
+LaTeX Info: Redefining \ref on input line 94.
+LaTeX Info: Redefining \pageref on input line 94.
+LaTeX Info: Redefining \nameref on input line 94.
 \@outlinefile=\write6
 \openout6 = `main.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 95.
+LaTeX Info: Redefining \microtypecontext on input line 94.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 95.
+LaTeX Info: Redefining \showhyphens on input line 94.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1301,54 +1301,49 @@ LaTeX Info: Redefining \selectfont on input line 126.
 \JustifyingParindent=\skip127
 )
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <10> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 109.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 113.
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <12> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 109.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 113.
 LaTeX Font Info:    Font shape `T1/txr/b/sc' in size <12> not available
-(Font)              Font shape `T1/txr/bx/sc' tried instead on input line 109.
-LaTeX Font Info:    Trying to load font information for TS1+txr on input line 125.
+(Font)              Font shape `T1/txr/bx/sc' tried instead on input line 113.
+LaTeX Font Info:    Trying to load font information for TS1+txr on input line 129.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/ts1txr.fd
 File: ts1txr.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Trying to load font information for OT1+txr on input line 130.
+LaTeX Font Info:    Trying to load font information for OT1+txr on input line 134.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/ot1txr.fd
 File: ot1txr.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Trying to load font information for U+txmia on input line 130.
+LaTeX Font Info:    Trying to load font information for U+txmia on input line 134.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/utxmia.fd
 File: utxmia.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 130.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 134.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 130.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 134.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+txsyc on input line 130.
+LaTeX Font Info:    Trying to load font information for U+txsyc on input line 134.
  (/usr/local/texlive/2020/texmf-dist/tex/latex/txfonts/utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 )
-Underfull \hbox (badness 10000) in paragraph at lines 180--183
+Underfull \hbox (badness 10000) in paragraph at lines 184--187
 []\T1/txr/m/n/10 (+20) Nodes: each node $\OML/txmi/m/it/10 n$ \T1/txr/m/n/10 (+20) is de-fined as
  []
 
 
-Underfull \hbox (badness 3058) in paragraph at lines 180--183
+Underfull \hbox (badness 3058) in paragraph at lines 184--187
 \OT1/txr/m/n/10 (+20) (\OML/txmi/m/it/10 index; longitude; latitude\OT1/txr/m/n/10 (+20) )$ \T1/txr/m/n/10 (+20) where $\OML/txmi/m/it/10 index$ \T1/txr/m/n/10 (+20) is a nat-
  []
 
-<./Pictures/haversine.png, id=107, 210.7875pt x 210.7875pt>
-File: ./Pictures/haversine.png Graphic file (type png)
-<use ./Pictures/haversine.png>
-Package pdftex.def Info: ./Pictures/haversine.png  used on input line 194.
-(pdftex.def)             Requested size: 125.77936pt x 125.78195pt.
-LaTeX Font Info:    Trying to load font information for T1+bch on input line 200.
+LaTeX Font Info:    Trying to load font information for T1+bch on input line 189.
 (/usr/local/texlive/2020/texmf-dist/tex/latex/psnfss/t1bch.fd
 File: t1bch.fd 2004/10/18 font definitions for T1/bch.
 ) (/usr/local/texlive/2020/texmf-dist/tex/latex/microtype/mt-bch.cfg
@@ -1356,7 +1351,7 @@ File: mt-bch.cfg 2007/03/03 v1.5 microtype config. file: Bitstream Charter (RS)
 )
 
 LaTeX Font Warning: Font shape `T1/cmtt/bx/n' in size <28.45274> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 200.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 189.
 
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
@@ -1367,24 +1362,33 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 217--218
+<./Pictures/others/haversine.png, id=28, 210.7875pt x 210.7875pt>
+File: ./Pictures/others/haversine.png Graphic file (type png)
+<use ./Pictures/others/haversine.png>
+Package pdftex.def Info: ./Pictures/others/haversine.png  used on input line 198.
+(pdftex.def)             Requested size: 125.77936pt x 125.78195pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--222
 []\T1/txr/m/n/10 (+20) N fol-low-ing lines: nodes ap-pear-ing as
  []
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 223--225
+Underfull \hbox (badness 1097) in paragraph at lines 227--229
 []\T1/txr/m/n/10 (+20) Which path we want to find: given the cou-ple
  []
 
 
-Underfull \hbox (badness 1946) in paragraph at lines 223--225
+Underfull \hbox (badness 1946) in paragraph at lines 227--229
 \T1/txr/m/n/10 (+20) (source, des-ti-na-tion) it is gen-er-ated a graph of
  []
 
-<./Pictures/google_maps.png, id=127, 715.67375pt x 606.265pt>
-File: ./Pictures/google_maps.png Graphic file (type png)
-<use ./Pictures/google_maps.png>
-Package pdftex.def Info: ./Pictures/google_maps.png  used on input line 280.
+
+LaTeX Warning: Reference `testpaths' on page 2 undefined on input line 285.
+
+<./Pictures/others/google_maps.png, id=30, 715.67375pt x 606.265pt>
+File: ./Pictures/others/google_maps.png Graphic file (type png)
+<use ./Pictures/others/google_maps.png>
+Package pdftex.def Info: ./Pictures/others/google_maps.png  used on input line 288.
 (pdftex.def)             Requested size: 201.24773pt x 170.47461pt.
 
 Package Fancyhdr Warning: \headheight is too small (10.84006pt): 
@@ -1398,142 +1402,148 @@ Make it at least 3.60004pt.
 We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
-[2 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/haversine.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/google_maps.png>]
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 372.
-
-
-Overfull \hbox (34.89139pt too wide) in paragraph at lines 375--384
+[2 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/others/haversine.png>]
+Overfull \hbox (34.89139pt too wide) in paragraph at lines 382--391
 [][] 
  []
 
-<./Pictures/astar_dijkstra/expanded_nodes.png, id=139, 878.28125pt x 542.025pt>
+
+LaTeX Warning: Reference `seqtimes' on page 3 undefined on input line 392.
+
+[3 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/others/google_maps.png>]
+<./Pictures/astar_dijkstra/expanded_nodes.png, id=55, 878.28125pt x 542.025pt>
 File: ./Pictures/astar_dijkstra/expanded_nodes.png Graphic file (type png)
 <use ./Pictures/astar_dijkstra/expanded_nodes.png>
-Package pdftex.def Info: ./Pictures/astar_dijkstra/expanded_nodes.png  used on input line 412.
+Package pdftex.def Info: ./Pictures/astar_dijkstra/expanded_nodes.png  used on input line 419.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/dijkstra_astar.png, id=141, 703.62875pt x 386.44376pt>
-File: ./Pictures/dijkstra_astar.png Graphic file (type png)
-<use ./Pictures/dijkstra_astar.png>
-Package pdftex.def Info: ./Pictures/dijkstra_astar.png  used on input line 421.
+
+
+LaTeX Warning: Reference `astardijkstramap' on page 4 undefined on input line 424.
+
+<./Pictures/astar_dijkstra/dijkstra_astar.png, id=56, 703.62875pt x 386.44376pt>
+File: ./Pictures/astar_dijkstra/dijkstra_astar.png Graphic file (type png)
+<use ./Pictures/astar_dijkstra/dijkstra_astar.png>
+Package pdftex.def Info: ./Pictures/astar_dijkstra/dijkstra_astar.png  used on input line 428.
 (pdftex.def)             Requested size: 251.55872pt x 138.1585pt.
-<./Pictures/astar_dijkstra/execution_time.png, id=144, 878.28125pt x 542.025pt>
+
+LaTeX Warning: Reference `astardijkstratime' on page 4 undefined on input line 432.
+
+
+LaTeX Warning: Reference `astardijkstracpumem' on page 4 undefined on input line 435.
+
+<./Pictures/astar_dijkstra/execution_time.png, id=57, 878.28125pt x 542.025pt>
 File: ./Pictures/astar_dijkstra/execution_time.png Graphic file (type png)
 <use ./Pictures/astar_dijkstra/execution_time.png>
-Package pdftex.def Info: ./Pictures/astar_dijkstra/execution_time.png  used on input line 433.
+Package pdftex.def Info: ./Pictures/astar_dijkstra/execution_time.png  used on input line 441.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/astar_dijkstra/cpumem.png, id=145, 878.28125pt x 542.025pt>
+<./Pictures/astar_dijkstra/cpumem.png, id=58, 878.28125pt x 542.025pt>
 File: ./Pictures/astar_dijkstra/cpumem.png Graphic file (type png)
 <use ./Pictures/astar_dijkstra/cpumem.png>
-Package pdftex.def Info: ./Pictures/astar_dijkstra/cpumem.png  used on input line 439.
+Package pdftex.def Info: ./Pictures/astar_dijkstra/cpumem.png  used on input line 447.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-[3] Excluding 'comment' comment.
-<./Pictures/par_read_2_time.png, id=158, 878.28125pt x 542.025pt>
-File: ./Pictures/par_read_2_time.png Graphic file (type png)
-<use ./Pictures/par_read_2_time.png>
-Package pdftex.def Info: ./Pictures/par_read_2_time.png  used on input line 480.
+Excluding 'comment' comment.
+
+LaTeX Warning: Reference `parread2time' on page 4 undefined on input line 486.
+
+<./Pictures/read/par_read_1_time.png, id=59, 878.28125pt x 542.025pt>
+File: ./Pictures/read/par_read_1_time.png Graphic file (type png)
+<use ./Pictures/read/par_read_1_time.png>
+Package pdftex.def Info: ./Pictures/read/par_read_1_time.png  used on input line 491.
 (pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
- [4 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/expanded_nodes.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/dijkstra_astar.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/execution_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/cpumem.png>]
-<./Pictures/par_read_3.png, id=172, 546.04pt x 287.0725pt>
-File: ./Pictures/par_read_3.png Graphic file (type png)
-<use ./Pictures/par_read_3.png>
-Package pdftex.def Info: ./Pictures/par_read_3.png  used on input line 511.
-(pdftex.def)             Requested size: 251.55872pt x 132.25206pt.
+Excluding 'comment' comment. [4 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/expanded_nodes.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/dijkstra_astar.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/execution_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/astar_dijkstra/cpumem.png>]
+<./Pictures/read/par_read_2_time.png, id=75, 878.28125pt x 542.025pt>
+File: ./Pictures/read/par_read_2_time.png Graphic file (type png)
+<use ./Pictures/read/par_read_2_time.png>
+Package pdftex.def Info: ./Pictures/read/par_read_2_time.png  used on input line 553.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
+<./Pictures/read/par_read_all_time.png, id=76, 878.28125pt x 542.025pt>
+File: ./Pictures/read/par_read_all_time.png Graphic file (type png)
+<use ./Pictures/read/par_read_all_time.png>
+Package pdftex.def Info: ./Pictures/read/par_read_all_time.png  used on input line 560.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
+<./Pictures/read/parread_cpumem.png, id=77, 878.28125pt x 542.025pt>
+File: ./Pictures/read/parread_cpumem.png Graphic file (type png)
+<use ./Pictures/read/parread_cpumem.png>
+Package pdftex.def Info: ./Pictures/read/parread_cpumem.png  used on input line 566.
+(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 501--516
 
+LaTeX Warning: Reference `readresultsfinal' on page 5 undefined on input line 571.
+
+
+Underfull \vbox (badness 1292) has occurred while \output is active []
+
+ [5 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/read/par_read_1_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/read/par_read_2_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/read/par_read_all_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/read/parread_cpumem.png>]
+
+LaTeX Warning: Reference `hdawork1' on page 6 undefined on input line 633.
+
+<./Pictures/hda/hda_work_BAY1.png, id=95, 472.76625pt x 548.0475pt>
+File: ./Pictures/hda/hda_work_BAY1.png Graphic file (type png)
+<use ./Pictures/hda/hda_work_BAY1.png>
+Package pdftex.def Info: ./Pictures/hda/hda_work_BAY1.png  used on input line 640.
+(pdftex.def)             Requested size: 125.77936pt x 145.8089pt.
+<./Pictures/hda/hda_work_BAY2.png, id=96, 449.68pt x 555.07375pt>
+File: ./Pictures/hda/hda_work_BAY2.png Graphic file (type png)
+<use ./Pictures/hda/hda_work_BAY2.png>
+Package pdftex.def Info: ./Pictures/hda/hda_work_BAY2.png  used on input line 662.
+(pdftex.def)             Requested size: 125.77936pt x 155.25865pt.
+[6 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/hda_work_BAY1.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/hda_work_BAY2.png>] Excluding 'comment' comment.
+
+LaTeX Warning: Reference `tablesas' on page 7 undefined on input line 821.
+
+
+Overfull \hbox (8.63133pt too wide) in paragraph at lines 825--834
+ [][] 
  []
 
-<./Pictures/par_read_3_time.png, id=173, 547.04375pt x 674.52pt>
-File: ./Pictures/par_read_3_time.png Graphic file (type png)
-<use ./Pictures/par_read_3_time.png>
-Package pdftex.def Info: ./Pictures/par_read_3_time.png  used on input line 519.
-(pdftex.def)             Requested size: 251.55872pt x 310.18004pt.
-<./Pictures/par_read_all_time.png, id=175, 878.28125pt x 542.025pt>
-File: ./Pictures/par_read_all_time.png Graphic file (type png)
-<use ./Pictures/par_read_all_time.png>
-Package pdftex.def Info: ./Pictures/par_read_all_time.png  used on input line 537.
-(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-
-Underfull \vbox (badness 1852) has occurred while \output is active []
-
- [5 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_2_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_3_time.png>]
-<./Pictures/hda_work_BAY.png, id=188, 472.76625pt x 548.0475pt>
-File: ./Pictures/hda_work_BAY.png Graphic file (type png)
-<use ./Pictures/hda_work_BAY.png>
-Package pdftex.def Info: ./Pictures/hda_work_BAY.png  used on input line 595.
-(pdftex.def)             Requested size: 125.77936pt x 145.8089pt.
- [6 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/par_read_all_time.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda_work_BAY.png>] Excluding 'comment' comment. [7]
-<./Pictures/pnba/pnbamap.png, id=203, 620.3175pt x 330.23375pt>
+[7]
+<./Pictures/pnba/pnbamap.png, id=115, 620.3175pt x 330.23375pt>
 File: ./Pictures/pnba/pnbamap.png Graphic file (type png)
 <use ./Pictures/pnba/pnbamap.png>
-Package pdftex.def Info: ./Pictures/pnba/pnbamap.png  used on input line 849.
+Package pdftex.def Info: ./Pictures/pnba/pnbamap.png  used on input line 928.
 (pdftex.def)             Requested size: 251.55872pt x 133.92029pt.
-<./Pictures/hda/rnd.png, id=205, 878.28125pt x 542.025pt>
-File: ./Pictures/hda/rnd.png Graphic file (type png)
-<use ./Pictures/hda/rnd.png>
-Package pdftex.def Info: ./Pictures/hda/rnd.png  used on input line 859.
-(pdftex.def)             Requested size: 251.55872pt x 155.2479pt.
-<./Pictures/hda/bay.png, id=206, 466.74374pt x 595.22375pt>
-File: ./Pictures/hda/bay.png Graphic file (type png)
-<use ./Pictures/hda/bay.png>
-Package pdftex.def Info: ./Pictures/hda/bay.png  used on input line 865.
-(pdftex.def)             Requested size: 251.55872pt x 320.80753pt.
-<./Pictures/hda/fla.png, id=207, 491.8375pt x 596.2275pt>
-File: ./Pictures/hda/fla.png Graphic file (type png)
-<use ./Pictures/hda/fla.png>
-Package pdftex.def Info: ./Pictures/hda/fla.png  used on input line 871.
-(pdftex.def)             Requested size: 251.55872pt x 304.95447pt.
-<./Pictures/hda/w.png, id=208, 466.74374pt x 579.16376pt>
-File: ./Pictures/hda/w.png Graphic file (type png)
-<use ./Pictures/hda/w.png>
-Package pdftex.def Info: ./Pictures/hda/w.png  used on input line 877.
-(pdftex.def)             Requested size: 251.55872pt x 312.15167pt.
-<./Pictures/hda/usa.png, id=209, 439.6425pt x 559.08875pt>
-File: ./Pictures/hda/usa.png Graphic file (type png)
-<use ./Pictures/hda/usa.png>
-Package pdftex.def Info: ./Pictures/hda/usa.png  used on input line 883.
-(pdftex.def)             Requested size: 251.55872pt x 319.90382pt.
-<./Pictures/hda/tot.png, id=210, 519.9425pt x 658.46pt>
-File: ./Pictures/hda/tot.png Graphic file (type png)
-<use ./Pictures/hda/tot.png>
-Package pdftex.def Info: ./Pictures/hda/tot.png  used on input line 889.
-(pdftex.def)             Requested size: 251.55872pt x 318.56903pt.
-<./Pictures/pnba/pnba.png, id=211, 549.05125pt x 729.72626pt>
-File: ./Pictures/pnba/pnba.png Graphic file (type png)
-<use ./Pictures/pnba/pnba.png>
-Package pdftex.def Info: ./Pictures/pnba/pnba.png  used on input line 895.
-(pdftex.def)             Requested size: 251.55872pt x 334.33086pt.
- (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.bbl
 
-Package natbib Warning: Empty `thebibliography' environment on input line 8.
 
-) [8 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/pnba/pnbamap.png>] [9 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/rnd.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/bay.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/fla.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/w.png>] [10 </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/usa.png> </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/hda/tot.png>] [11
+LaTeX Warning: Reference `pnbamap' on page 8 undefined on input line 932.
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/./Pictures/pnba/pnba.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 929.
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 929.
- (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.xwm) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 929.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 929.
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3979A34872715D527EBCA1666259913D;1680.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 929.
- ) 
-Here is how much of TeX's memory you used:
- 30080 strings out of 480608
- 551270 string characters out of 5903629
- 973894 words of memory out of 5000000
- 44918 multiletter control sequences out of 15000+600000
- 606980 words of font info for 346 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 76i,17n,96p,661b,1167s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2020/texmf-dist/fonts/type1/bitstrea/charter/bchb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtcxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxbsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/rtxsc.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/cm-super/sftt1728.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txex.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.pdf" (11 pages, 3365912 bytes).
-PDF statistics:
- 305 PDF objects out of 1000 (max. 8388607)
- 238 compressed objects within 3 object streams
- 63 named destinations out of 1000 (max. 500000)
- 38708 words of extra memory for PDF output out of 42996 (max. 10000000)
+/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.tex:937: You can't use `\hrule' here except with leaders.
+\caption@hrule ->\hrule 
+                        \@height \z@ 
+l.937 ...e of PNBA* on different benchmark graphs}
+                                                  
+To put a horizontal rule in an hbox or an alignment,
+you should use \leaders or \hrulefill (see The TeXbook).
 
+/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.tex:937: Missing number, treated as zero.
+<to be read again> 
+                   \vskip 
+l.937 ...e of PNBA* on different benchmark graphs}
+                                                  
+A number should have been here; I inserted `0'.
+(If you can't figure out why I needed to see a number,
+look up `weird error' in the index to The TeXbook.)
+
+/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.tex:937: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \vskip 
+l.937 ...e of PNBA* on different benchmark graphs}
+                                                  
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Report/main.tex:937: Missing \endgroup inserted.
+<inserted text> 
+                \endgroup 
+l.937 ...e of PNBA* on different benchmark graphs}
+                                                  
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-
