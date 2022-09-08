@@ -164,9 +164,11 @@ Distributed under the Creative Commons. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Lorenzo Ippolito - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
-Mattia Rosso - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
-Fabio Orazio Mirto - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
+Lorenzo Ippolito - [Linkedin](https://www.linkedin.com/in/lorenzo-ippolito-72312b16a) - lorenzoippolito.99@gmail.com
+
+Mattia Rosso - [Linkedin](https://www.linkedin.com/in/mattia-rosso) - mattiarosso99@gmail.com
+
+Fabio Orazio Mirto - [Linkedin](https://www.linkedin.com/in/fabio-orazio-mirto-359b53182) - fabioorazio.mirto@gmail.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
