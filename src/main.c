@@ -117,8 +117,6 @@ int main(int argc, char* argv[]) {
         ASTARshortest_path_sequential(G, source, dest, heuristic_type);
     } else if (strcmp(algo_type, "dijkstra") == 0) {
         DIJKSTRA_shortest_path_sequential(G, source, dest);
-    } else if (strcmp(algo_type, "fa") == 0) {
-        ASTARshortest_path_fa(G, source, dest, heuristic_type, num_threads);
     } else if (strcmp(algo_type, "sf") == 0) {
         ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     } else if (strcmp(algo_type, "b") == 0) {

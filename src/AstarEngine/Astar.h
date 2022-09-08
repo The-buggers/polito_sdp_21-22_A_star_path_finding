@@ -17,8 +17,6 @@ void ASTARshortest_path_nps(Graph G, int source, int dest, char heuristic_type);
 void ASTARshortest_path_phs(Graph G, int source, int dest, char heuristic_type);
 void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
                               char heuristic_type);
-void ASTARshortest_path_fa(Graph G, int source, int dest, char heuristic_type,
-                           int num_threads);
 void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
                            int num_threads);
 // Utility functions
