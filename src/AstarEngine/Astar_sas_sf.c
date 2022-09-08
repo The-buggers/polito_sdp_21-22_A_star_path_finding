@@ -2,144 +2,64 @@
 #include <math.h>
 #include <pthread.h>
 #include <semaphore.h>
-#include <sys/shm.h>
 
 #include "./Astar.h"
 
 #define maxWT DBL_MAX
-#define SHMEM_SIZE 1024 * 1024 * 1024
 #define DEBUG_ASTAR 0
 
 struct arg_t {
     int index;
     int num_threads;
+    PQ *open_lists;
     int V;
     Graph G;
-    struct mess_t **data;
+    pthread_mutex_t *mut_threads;
+    int *wait_flags;
     int source;
     int dest;
+    int *parentVertex;
+    double *hvalues;
+    double *gvalues;
+    double *costToCome;
     int *open_set_empty;
-    char heuristic_type;
-    double *best_dest_cost;
-    pthread_spinlock_t *m;
-    sem_t *w;
-    pthread_mutex_t *meR;
-    int *nR;
+    double *closed_set;
+    double **t_fvalues;
+    pthread_mutex_t *mut_nodes;
 #if COLLECT_STAT
     int *expanded_nodes;
 #endif
 };
-
-struct mess_t {
-    int n;
-    double g;
-    int prev;
-};
-
 static void *hda(void *arg);
-pthread_barrier_t barr;
+
 static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
-    int i, a, b, n, k, count;
+    int i, v, a, b, k_a, k_b;
     Position p;
     double g_b, f_b, a_b_wt, tot_cost = 0;
     link t;
-    int *parentVertex, *closed_set;
-    double *hvalues, *gvalues, *fvalues, *costToCome;
-    PQ open_list;
-    struct mess_t *data = *args->data;
+    int *open_set_empty = args->open_set_empty, count;
 
-    open_list = PQinit(args->V);
-    parentVertex = (int *)malloc(args->V * sizeof(int));
-    hvalues = (double *)malloc(args->V * sizeof(double));
-    gvalues = (double *)malloc(args->V * sizeof(double));
-    fvalues = (double *)malloc(args->V * sizeof(double));
-    costToCome = (double *)malloc(args->V * sizeof(double));
-    closed_set = (int *)malloc(args->V * sizeof(int));
-
-    if ((parentVertex == NULL) || (hvalues == NULL) || (gvalues == NULL) ||
-        (fvalues == NULL) || (costToCome == NULL) || (closed_set == NULL))
-        pthread_exit(NULL);
-
-    for (i = 0; i < args->V; i++) {
-        parentVertex[i] = -1;
-        p = GRAPHget_node_position(args->G, i);
-        hvalues[i] = heuristic(p, GRAPHget_node_position(args->G, args->dest),
-                               args->heuristic_type);
-        gvalues[i] = maxWT;
-        closed_set[i] = 0;
-    }
-    // Modify gvalues[source], t_fvalues[index][source], open_list[index]
-    if (hash_function(args->source, args->num_threads) == args->index) {
-        gvalues[args->source] = 0;
-        fvalues[args->source] = compute_f(hvalues[args->source], 0);
-        PQinsert(open_list, fvalues, args->source);
-    }
-    pthread_barrier_wait(&barr);
     // Start HDA*
     while (1) {
-        // break;
-        while (data != (*args->data)) {
-            pthread_mutex_lock(args->meR);
-            (*args->nR)++;
-            if (*(args->nR) == 1) sem_wait(args->w);
-            pthread_mutex_unlock(args->meR);
-
-            if (hash_function(data->n, args->num_threads) == args->index) {
-                if (closed_set[data->n] != 1 && data->g < gvalues[data->n]) {
-                    // printf("T: %d Buff Extract: %d\n", args->index, data->n);
-                    gvalues[data->n] = data->g;
-                    fvalues[data->n] = gvalues[data->n] + hvalues[data->n];
-                    parentVertex[data->n] = data->prev;
-                    costToCome[data->n] = data->g;
-
-                    if (PQsearch(open_list, data->n) == -1)
-                        PQinsert(open_list, fvalues, data->n);
-                    else
-                        PQchange(open_list, fvalues, data->n);
-                    // printf("T: %d PQ Insert: %d\n", args->index, data->n);
-                }
+        while (1) {
+            pthread_mutex_lock(&(args->mut_threads[args->index]));
+            if (PQempty(args->open_lists[args->index])) {
+                pthread_mutex_unlock(&(args->mut_threads[args->index]));
+                break;
+            } else {
+                open_set_empty[args->index] = 0;
+                pthread_mutex_unlock(&(args->mut_threads[args->index]));
             }
-            data++;
 
-            pthread_mutex_lock(args->meR);
-            (*args->nR)--;
-            if (*(args->nR) == 0) sem_post(args->w);
-            pthread_mutex_unlock(args->meR);
-        }
-
-        if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
-            // pthread_spin_lock(&(args->mut_threads[args->index]));
-            args->open_set_empty[args->index] = 1;
-            // pthread_spin_unlock(&(args->mut_threads[args->index]));
-
-            // If all the threads have the message queue empty terminate
-            for (i = 0, count = 0; i < args->num_threads; i++)
-                count += args->open_set_empty[i];
-            if (count == args->num_threads) break;
-        }
-
-        while (!PQempty(open_list)) {
-            args->open_set_empty[args->index] = 0;
             // POP the node with min f(n)
-            a = PQextractMin(open_list, fvalues);
-            // printf("T: %d PQ Extract: %d\n", args->index, a);
-            // Add to closed set
-            if (closed_set[a] == 1)
-                continue;
-            else
-                closed_set[a] = 1;
-
+            pthread_mutex_lock(&(args->mut_threads[args->index]));
+            a = PQextractMin(args->open_lists[args->index],
+                             args->t_fvalues[args->index]);
+            pthread_mutex_unlock(&(args->mut_threads[args->index]));
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
 #endif
-            if (a == args->dest) {
-                pthread_spin_lock(args->m);
-                if (gvalues[a] < *(args->best_dest_cost))
-                    *(args->best_dest_cost) = gvalues[a];
-                pthread_spin_unlock(args->m);
-            }
-
             // For each successor 'b' of node 'a':
             for (t = GRAPHget_list_node_head(args->G, a);
                  t != GRAPHget_list_node_tail(args->G, a);
@@ -147,94 +67,133 @@ static void *hda(void *arg) {
                 b = LINKget_node(t);
                 a_b_wt = LINKget_wt(t);
 
-                g_b = gvalues[a] + a_b_wt;
+                // Compute the owner of a (k_a == index) and b (k_b)
+                k_b = hash_function2(b, args->num_threads, args->V);
 
-                if (g_b < gvalues[b]) {
-                    // Send a message to b's owner thread
-                    k = hash_function(b, args->num_threads);
+                // Acquire the lock for vertex a and take g(a)
+                pthread_mutex_lock(&(args->mut_nodes[a]));
+                g_b = args->gvalues[a] + a_b_wt;
+                pthread_mutex_unlock(&(args->mut_nodes[a]));
 
-                    if (k == args->index) {
-                        gvalues[b] = g_b;
-                        fvalues[b] = g_b + hvalues[b];
-                        parentVertex[b] = a;
-                        costToCome[b] = g_b;
+                f_b = g_b + args->hvalues[b];
 
-                        if (PQsearch(open_list, b) == -1)
-                            PQinsert(open_list, fvalues, b);
-                        else
-                            PQchange(open_list, fvalues, b);
-                        // printf("T: %d PQ Insert: %d\n", args->index, b);
-                    } else {
-                        // data = args->data;
-                        sem_wait(args->w);
-                        (*args->data)->n = b;
-                        (*args->data)->g = g_b;
-                        (*args->data)->prev = a;
-                        (*args->data)++;
-                        // printf("T: %d Buff Insert: %d\n", args->index, b);
-                        sem_post(args->w);
-                    }
+                pthread_mutex_lock(&(args->mut_nodes[b]));
+                if (g_b < args->gvalues[b]) {
+                    args->parentVertex[b] = a;
+                    args->costToCome[b] = a_b_wt;
+                    args->gvalues[b] = g_b;
+                    pthread_mutex_lock(&(args->mut_threads[k_b]));
+                    args->t_fvalues[k_b][b] = f_b;
+                    PQinsert(args->open_lists[k_b], args->t_fvalues[k_b], b);
+                    pthread_mutex_unlock(&(args->mut_threads[k_b]));
                 }
+                pthread_mutex_unlock(&(args->mut_nodes[b]));
             }
+        }
+
+        // Check if open set is empty and a path has already been found
+        if (PQempty(args->open_lists[args->index]) &&
+            args->parentVertex[args->dest] != -1) {
+            // Set flag: empty
+            pthread_mutex_lock(&(args->mut_threads[args->index]));
+            open_set_empty[args->index] = 1;
+            pthread_mutex_unlock(&(args->mut_threads[args->index]));
+
+            // If all the threads have the message queue empty terminate
+            for (i = 0, count = 0; i < args->num_threads; i++)
+                count += open_set_empty[i];
+            if (count == args->num_threads) break;
         }
     }
     pthread_exit(NULL);
 }
-
-void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
-                               char heuristic_type, int num_threads) {
-    printf("## SAS-SF A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
+void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
+                                  char heuristic_type, int num_threads) {
+    printf("## SAS-SF-V2 A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
            source, dest);
     int V = GRAPHget_num_nodes(G);
-    int i, j, shmid, *open_set_empty, nR = 0;
+    int i, j, *parentVertex;
+    pthread_mutex_t *mut_threads;
+    pthread_mutex_t *mut_nodes;
+    double *hvalues, *gvalues, *costToCome, *closed_set;
+    double tot_cost;
+    int *open_set_empty;
     pthread_t *threads;
     struct arg_t *args;
     Position pos_dest = GRAPHget_node_position(G, dest);
     Position p;
-    key_t key;
-    struct mess_t *data;
-    double best_dest_cost = maxWT;
-    pthread_spinlock_t m;
-    pthread_mutex_t meR;
-    sem_t w;
+
+    // Matrix of priority queues
+    PQ *open_lists = (PQ *)malloc(num_threads * sizeof(PQ));
+    for (i = 0; i < num_threads; i++) {
+        open_lists[i] = PQinit(V);
+    }
+
+    // Matrix of priorities(fvalues) for the PQs
+    double **t_fvalues = (double **)malloc(num_threads * sizeof(double *));
+    for (i = 0; i < num_threads; i++) {
+        t_fvalues[i] = (double *)malloc(V * sizeof(double));
+        for (j = 0; j < V; j++) {
+            t_fvalues[i][j] = maxWT;
+        }
+    }
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
+    mut_threads =
+        (pthread_mutex_t *)malloc(num_threads * sizeof(pthread_mutex_t));
+    mut_nodes = (pthread_mutex_t *)malloc(V * sizeof(pthread_mutex_t));
+    parentVertex = (int *)malloc(V * sizeof(int));
+    hvalues = (double *)malloc(V * sizeof(double));
+    gvalues = (double *)malloc(V * sizeof(double));
+    costToCome = (double *)malloc(V * sizeof(double));
     open_set_empty = (int *)malloc(num_threads * sizeof(int));
+    closed_set = (double *)malloc(V * sizeof(double));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
     if (expanded_nodes == NULL) {
         return NULL;
     }
 #endif
-    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
-    pthread_mutex_init(&meR, NULL);
-    sem_init(&w, 0, 1);
+    if ((parentVertex == NULL) || (mut_threads == NULL) || (hvalues == NULL) ||
+        (gvalues == NULL) || (costToCome == NULL) || (threads == NULL) ||
+        (args == NULL) || (open_set_empty == NULL) || (closed_set == NULL))
+        return;
 
-    pthread_barrier_init(&barr, NULL, num_threads);
+    for (i = 0; i < V; i++) {
+        parentVertex[i] = -1;
+        p = GRAPHget_node_position(G, i);
+        hvalues[i] = heuristic(p, pos_dest, heuristic_type);
+        gvalues[i] = maxWT;
+        closed_set[i] = -1.0;
+        pthread_mutex_init(&mut_nodes[i], NULL);
+    }
+    // Modify gvalues[source], t_fvalues[index][source], open_list[index]
+    gvalues[source] = 0;
+    t_fvalues[hash_function2(source, num_threads, V)][source] =
+        compute_f(hvalues[source], 0);
+    PQinsert(open_lists[hash_function2(source, num_threads, V)],
+             t_fvalues[hash_function2(source, num_threads, V)], source);
 
-    for (i = 0; i < num_threads; i++) open_set_empty[i] = 0;
-
-    // Setup shared memory
-    if ((key = ftok(".", 65)) == -1) return;
-    if ((shmid = shmget(key, SHMEM_SIZE, 0644 | IPC_CREAT)) == -1) return;
-    data = (struct mess_t *)shmat(shmid, NULL, 0);
+    for (i = 0; i < num_threads; i++) pthread_mutex_init(&mut_threads[i], NULL);
 
     for (i = 0; i < num_threads; i++) {
         args[i].index = i;
         args[i].num_threads = num_threads;
+        args[i].open_lists = open_lists;
+        args[i].mut_threads = mut_threads;
         args[i].V = V;
         args[i].G = G;
-        args[i].m = &m;
-        args[i].w = &w;
-        args[i].meR = &meR;
-        args[i].nR = &nR;
         args[i].source = source;
-        args[i].heuristic_type = heuristic_type;
         args[i].dest = dest;
-        args[i].data = &data;
-        args[i].best_dest_cost = &best_dest_cost;
+        args[i].parentVertex = parentVertex;
+        args[i].hvalues = hvalues;
+        args[i].gvalues = gvalues;
+        args[i].costToCome = costToCome;
         args[i].open_set_empty = open_set_empty;
+        args[i].t_fvalues = t_fvalues;
+        args[i].mut_nodes = mut_nodes;
+        args[i].closed_set = closed_set;
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
@@ -243,9 +202,8 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     for (i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
     }
-    if (best_dest_cost < maxWT)
-        // reconstruct_path(parentVertex, source, dest, costToCome);
-        printf("Best cost: %lf\n", best_dest_cost);
+    if (gvalues[dest] < maxWT)
+        reconstruct_path(parentVertex, source, dest, costToCome);
     else
         printf("Path not found\n");
 #if COLLECT_STAT
@@ -264,10 +222,16 @@ void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
     fclose(fp);
     free(expanded_nodes);
 #endif
-    shmdt(data);
-    shmctl(shmid, IPC_RMID, NULL);
     free(threads);
     free(args);
+    free(mut_threads);
+    free(open_lists);
+    free(parentVertex);
+    free(hvalues);
+    free(gvalues);
+    free(costToCome);
+    for (i = 0; i < num_threads; i++) PQfree(open_lists[i]);
+    free(open_lists);
 
     return;
 }
