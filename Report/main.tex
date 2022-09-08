@@ -295,6 +295,10 @@ The first step consists of a pre-computation of:
   \item The initial values of $f(n)$ and $g(n)$ that will be set to $DOUBLE\_MAX$ for each
         node except for the source node that will have $f(source) = h(source)$ because 
         $g(soruce)$ is clearly $0$. We thus keep global data structures \texttt{f} and \texttt{g} to do this.
+  \item The \textit{open set} contains all the nodes that still have to be explored(at
+        the beginning only the source nodes).
+  \item The \textit{closed set} contains all the nodes that have already been visited and don't
+        have to be re-evaluated.
 \end{itemize}
 We will also need two additional data structures:
 \begin{itemize}
@@ -318,9 +322,6 @@ are updated:
   \texttt{parentVertex[b] = a}\\
   \texttt{f[b] = g[b] + h[b]}
 \end{flushleft}
-The final step of this inner loop is checking wheter the node $b$ has already been added to the 
-\textit{open set} or not. In case the \textit{open set} doesn't contain it we add it (with priority
-$f(n)$ just computed).
 Since the heuristic function we have chosen is both admissible and consistent we have the guarantee 
 that the first time a node is extracted from the \textit{open set} we have found a best path to it (this
 is why when the destination node is extracted we can terminate having found the best path). So despite
@@ -334,8 +335,8 @@ it will be only expanded once.
 $g[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
 $f[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
 $h[i] \gets h(i, d) \; \forall i \in V$\;
-$costToCome[i] \gets 1 \; \forall i \in V$\;
-$parentVertex[i] \gets 1 \; \forall i \in V$\;
+$costToCome[i] \gets DOUBLE\_MAX \; \forall i \in V$\;
+$parentVertex[i] \gets -1 \; \forall i \in V$\;
 $f[s] \gets h[s]$\;
 $g[s] \gets 0$\;
 $openSet := \{(s, f[s])\}$\;
@@ -345,8 +346,14 @@ $openSet := \{(s, f[s])\}$\;
     $pathFound \gets true$\;
     reconstructPath()\;
   }
-  %\Comment*[r]{Inner loop}
+  \If{$a \in closedSet$}{
+    CONTINUE
+  }
+  $closedSet.PUSH(a)$
   \ForEach{neighbor $b$ of $a$}{
+    \If{$b \in closedSet$}{
+      CONTINUE
+    }
     $wt \gets weight(a, b)$\;
     $tentativeScore \gets g[a] + wt$\;
     \If{$tentativeScore$ is less than $g[b]$}{
@@ -389,10 +396,10 @@ will expand to get to the destination obtaining the best path. To investigate th
 Dijkstra algorithm on the same graph comparing the number of expanded nodes by the two algorithms:
 
 \begin{table}[ht!]
-  \caption{Expanded nodes vs total nodes for Dijkstra and A*}
+  \caption{Expanded nodes in different maps}
   \begin{tabular}{|l|l|l|}
   \hline
-  \textbf{Expanded nodes} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
+  \textbf{} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
   \textbf{RND}            & 15 of 101           & 13 of 101         \\ \hline
   \textbf{BAY}            & 318725 of 321270    & 157137 of 321270  \\ \hline
   \textbf{FLA}            & 996956 of 1070376   & 592480 of 1070376 \\ \hline
@@ -783,10 +790,74 @@ results by observing that:
         Anyway, having more threads improves time execution but has the drawback of consuming more
         memory and CPU.      
 \end{itemize}
+
+\subsection{Parallel Bidirectional Search}
+The second approach we have studied and implemented in order to parallelize the A* algorithm
+is a parallel version of bidirectional search.
+\paragraph{Terminology}
+We will refer to:
+\begin{itemize}
+  \item Graph $G$: the original graph.
+  \item Graph $R$: the reversed graph of $G$. The reverse graph has the property of having
+        exactly the same nodes of $G$ and the each edge $(x, y)$ with weight $wt$ has been
+        reversed so that it becomes $(y, x)$ and the weight $wt$ remains the same.
+  \item Search thread $t_G$: the thread that perform the search from $source$ to $dest$
+        on graph $G$.
+  \item Search thread $t_R$: the thread that perform the search from $dest$ to $source$
+        on the reversed graph $R$.
+\end{itemize}
+\subsection{New Bidirectional A*(NBA*)}
+The NBA* algorithm is a version of  the bidirectional search that uses the data
+structure $M$ to keep track of the nodes in the middle between the two searcher
+threads $t_G$ and $t_R$. $M$ initially contains all the nodes of the graph. The nodes
+in the search frontiers are the ones that:
+\begin{itemize}
+  \item Belongs to $M$
+  \item Have been labelled: $g_G(n) < \infty $ or $g_R(n) < \infty $
+\end{itemize}
+The threads $t_G$ and $t_R$ share a variable $L$ initialized to $\infty$ that contains
+the cost of the best path from $source$ to $dest$. Other common variables are:
+\begin{itemize}
+  \item $F_G$: lowest $f_G$ value on $t_G$ frontier
+  \item $F_R$: lowest $f_R$ value on $t_R$ frontier
+  \item Variables $F_p$, $f_p$, $g_p$ (with $p \in \{R,G\}$) are written on only one
+        side but read by both sides.
+\end{itemize}
+These are the initialization step done by $t_G$ (same for $t_R$)
+\begin{itemize}
+  \item $g_G(source_G)=0$, $F_G(source_G)=f_G(source_G)$
+\end{itemize}
+At each iteration is extracted a node $x$ such that:
+\begin{itemize}
+  \item $x \in M$
+  \item $x: f_G(x) = min f_G(v) \forall v \in openSet_G$ 
+\end{itemize}
+The node is removed from $M$ and pruned (not expanded) if $f_G(x) \ge L$ or
+$g_G(x)+F_R-h_R(x) \ge L$. Otherwise all its successors $y$ are generated. In the
+first case it is classified as \textit{rejected} while in the other situation it is
+\textit{stabilized} because $g_G(x)$ won't change anymore. For each $y$ we update:
+\begin{itemize}
+  \item $g_G(x)$: $min(g_G(y), g_G(x) + d_G(x, y))$
+  \item $L$: $min(L, g_G(x) + g_G(y))$
+\end{itemize}
+The algorithm stops when no more candidates have to be expanded in one of the two sides
+\subsection{Parallel New Bidirectional A*(PNBA*)}
+The PNBA* algorithm improves the NBA* algorithm by letting the two threads working in
+parallel and not in a alternate mode. This requires to cope with mutual exclusion of some data.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{pnba/pnbamap.png}
+  \caption{PNBA* work on BAY(left) and FLA(right)}
+  \label{pnbamap}
+\end{figure}
+In figure \ref{pnbamap} we realize that the work distribution is not equal and changes 
+at each iteration (depending on which is the common node found).
+
+\section{Complete Results}
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{hda/rnd.png}
-  \caption{HDA* on RND map}
+  \caption{HDA* on RND map (only time performance)}
   \label{hdarnd}
 \end{figure}
 \begin{figure}[ht!]
@@ -819,14 +890,12 @@ results by observing that:
   \caption{HDA* overall performances}
   \label{hdatot}
 \end{figure}
-
-\subsection{Parallel Bidirectional Search}
-(Explanation + Pseudocode)
-\subsubsection{Results}
-(Plots to show thread 1 and 2 works, plots of time)
-
-\section{Complete Results}
-(Tables with numbers)
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{pnba/pnba.png}
+  \caption{PNBA* overall performances}
+  \label{pnbatot}
+\end{figure}
 
 \section{Final Considerations}
 (Comments)
