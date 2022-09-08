@@ -1,8 +1,0 @@
-digraph "DijkstraEngine" {
-  compound=true
-  node [ fontsize="10", fontname="Helvetica"];
-  edge [ labelfontsize="10", labelfontname="Helvetica"];
-  dir_0bd70d8960bfb0aa23451f275a071e70 [shape=box, label="DijkstraEngine", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_0bd70d8960bfb0aa23451f275a071e70.html"];
-  dir_45814856f36e01cbe959f35071d50d5a [shape=box label="Graph" URL="dir_45814856f36e01cbe959f35071d50d5a.html"];
-  dir_0bd70d8960bfb0aa23451f275a071e70->dir_45814856f36e01cbe959f35071d50d5a [headlabel="3", labeldistance=1.5 headhref="dir_000001_000002.html"];
-}

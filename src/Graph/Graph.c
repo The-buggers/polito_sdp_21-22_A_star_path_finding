@@ -76,10 +76,9 @@ static void reconstruct_path_r(int *parentVertex, int j, double *costToCome,
                                double *tot_cost);
 
 // Static function prototypes for parallel read
-static void parallelIo(void *arg);          // version 2
-static void parallelIo_rev(void *arg);      // version 4
-static void *thread_read(void *arg);        // version 3
-static void *GRAPHloadParallel(void *arg);  // version 1
+static void parallelIo(void *arg);      // version 1
+static void parallelIo_rev(void *arg);  // version 2
+static void *thread_read(void *arg);    // version 3
 // #####################################################
 
 // Utily functions for a_star implementation
@@ -478,7 +477,7 @@ static void parallelIo(void *arg) {
     }
     pthread_exit(NULL);
 }
-Graph GRAPHload_parallel2(char *filepath, int num_threads) {
+Graph GRAPHload_parallel1(char *filepath, int num_threads) {
     int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fin;
     float E;
     char label1[MAXC], label2[MAXC];
@@ -600,7 +599,7 @@ static void parallelIo_rev(void *arg) {
     }
     pthread_exit(NULL);
 }
-void GRAPHload_parallel4(char *filepath, int num_threads, Graph *G, Graph *R) {
+void GRAPHload_parallel2(char *filepath, int num_threads, Graph *G, Graph *R) {
     int V, T, i, j, k, v, e, id1, id2, nodexT, edgexT, copysz, fin;
     float E;
     char label1[MAXC], label2[MAXC];
@@ -719,123 +718,4 @@ void GRAPHload_parallel4(char *filepath, int num_threads, Graph *G, Graph *R) {
     munmap(src, copysz);
     free(args);
     free(threads);
-}
-
-// #################################
-// ### PARALLEL READ - VERSION 1 ###
-// #################################
-
-// Thread argument data structure
-struct threadData {
-    pthread_t threadId;
-    int fd;
-    int id;
-    Graph G;
-    int V;
-};
-// Global data
-int len = 0;
-int retVal = 1;
-sem_t sem, sem2, sem3;
-struct node_line_s v;
-struct edge_line_s e;
-static void *GRAPHloadParallel(void *arg) {
-    struct threadData *td;
-    td = (struct threadData *)arg;
-
-    int i;
-    char label1[MAXC], label2[MAXC];
-    double wt;
-    Position p;
-
-    // Read the nodes name(index 0-V) and the coordinates of each node
-
-#if DEBUGPRINT
-    // Print nodes coordinates
-    for (i = 0; i < td->V; i++) {
-        POSITIONprint(STsearchByIndex(td->G->tab, i), 1);
-    }
-#endif
-    // int fin = open(td->fd, O_RDONLY);
-
-    while (1) {
-        sem_wait(&sem3);
-        if (len < td->V) {
-            sem_wait(&sem);
-            // fscanf(td->fd, "%d %d %d", &node_index, &node_x, &node_y);
-            retVal = read(td->fd, &v, sizeof(struct node_line_s));
-            // printf("%d %d %d\n", v.n, v.node_x, v.node_y);
-            len++;
-            p = POSITIONinit(v.x, v.y);
-            STinsert(td->G->tab, p, v.index);
-            sem_post(&sem);
-            sem_post(&sem3);
-            POSITIONfree(p);
-        } else {
-            sem_wait(&sem2);
-
-            // retVal = fscanf(td->fd, "%d %d %lf", &id1, &id2, &wt);
-            retVal = read(td->fd, &e, sizeof(struct edge_line_s));
-
-            if ((e.id1 >= 0 && e.id2 >= 0) && (e.id1 != 0 || e.id2 != 0)) {
-                // printf("%d %d %lf\n", e.n1, e.n2, e.e);
-                GRAPHinsertE(td->G, e.id1, e.id2, e.wt);
-            }
-            if (retVal != sizeof(struct edge_line_s)) {
-                sem_post(&sem2);
-                sem_post(&sem3);
-                return td->G;
-            }
-            sem_post(&sem2);
-            sem_post(&sem3);
-        }
-    }
-    pthread_exit(NULL);
-    return td->G;
-}
-
-Graph GRAPHload_parallel1(char *filepath, int num_threads) {
-    int V, i, fin;
-    Graph G;
-    struct threadData *td;
-    void *retval;
-
-    sem_init(&sem, 0, 1);
-    sem_init(&sem2, 0, 1);
-    sem_init(&sem3, 0, 1);
-
-    // Open file
-    fin = open(filepath, O_RDONLY);
-
-    // Read the first line: number of nodes
-    if (read(fin, &V, sizeof(int)) != sizeof(int)) return NULL;
-
-    // Initialize the Graph ADT
-    G = GRAPHinit(V);
-    if (G == NULL) return NULL;
-    // printf("V = %d\n", V);
-    // Read the first line: number of nodes
-    // fscanf(fin, "%d", &V);
-
-    // Initialize the Graph ADT
-
-    td = (struct threadData *)malloc(num_threads * sizeof(struct threadData));
-    for (i = 0; i < num_threads; i++) {
-        td[i].fd = fin;
-        td[i].id = i;
-        td[i].V = V;
-        td[i].G = G;
-        pthread_create(&(td[i].threadId), NULL, GRAPHloadParallel,
-                       (void *)&td[i]);
-    }
-    for (i = 0; i < num_threads; i++) {
-        pthread_join(td[i].threadId, &retval);
-    }
-
-    sem_destroy(&sem);
-    sem_destroy(&sem2);
-    sem_destroy(&sem3);
-    close(fin);
-
-    return G;
 }
