@@ -7,7 +7,7 @@
 #include "./Astar.h"
 
 #define maxWT DBL_MAX
-#define SHMEM_SIZE 1024 * 1024 * 1024
+#define SHMEM_SIZE 1024 * 1024  //* 1024
 #define DEBUG_ASTAR 0
 
 struct arg_t {
@@ -70,33 +70,34 @@ static void *hda(void *arg) {
         closed_set[i] = 0;
     }
     // Modify gvalues[source], t_fvalues[index][source], open_list[index]
-    if (hash_function(args->source, args->num_threads) == args->index) {
+    if (hash_function2(args->source, args->num_threads, args->V) ==
+        args->index) {
         gvalues[args->source] = 0;
         fvalues[args->source] = compute_f(hvalues[args->source], 0);
         PQinsert(open_list, fvalues, args->source);
     }
-    pthread_barrier_wait(&barr);
+
     // Start HDA*
     while (1) {
-        // break;
         while (data != (*args->data)) {
             pthread_mutex_lock(args->meR);
             (*args->nR)++;
             if (*(args->nR) == 1) sem_wait(args->w);
             pthread_mutex_unlock(args->meR);
 
-            if (hash_function(data->n, args->num_threads) == args->index) {
-                if (closed_set[data->n] != 1 && data->g < gvalues[data->n]) {
+            if (hash_function2(data->n, args->num_threads, args->V) ==
+                args->index) {
+                if (data->g < gvalues[data->n]) {
                     // printf("T: %d Buff Extract: %d\n", args->index, data->n);
                     gvalues[data->n] = data->g;
                     fvalues[data->n] = gvalues[data->n] + hvalues[data->n];
                     parentVertex[data->n] = data->prev;
                     costToCome[data->n] = data->g;
 
-                    if (PQsearch(open_list, data->n) == -1)
-                        PQinsert(open_list, fvalues, data->n);
-                    else
-                        PQchange(open_list, fvalues, data->n);
+                    // if (PQsearch(open_list, data->n) == -1)
+                    PQinsert(open_list, fvalues, data->n);
+                    // else
+                    //     PQchange(open_list, fvalues, data->n);
                     // printf("T: %d PQ Insert: %d\n", args->index, data->n);
                 }
             }
@@ -109,27 +110,19 @@ static void *hda(void *arg) {
         }
 
         if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
-            // pthread_spin_lock(&(args->mut_threads[args->index]));
             args->open_set_empty[args->index] = 1;
-            // pthread_spin_unlock(&(args->mut_threads[args->index]));
-
             // If all the threads have the message queue empty terminate
             for (i = 0, count = 0; i < args->num_threads; i++)
                 count += args->open_set_empty[i];
             if (count == args->num_threads) break;
         }
 
-        while (!PQempty(open_list)) {
+        if (!PQempty(open_list)) {
             args->open_set_empty[args->index] = 0;
             // POP the node with min f(n)
             a = PQextractMin(open_list, fvalues);
             // printf("T: %d PQ Extract: %d\n", args->index, a);
             // Add to closed set
-            if (closed_set[a] == 1)
-                continue;
-            else
-                closed_set[a] = 1;
-
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
 #endif
@@ -151,7 +144,7 @@ static void *hda(void *arg) {
 
                 if (g_b < gvalues[b]) {
                     // Send a message to b's owner thread
-                    k = hash_function(b, args->num_threads);
+                    k = hash_function2(b, args->num_threads, args->V);
 
                     if (k == args->index) {
                         gvalues[b] = g_b;
@@ -159,19 +152,19 @@ static void *hda(void *arg) {
                         parentVertex[b] = a;
                         costToCome[b] = g_b;
 
-                        if (PQsearch(open_list, b) == -1)
-                            PQinsert(open_list, fvalues, b);
-                        else
-                            PQchange(open_list, fvalues, b);
+                        // if (PQsearch(open_list, b) == -1)
+                        PQinsert(open_list, fvalues, b);
+                        // else
+                        //     PQchange(open_list, fvalues, b);
                         // printf("T: %d PQ Insert: %d\n", args->index, b);
                     } else {
-                        // data = args->data;
                         sem_wait(args->w);
                         (*args->data)->n = b;
                         (*args->data)->g = g_b;
                         (*args->data)->prev = a;
                         (*args->data)++;
-                        // printf("T: %d Buff Insert: %d\n", args->index, b);
+                        // printf("T: %d Buff Insert: %d\n", args->index,
+                        // b);
                         sem_post(args->w);
                     }
                 }
@@ -181,10 +174,10 @@ static void *hda(void *arg) {
     pthread_exit(NULL);
 }
 
-void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
-                               char heuristic_type, int num_threads) {
-    printf("## SAS-SF A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
-           source, dest);
+void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
+                            int num_threads) {
+    printf("## HDA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
+           dest);
     int V = GRAPHget_num_nodes(G);
     int i, j, shmid, *open_set_empty, nR = 0;
     pthread_t *threads;

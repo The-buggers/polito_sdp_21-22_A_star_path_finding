@@ -107,9 +107,9 @@ static void *hda(void *arg) {
     }
     pthread_exit(NULL);
 }
-void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
-                                  char heuristic_type, int num_threads) {
-    printf("## SAS-SF-V2 A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
+void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
+                               char heuristic_type, int num_threads) {
+    printf("## SAS-SF A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
            source, dest);
     int V = GRAPHget_num_nodes(G);
     int i, j, *parentVertex;
@@ -209,7 +209,7 @@ void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
 #if COLLECT_STAT
     int n = 0;
     int tot = 0;
-    FILE *fp = fopen("./stats/stat_astar_sas_b.txt", "w+");
+    FILE *fp = fopen("./stats/stat_astar_sas_sf.txt", "w+");
     for (i = 0; i < V; i++) {
         if (expanded_nodes[i] != 0) {
             n++;

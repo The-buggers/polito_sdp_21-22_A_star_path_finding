@@ -84,6 +84,7 @@ int main(int argc, char* argv[]) {
             }
             printf("Parallel Reading Approach: 2 - Read G and R\n");
             GRAPHload_parallel2(argv[1], reading_threads, &G, &R);
+            break;
         default:
             // reading approach 1
             reading_threads = atoi(argv[3]);
@@ -119,9 +120,8 @@ int main(int argc, char* argv[]) {
         ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     } else if (strcmp(algo_type, "b") == 0) {
         ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
-    } else if (strcmp(algo_type, "sf2") == 0) {
-        ASTARshortest_path_sas_sf_v2(G, source, dest, heuristic_type,
-                                     num_threads);
+    } else if (strcmp(algo_type, "hda") == 0) {
+        ASTARshortest_path_hda(G, source, dest, heuristic_type, num_threads);
     } else if (strcmp(algo_type, "pnba") == 0) {
         ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
     }
