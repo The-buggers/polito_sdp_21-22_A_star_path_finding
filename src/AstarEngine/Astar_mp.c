@@ -329,8 +329,8 @@ static void *astar_thread(void *arg) {
             // If message queue is not empty add each message to the OPEN LIST
             if (res != -1) {
 #if DEBUG_ASTAR
-                // printf("t[%d] received a message about node %d\n", id,
-                // message.node);
+                printf("t[%d] received a message about node %d\n", id,
+                       message.node);
 #endif
                 if (message.g_node < gvalues[message.node]) {
                     fvalues[message.node] = message.f_node;
@@ -338,7 +338,7 @@ static void *astar_thread(void *arg) {
                     parentVertex[message.node] = message.parent_node;
                     costToCome[message.node] = message.g_node;
                     PQinsert(open_set, fvalues, message.node);
-                    break;  // printf("t[%d] PQinsert\n", id);
+                    break;
                 }
             }
         } while (res != -1);
@@ -413,13 +413,10 @@ static void *astar_thread(void *arg) {
 #if COLLECT_STAT
             targ->expanded_nodes[a]++;
 #endif
-            // check_and_update(a, dest, gvalues[a], best_dest_cost, m);
-
             if (a == dest) {
                 pthread_mutex_lock(m);
                 if (gvalues[a] < *best_dest_cost) *best_dest_cost = gvalues[a];
                 pthread_mutex_unlock(m);
-                // continue;
             }
 
             // Expand the node a

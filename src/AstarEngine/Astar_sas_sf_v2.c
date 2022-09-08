@@ -43,7 +43,6 @@ static void *hda(void *arg) {
     // Start HDA*
     while (1) {
         while (1) {
-            // Set flag: not empty
             pthread_mutex_lock(&(args->mut_threads[args->index]));
             if (PQempty(args->open_lists[args->index])) {
                 pthread_mutex_unlock(&(args->mut_threads[args->index]));
@@ -61,17 +60,6 @@ static void *hda(void *arg) {
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
 #endif
-
-            // NEW: duplicate check
-            // pthread_mutex_lock(&(args->mut_nodes[a]));
-            // if (args->closed_set[a] != -1 &&
-            //     args->closed_set[a] <= args->gvalues[a]) {
-            // pthread_mutex_unlock(&(args->mut_nodes[a]));
-            //     continue;
-            // }
-            // args->closed_set[a] = args->gvalues[a];
-            // pthread_mutex_unlock(&(args->mut_nodes[a]));
-
             // For each successor 'b' of node 'a':
             for (t = GRAPHget_list_node_head(args->G, a);
                  t != GRAPHget_list_node_tail(args->G, a);
@@ -89,19 +77,8 @@ static void *hda(void *arg) {
 
                 f_b = g_b + args->hvalues[b];
 
-                // NEW: duplicate check
-                // pthread_mutex_lock(&(args->mut_nodes[b]));
-                // if (args->closed_set[b] != -1 && args->closed_set[b] <= g_b)
-                // {
-                //     pthread_mutex_unlock(&(args->mut_nodes[b]));
-                //     continue;
-                // }
-                // pthread_mutex_unlock(&(args->mut_nodes[b]));
-
-                // Update gvalues, fvalues, parentVertex, costToCome
                 pthread_mutex_lock(&(args->mut_nodes[b]));
                 if (g_b < args->gvalues[b]) {
-                    // Modify shared data structures
                     args->parentVertex[b] = a;
                     args->costToCome[b] = a_b_wt;
                     args->gvalues[b] = g_b;
@@ -224,7 +201,6 @@ void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
     }
     for (i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
-        // free(open_lists[i]);
     }
     if (gvalues[dest] < maxWT)
         reconstruct_path(parentVertex, source, dest, costToCome);
@@ -254,6 +230,8 @@ void ASTARshortest_path_sas_sf_v2(Graph G, int source, int dest,
     free(hvalues);
     free(gvalues);
     free(costToCome);
+    for (i = 0; i < num_threads; i++) PQfree(open_lists[i]);
+    free(open_lists);
 
     return;
 }

@@ -13,7 +13,6 @@ double stop_timer(struct timespec begin);
 
 int main(int argc, char* argv[]) {
     Graph G, R;
-    FILE* fperf;
     struct timespec begin, end;
     int reading_type, reading_threads;
     char algo_type[MAXC], heuristic_type;
@@ -67,7 +66,7 @@ int main(int argc, char* argv[]) {
             printf("Sequential Reading\n");
             G = GRAPHload_sequential(argv[1]);
             break;
-        case 4:
+        case 2:
             // parallel reading approach 2 for PNBA*
             reading_threads = atoi(argv[3]);
             strcpy(algo_type, argv[4]);
@@ -86,7 +85,7 @@ int main(int argc, char* argv[]) {
             printf("Parallel Reading Approach: 2 - Read G and R\n");
             GRAPHload_parallel2(argv[1], reading_threads, &G, &R);
         default:
-            // reading approach 1,2
+            // reading approach 1
             reading_threads = atoi(argv[3]);
             strcpy(algo_type, argv[4]);
             if (strcmp(algo_type, "seq") != 0 &&
@@ -106,7 +105,6 @@ int main(int argc, char* argv[]) {
             break;
     }
     printf("Reading time: %.9f seconds\n\n", stop_timer(begin));
-    fperf = fopen("out.txt", "a");
 
 #if MEASURE_ALGORITHM
     //////////////////
@@ -129,8 +127,6 @@ int main(int argc, char* argv[]) {
     }
     printf("A* algorithm time: %.9f seconds\n#threads: %d\n", stop_timer(begin),
            num_threads);
-    // fprintf(fperf, "%.9f\n", stop_timer(begin));
-    fclose(fperf);
 #endif
     return 0;
 }

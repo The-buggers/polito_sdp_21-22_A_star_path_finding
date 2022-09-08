@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "Position.h"
+
 struct symboltable {
     Position *p;  // dynamic array of positions
     int maxN;
