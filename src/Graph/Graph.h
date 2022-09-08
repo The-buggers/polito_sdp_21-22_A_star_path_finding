@@ -19,7 +19,6 @@ int GRAPHgetIndex(Graph G, char *label);
 void GRAPHinsertE(Graph G, int id1, int id2, double wt);
 void GRAPHremoveE(Graph G, int id1, int id2);
 void GRAPHedges(Graph G, Edge *a);
-void GRAPHshortest_path_astar(Graph G, int source, int dest);
 Position GRAPHget_node_position(Graph G, int id);
 int GRAPHget_num_nodes(Graph G);
 link GRAPHget_list_node_head(Graph G, int v);

@@ -39,16 +39,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+A* is a graph-traversal and path-search algorithm. It is used in many contexts of computer science and not only.
+It can be considered as a general case of the Dijkstra algorithm. It is a Greedy-best-first-search algorithm that uses an heuristic function to guide itself.
+What it does is combining:
+- Dijkstra approach: favoring nodes closed to the starting point(source)
+- Greedy-best-first-search approach: favoring nodes closed to the final point(destination)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -91,8 +86,10 @@ make target
 
 <!-- Folders' Content -->
 ## Folders' Content
+There are three main folders.
 
 ### AstarEngine
+It contains all the A* functions and algorithms.
 
 - Astar_ab_ba.c
 - Astar_sas_b.c
@@ -101,11 +98,13 @@ make target
 - Astar.h
 
 ### DijkstraEngine
+It contains all the Dijkstra functions and algorithms.
 
 - Dijkstra_seq.c
 - Dijkstra.h
 
 ### Graph
+It contains both functions related to priority queue and graphs.
 
 - Graph.c
 - Graph.h
@@ -121,7 +120,37 @@ make target
 <!-- Files' Content -->
 ## Files' Content
 
-- Astar_ab_ba.c
+#### Astar_ab_ba.c
+
+It contains the main function ```ASTARshortest_path_ab_ba``` responsible to create threads and to call function ```nba```. This function implements Parallel New Bidirectional A* algorithm.
+
+#### Astar_sas_b.c
+
+It contains the main function ```ASTARshortest_path_sas_b``` responsible to create threads and to call function ```hba```. This function implements Hash DIstributed A* algorithm with barrier termination.
+
+#### Astar_sas_sf.c
+
+It contains the main function ```ASTARshortest_path_sas_sf```  responsible to create threads and to call function ```hba```. This function implements Hash DIstributed A* algorithm with sum flags termination.
+
+#### Astar_seq.c
+
+It contains the main function ```ASTARshortest_path_sequential``` that implements the sequential A* algorithm.
+
+#### Dijkstra_seq.c
+
+It contains the main function ```DIJKSTRA_shortest_path_sequential``` that implements the sequential Dijkstra algorithm.
+
+#### Graph.c
+
+It contains all the functions to load a graph in different ways such ```GRAPHload_sequential```, ```GRAPHload_parallel1```, ```GRAPHload_parallel2``` and ```GRAPHload_parallel3```. There are also different functions to work on graph like ```GRAPHinsertE``` to insert an edge and ```LINKget_wt``` to get the weight of a link.
+
+#### PQ.c
+
+It contains functions to operate on priority queue such ```PQinsert``` to insert a new element, ```PQinsert``` to change its priority, ```PQextractMin``` to extract the element with lowest priority and ```PQsearch``` to check if an element is already present. 
+
+#### ST.c
+
+It contains functions to operate on symbol table such ```STinsert``` and ```STsearch``` to respectively insert and search on a symbol table.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,13 +164,11 @@ Distributed under the Creative Commons. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Lorenzo Ippolito - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
+Mattia Rosso - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
+Fabio Orazio Mirto - [Linkedin](https://www.linkedin.com/your_username) - email@example.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
@@ -158,15 +185,3 @@ Use this space to list resources you find helpful and would like to give credit 
 * [React Icons](https://react-icons.github.io/react-icons/search)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Random Graph Generation
-1. cd RandomGraphGenerator
-2. gcc -Wall RandomGraphGenerator.c -o randgen -lm
-3. ./randgen \[Path\] \[mode 0/1 \] \[max_x\] \[max_y\] \[V\] \[max_k\]
-
-## HPC Jupyter PoliTO
-1. cd ~/ParallelAstarProject/polito_sdp_21-22_A_star_path_finding/src 
-2. Check that the path of each statistics file is : "../stats/name" (in VM it is only "./stats/name" because src is the root)
-3. make clean; make target
-4. cd build
-5. ./graphtest ../../Benchmark/DIMACS_custom_format/binarydUSA-road-dBAY 321269 263446 2 h
