@@ -94,8 +94,7 @@
 \begin{document}
 
 \twocolumn[ % Method A for two-column formatting
-  \begin{@twocolumnfalse} % Method A for two-column formatting
-  
+  \begin{@twocolumnfalse} % Method A for two-column formatting  
 \maketitle
 
 \begin{abstract}
@@ -116,8 +115,6 @@ which can be the most effective approach to reach the initial goal.
 
 
 %%%%%%%%%%%%%%%  Main text   %%%%%%%%%%%%%%%
-% \linenumbers
-
 %% %%%%%%%%%%%%%%%%%%%%%%% %%
 %% CHAPTER 1: INTRODUCTION %%
 %% %%%%%%%%%%%%%%%%%%%%%%% %%
@@ -868,23 +865,6 @@ results by observing that:
         the resource consumption increases but this is not enough and the performances scalability
         and improvements that should have been obtained with large graphs were not proved.
 \end{itemize}
-
-\subsection{Parallel Bidirectional Search}
-The second approach we have studied and implemented in order to parallelize the A* algorithm
-is a parallel version of bidirectional search. The bidirectional search consists of two threads(or
-processes) that collaborate to find the bast path from $source$ to $dest$: one looks for the optimal path
-from $source$ to $dest$ while the other one looks for the optimal path from $dest$ to $source$ in the reversed graph.
-\paragraph{Terminology}
-\begin{itemize}
-  \item Graph $G$: the original graph.
-  \item Graph $R$: the reversed graph of $G$. The reverse graph has the property of having
-        exactly the same nodes of $G$ and each edge $(x, y)$ with weight $wt$ has been
-        reversed so that it becomes $(y, x)$ and the weight $wt$ remains the same.
-  \item Search thread $t_G$: the thread that performs the search from $source$ to $dest$
-        on graph $G$.
-  \item Search thread $t_R$: the thread that performs the search from $dest$ to $source$
-        on the reversed graph $R$.
-\end{itemize}
 \subsection{New Bidirectional A*(NBA*)}
 The NBA* algorithm is a version of  the bidirectional search that uses a data
 structure $M$ to keep track of the nodes in the middle between the two searcher
@@ -933,8 +913,9 @@ In figure \ref{pnbamap} we realize that the work distribution is not equal and c
 at each iteration (depending on which is the common node found).
 \subsubsection{Results}
 \begin{table}[ht!]
+  \centering
+  \caption{SAS-SF with best number of threads - time performances}
   \begin{tabular}{|l|l|l|l|}
-  \caption{Time performance of PNBA* on different benchmark graphs}
   \hline
   \textbf{}    & \textbf{PNBA*} & \textbf{Sequential A*} & \textbf{Speed-Up} \\ \hline
   \textbf{BAY} & 0.2091s        & 0.2197s                & 4.82\%            \\ \hline
@@ -942,7 +923,6 @@ at each iteration (depending on which is the common node found).
   \textbf{W}   & 2.3029s        & 2.5890s                & 11.1\%            \\ \hline
   \textbf{USA} & 9.0568         & 13.6716s               & 33.8\%            \\ \hline
   \end{tabular}
-  \label{pnbatable}
 \end{table}
 \begin{itemize}
   \item The PNBA* is able to outperform the sequential algorithm in terms of execution time in all the 
@@ -953,7 +933,6 @@ at each iteration (depending on which is the common node found).
   \item Resource consumption is almost 2x w.r.t. the sequential algorithm and this is reasonable considering
         that it is like running two sequential algorithm in concurrency
 \end{itemize}
-
 \section{Computing Facilities Platform}
 We have tested all our work on the \textit{SmartData@PoliTO} Cluster.
 There are $33$ storage workers equipped with:
@@ -1019,8 +998,6 @@ There are $33$ storage workers equipped with:
   \caption{Parallel A* overall performances}
   \label{allalgo}
 \end{figure}
-%%%%%%%%%%%%%%   Bibliography   %%%%%%%%%%%%%%
-
 \normalsize
 \bibliography{references}
 %[1] PNBA*: A parallel bidirectional heuristic search algorithm. (n.d.). Retrieved September 7, 2022, from https://homepages.dcc.ufmg.br/~chaimo/public/ENIA11.pdf
