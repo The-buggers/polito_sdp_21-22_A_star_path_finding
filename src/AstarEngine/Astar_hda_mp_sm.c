@@ -24,11 +24,10 @@ struct arg_t {
     double *hvalues;
     double *costToCome;
     int *parentVertex;
-    sem_t *m;
-    sem_t *r;
-    sem_t *meR;
-    int *nR;
+    pthread_spinlock_t *m;
     sem_t *w;
+    pthread_mutex_t *meR;
+    int *nR;
     sem_t *meW;
     int *nW;
 #if COLLECT_STAT
@@ -75,12 +74,10 @@ static void *hda_mp_sm(void *arg) {
     // Start HDA*
     while (1) {
         while (data != (*args->data)) {
-            sem_wait(args->r);
-            sem_wait(args->meR);
+            pthread_mutex_lock(args->meR);
             (*args->nR)++;
             if (*(args->nR) == 1) sem_wait(args->w);
-            sem_post(args->meR);
-            sem_post(args->r);
+            pthread_mutex_unlock(args->meR);
 
             if (hash_function2(data->n, args->num_threads, args->V) ==
                 args->index) {
@@ -94,7 +91,10 @@ static void *hda_mp_sm(void *arg) {
                     args->parentVertex[data->n] = data->prev;
                     args->costToCome[data->n] = data->a_b_wt;
 
-                    PQinsert(open_list, fvalues, data->n);
+                    if (PQsearch(open_list, data->n) == -1)
+                        PQinsert(open_list, fvalues, data->n);
+                    else
+                        PQinsert(open_list, fvalues, data->n);
 #if DEBUG_ASTAR
                     printf("T: %d PQ Insert: %d\n", args->index, data->n);
 #endif
@@ -102,10 +102,10 @@ static void *hda_mp_sm(void *arg) {
             }
             data++;
 
-            sem_wait(args->meR);
+            pthread_mutex_lock(args->meR);
             (*args->nR)--;
             if (*(args->nR) == 0) sem_post(args->w);
-            sem_post(args->meR);
+            pthread_mutex_unlock(args->meR);
         }
 
         if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
@@ -126,10 +126,10 @@ static void *hda_mp_sm(void *arg) {
             printf("T: %d PQ Extract: %d\n", args->index, a);
 #endif
             if (a == args->dest) {
-                sem_wait(args->m);
+                pthread_spin_lock(args->m);
                 if (gvalues[a] < *(args->best_dest_cost))
                     *(args->best_dest_cost) = gvalues[a];
-                sem_post(args->m);
+                pthread_spin_unlock(args->m);
             }
 
             // For each successor 'b' of node 'a':
@@ -150,15 +150,14 @@ static void *hda_mp_sm(void *arg) {
                         args->parentVertex[b] = a;
                         args->costToCome[b] = a_b_wt;
 
-                        PQinsert(open_list, fvalues, b);
+                        if (PQsearch(open_list, b) == -1)
+                            PQinsert(open_list, fvalues, b);
+                        else
+                            PQinsert(open_list, fvalues, b);
 #if DEBUG_ASTAR
                         printf("T: %d PQ Insert: %d\n", args->index, b);
 #endif
                     } else {
-                        sem_wait(args->meW);
-                        (*args->nW)++;
-                        if (*(args->nW) == 1) sem_wait(args->r);
-                        sem_post(args->meW);
                         sem_wait(args->w);
 
                         (*args->data)->n = b;
@@ -168,10 +167,6 @@ static void *hda_mp_sm(void *arg) {
                         (*args->data)++;
 
                         sem_post(args->w);
-                        sem_wait(args->meW);
-                        (*args->nW)--;
-                        if (*(args->nW) == 0) sem_post(args->r);
-                        sem_post(args->meW);
 #if DEBUG_ASTAR
                         printf("T: %d Buff Insert: %d\n", args->index, b);
 #endif
@@ -197,9 +192,9 @@ void ASTARshortest_path_hda_mp_sm(Graph G, int source, int dest,
     struct mess_t *data;
     double *hvalues, *costToCome, best_dest_cost = maxWT;
     int *parentVertex;
-    sem_t m;
-    sem_t meW, meR;
-    sem_t w, r;
+    pthread_spinlock_t m;
+    pthread_mutex_t meR;
+    sem_t w;
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
@@ -221,11 +216,9 @@ void ASTARshortest_path_hda_mp_sm(Graph G, int source, int dest,
     if ((shmid = shmget(key, SHMEM_SIZE, 0644 | IPC_CREAT)) == -1) return;
     data = (struct mess_t *)shmat(shmid, NULL, 0);
 
-    sem_init(&m, 0, 1);
-    sem_init(&meR, 0, 1);
-    sem_init(&r, 0, 1);
+    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
+    pthread_mutex_init(&meR, NULL);
     sem_init(&w, 0, 1);
-    sem_init(&meW, 0, 1);
 
     for (i = 0; i < V; i++) {
         parentVertex[i] = -1;
@@ -240,10 +233,8 @@ void ASTARshortest_path_hda_mp_sm(Graph G, int source, int dest,
         args[i].V = V;
         args[i].G = G;
         args[i].m = &m;
-        args[i].r = &r;
         args[i].w = &w;
         args[i].meR = &meR;
-        args[i].meW = &meW;
         args[i].nR = &nR;
         args[i].nW = &nW;
         args[i].hvalues = hvalues;
