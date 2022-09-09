@@ -507,11 +507,12 @@
 		We don't report here all the details regarding Message Passing implemented using Linux Message Queues
 		because of its lack of scalability. Aobut MPSM:
 		\begin{itemize}
-			\item Some data structures are shared: TODO
+			\item Some data structures are shared: $parentVertex$, $costToCome$
 			\item The exchange of information about discovered nodes that have to be explored is done
 				  using Linux Shared Memory.
 			\item This has the great advantage of minimizing the resource contention among threads 
 			      (something that will strongly penalize the SAS model).
+			\item The termination condition that was implemented is Sum-Flag(SF)
 		\end{itemize}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
