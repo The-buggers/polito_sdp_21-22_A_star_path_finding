@@ -21,6 +21,9 @@ struct arg_t {
     int *open_set_empty;
     char heuristic_type;
     double *best_dest_cost;
+    double *hvalues;
+    double *costToCome;
+    int *parentVertex;
     pthread_spinlock_t *m;
     sem_t *w;
     pthread_mutex_t *meR;
@@ -33,48 +36,37 @@ struct arg_t {
 struct mess_t {
     int n;
     double g;
+    double a_b_wt;
     int prev;
 };
 
 static void *hda(void *arg);
-pthread_barrier_t barr;
+
 static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, a, b, n, k, count;
-    Position p;
     double g_b, f_b, a_b_wt;
     link t;
-    int *parentVertex, *closed_set;
-    double *fvalues, *gvalues, *hvalues, *costToCome;
+    double *gvalues, *fvalues;
     PQ open_list;
     struct mess_t *data = *args->data;
 
     open_list = PQinit(args->V);
     fvalues = (double *)malloc(args->V * sizeof(double));
-    parentVertex = (int *)malloc(args->V * sizeof(int));
-    hvalues = (double *)malloc(args->V * sizeof(double));
     gvalues = (double *)malloc(args->V * sizeof(double));
-    costToCome = (double *)malloc(args->V * sizeof(double));
-    closed_set = (int *)malloc(args->V * sizeof(int));
 
-    if ((parentVertex == NULL) || (hvalues == NULL) || (gvalues == NULL) ||
-        (fvalues == NULL) || (costToCome == NULL) || (closed_set == NULL))
-        pthread_exit(NULL);
+    if ((gvalues == NULL) || (fvalues == NULL)) pthread_exit(NULL);
 
     for (i = 0; i < args->V; i++) {
-        parentVertex[i] = -1;
-        p = GRAPHget_node_position(args->G, i);
-        hvalues[i] = heuristic(p, GRAPHget_node_position(args->G, args->dest),
-                               args->heuristic_type);
         gvalues[i] = maxWT;
         fvalues[i] = maxWT;
-        closed_set[i] = 0;
     }
+
     // Modify gvalues[source], t_fvalues[index][source], open_list[index]
     if (hash_function2(args->source, args->num_threads, args->V) ==
         args->index) {
         gvalues[args->source] = 0;
-        fvalues[args->source] = compute_f(hvalues[args->source], 0);
+        fvalues[args->source] = compute_f(args->hvalues[args->source], 0);
         PQinsert(open_list, fvalues, args->source);
     }
 
@@ -93,9 +85,10 @@ static void *hda(void *arg) {
                     printf("T: %d Buff Extract: %d\n", args->index, data->n);
 #endif
                     gvalues[data->n] = data->g;
-                    fvalues[data->n] = gvalues[data->n] + hvalues[data->n];
-                    parentVertex[data->n] = data->prev;
-                    costToCome[data->n] = data->g;
+                    fvalues[data->n] =
+                        gvalues[data->n] + args->hvalues[data->n];
+                    args->parentVertex[data->n] = data->prev;
+                    args->costToCome[data->n] = data->a_b_wt;
 
                     // if (PQsearch(open_list, data->n) == -1)
                     PQinsert(open_list, fvalues, data->n);
@@ -155,9 +148,9 @@ static void *hda(void *arg) {
 
                     if (k == args->index) {
                         gvalues[b] = g_b;
-                        fvalues[b] = g_b + hvalues[b];
-                        parentVertex[b] = a;
-                        costToCome[b] = g_b;
+                        fvalues[b] = g_b + args->hvalues[b];
+                        args->parentVertex[b] = a;
+                        args->costToCome[b] = a_b_wt;
 
                         // if (PQsearch(open_list, b) == -1)
                         PQinsert(open_list, fvalues, b);
@@ -170,12 +163,13 @@ static void *hda(void *arg) {
                         sem_wait(args->w);
                         (*args->data)->n = b;
                         (*args->data)->g = g_b;
+                        (*args->data)->a_b_wt = a_b_wt;
                         (*args->data)->prev = a;
                         (*args->data)++;
+                        sem_post(args->w);
 #if DEBUG_ASTAR
                         printf("T: %d Buff Insert: %d\n", args->index, b);
 #endif
-                        sem_post(args->w);
                     }
                 }
             }
@@ -196,7 +190,8 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     Position p;
     key_t key;
     struct mess_t *data;
-    double best_dest_cost = maxWT;
+    double *hvalues, *costToCome, best_dest_cost = maxWT;
+    int *parentVertex;
     pthread_spinlock_t m;
     pthread_mutex_t meR;
     sem_t w;
@@ -204,24 +199,33 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
     open_set_empty = (int *)malloc(num_threads * sizeof(int));
+    parentVertex = (int *)malloc(V * sizeof(int));
+    hvalues = (double *)malloc(V * sizeof(double));
+    costToCome = (double *)malloc(V * sizeof(double));
+
+    if ((parentVertex == NULL) || (hvalues == NULL) || (costToCome == NULL))
+        return;
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
     if (expanded_nodes == NULL) {
         return NULL;
     }
 #endif
-    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
-    pthread_mutex_init(&meR, NULL);
-    sem_init(&w, 0, 1);
-
-    pthread_barrier_init(&barr, NULL, num_threads);
-
-    for (i = 0; i < num_threads; i++) open_set_empty[i] = 0;
-
     // Setup shared memory
     if ((key = ftok(".", 65)) == -1) return;
     if ((shmid = shmget(key, SHMEM_SIZE, 0644 | IPC_CREAT)) == -1) return;
     data = (struct mess_t *)shmat(shmid, NULL, 0);
+
+    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
+    pthread_mutex_init(&meR, NULL);
+    sem_init(&w, 0, 1);
+
+    for (i = 0; i < V; i++) {
+        parentVertex[i] = -1;
+        p = GRAPHget_node_position(G, i);
+        hvalues[i] = heuristic(p, pos_dest, heuristic_type);
+    }
+    for (i = 0; i < num_threads; i++) open_set_empty[i] = 0;
 
     for (i = 0; i < num_threads; i++) {
         args[i].index = i;
@@ -232,9 +236,12 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
         args[i].w = &w;
         args[i].meR = &meR;
         args[i].nR = &nR;
+        args[i].hvalues = hvalues;
+        args[i].costToCome = costToCome;
+        args[i].parentVertex = parentVertex;
         args[i].source = source;
-        args[i].heuristic_type = heuristic_type;
         args[i].dest = dest;
+        args[i].heuristic_type = heuristic_type;
         args[i].data = &data;
         args[i].best_dest_cost = &best_dest_cost;
         args[i].open_set_empty = open_set_empty;
@@ -243,12 +250,10 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
 #endif
         pthread_create(&threads[i], NULL, hda, (void *)&args[i]);
     }
-    for (i = 0; i < num_threads; i++) {
-        pthread_join(threads[i], NULL);
-    }
+    for (i = 0; i < num_threads; i++) pthread_join(threads[i], NULL);
+
     if (best_dest_cost < maxWT)
-        // reconstruct_path(parentVertex, source, dest, costToCome);
-        printf("Best cost: %lf\n", best_dest_cost);
+        reconstruct_path(parentVertex, source, dest, costToCome);
     else
         printf("Path not found\n");
 #if COLLECT_STAT
