@@ -6,8 +6,17 @@
             "preLaunchTask": "make",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/graphtest", 
-            "args": ["../Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA", "0", "103585", "5", "h"], // input_path - source - dest - threads - heuristic(h/m)
+            "program": "${workspaceFolder}/build/graphtest",
+            "args": [
+                "../Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA",
+                "1",
+                "2",
+                "sm",
+                "1",
+                "0",
+                "103585",
+                "h"
+            ], // input_path - source - dest - threads - heuristic(h/m)
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
