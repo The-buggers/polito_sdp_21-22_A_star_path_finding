@@ -586,11 +586,11 @@ where the speed-up with respect to the sequential reading time is evident in par
     \caption{RA2 results against sequential reading}
     \begin{tabular}{|l|l|l|l|}
     \hline
-    \textbf{}    & \textbf{\begin{tabular}[c]{@{}l@{}}RA2\\ (2 threads)\end{tabular}} & \textbf{Sequential} & \textbf{Speed-Up} \\ \hline
-    \textbf{BAY} & 0.5313s                                                           & 0.9366s              & 43.27\%            \\ \hline
-    \textbf{FLA} & 1.4682s                                                            & 3.0650s             & 52.1\%            \\ \hline
-    \textbf{W} & 10.4959s                                                             & 17.8834s            & 41.3\%            \\ \hline
-    \textbf{USA} & 35.4505s                                                           & 56.4445s            & 37.2\%            \\ \hline
+    \textbf{}    & \textbf{\begin{tabular}[c]{@{}l@{}}RA2\\ (2 threads)\end{tabular}} & \textbf{Sequential(x2)} & \textbf{Speed-Up} \\ \hline
+    \textbf{BAY} & 0.5313s                                                           & 1.8732s              & 71.6\%            \\ \hline
+    \textbf{FLA} & 1.4682s                                                            & 6.1300s             & 76.1\%            \\ \hline
+    \textbf{W} & 10.4959s                                                             & 35.7668s            & 70.7\%            \\ \hline
+    \textbf{USA} & 35.4505s                                                           & 112.8890s            & 68.6\%            \\ \hline
     \end{tabular}
     \label{readresultsfinal}
 \end{table}
@@ -854,7 +854,7 @@ HDA* has been proven not to work well in our application. We have tried to expla
 results by observing that:
 \begin{itemize}
   \item The hash function has an important impact on the performances of A* algorithm. The one that
-        we have used is probably not the optimal one(for instance tring to assign near nodes
+        we have used is probably not the optimal(for instance tring to assign near nodes
         to the same threads maybe by pre-clustering the nodes of the map in a number of clusters
         equal to the number of threads could be a better option). This could lead to obtain better performances but we
         suppose that the sequential algorithm would still be the "best case" instead of being the "worst case"
@@ -914,7 +914,7 @@ at each iteration (depending on which is the common node found).
 \subsubsection{Results}
 \begin{table}[ht!]
   \centering
-  \caption{SAS-SF with best number of threads - time performances}
+  \caption{PNBA* - time performances}
   \begin{tabular}{|l|l|l|l|}
   \hline
   \textbf{}    & \textbf{PNBA*} & \textbf{Sequential A*} & \textbf{Speed-Up} \\ \hline
