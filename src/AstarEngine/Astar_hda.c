@@ -42,18 +42,18 @@ static void *hda(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, a, b, n, k, count;
     Position p;
-    double g_b, f_b, a_b_wt, tot_cost = 0;
+    double g_b, f_b, a_b_wt;
     link t;
     int *parentVertex, *closed_set;
-    double *hvalues, *gvalues, *fvalues, *costToCome;
+    double *fvalues, *gvalues, *hvalues, *costToCome;
     PQ open_list;
     struct mess_t *data = *args->data;
 
     open_list = PQinit(args->V);
+    fvalues = (double *)malloc(args->V * sizeof(double));
     parentVertex = (int *)malloc(args->V * sizeof(int));
     hvalues = (double *)malloc(args->V * sizeof(double));
     gvalues = (double *)malloc(args->V * sizeof(double));
-    fvalues = (double *)malloc(args->V * sizeof(double));
     costToCome = (double *)malloc(args->V * sizeof(double));
     closed_set = (int *)malloc(args->V * sizeof(int));
 
@@ -67,6 +67,7 @@ static void *hda(void *arg) {
         hvalues[i] = heuristic(p, GRAPHget_node_position(args->G, args->dest),
                                args->heuristic_type);
         gvalues[i] = maxWT;
+        fvalues[i] = maxWT;
         closed_set[i] = 0;
     }
     // Modify gvalues[source], t_fvalues[index][source], open_list[index]
@@ -88,7 +89,9 @@ static void *hda(void *arg) {
             if (hash_function2(data->n, args->num_threads, args->V) ==
                 args->index) {
                 if (data->g < gvalues[data->n]) {
-                    // printf("T: %d Buff Extract: %d\n", args->index, data->n);
+#if DEBUG_ASTAR
+                    printf("T: %d Buff Extract: %d\n", args->index, data->n);
+#endif
                     gvalues[data->n] = data->g;
                     fvalues[data->n] = gvalues[data->n] + hvalues[data->n];
                     parentVertex[data->n] = data->prev;
@@ -98,7 +101,9 @@ static void *hda(void *arg) {
                     PQinsert(open_list, fvalues, data->n);
                     // else
                     //     PQchange(open_list, fvalues, data->n);
-                    // printf("T: %d PQ Insert: %d\n", args->index, data->n);
+#if DEBUG_ASTAR
+                    printf("T: %d PQ Insert: %d\n", args->index, data->n);
+#endif
                 }
             }
             data++;
@@ -121,7 +126,9 @@ static void *hda(void *arg) {
             args->open_set_empty[args->index] = 0;
             // POP the node with min f(n)
             a = PQextractMin(open_list, fvalues);
-            // printf("T: %d PQ Extract: %d\n", args->index, a);
+#if DEBUG_ASTAR
+            printf("T: %d PQ Extract: %d\n", args->index, a);
+#endif
             // Add to closed set
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
@@ -156,15 +163,18 @@ static void *hda(void *arg) {
                         PQinsert(open_list, fvalues, b);
                         // else
                         //     PQchange(open_list, fvalues, b);
-                        // printf("T: %d PQ Insert: %d\n", args->index, b);
+#if DEBUG_ASTAR
+                        printf("T: %d PQ Insert: %d\n", args->index, b);
+#endif
                     } else {
                         sem_wait(args->w);
                         (*args->data)->n = b;
                         (*args->data)->g = g_b;
                         (*args->data)->prev = a;
                         (*args->data)++;
-                        // printf("T: %d Buff Insert: %d\n", args->index,
-                        // b);
+#if DEBUG_ASTAR
+                        printf("T: %d Buff Insert: %d\n", args->index, b);
+#endif
                         sem_post(args->w);
                     }
                 }
