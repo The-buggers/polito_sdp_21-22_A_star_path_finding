@@ -1,0 +1,43 @@
+\beamer@sectionintoc {1}{Introduction: about the A* algorithm}{5}{0}{1}
+\beamer@subsectionintoc {1}{1}{Problem definition}{6}{0}{1}
+\beamer@subsectionintoc {1}{2}{Heuristic design}{9}{0}{1}
+\beamer@sectionintoc {2}{A* project application}{11}{0}{2}
+\beamer@subsectionintoc {2}{1}{Geographical pathfinding}{12}{0}{2}
+\beamer@subsectionintoc {2}{2}{Problem-specific heuristic function}{13}{0}{2}
+\beamer@sectionintoc {3}{Graph file structure}{14}{0}{3}
+\beamer@subsectionintoc {3}{1}{File input format}{15}{0}{3}
+\beamer@subsectionintoc {3}{2}{Random graph}{16}{0}{3}
+\beamer@subsectionintoc {3}{3}{DIMACS benchmark}{17}{0}{3}
+\beamer@subsectionintoc {3}{4}{Selected benchmark paths}{18}{0}{3}
+\beamer@sectionintoc {4}{A* sequential algorithm}{19}{0}{4}
+\beamer@subsectionintoc {4}{1}{Data structures}{20}{0}{4}
+\beamer@subsectionintoc {4}{2}{Pseudocode}{21}{0}{4}
+\beamer@sectionintoc {5}{A* and Dijkstra}{25}{0}{5}
+\beamer@subsectionintoc {5}{1}{Expanded nodes}{26}{0}{5}
+\beamer@subsectionintoc {5}{2}{Time and resources comparison}{29}{0}{5}
+\beamer@sectionintoc {6}{Parallel input file reading}{31}{0}{6}
+\beamer@subsectionintoc {6}{1}{Approach 1 (RA1)}{32}{0}{6}
+\beamer@subsectionintoc {6}{2}{Results on FLA map}{33}{0}{6}
+\beamer@subsectionintoc {6}{3}{Approach 2 (RA2)}{34}{0}{6}
+\beamer@subsectionintoc {6}{4}{Results on FLA map}{35}{0}{6}
+\beamer@subsectionintoc {6}{5}{RA1 and RA2 on FLA map}{36}{0}{6}
+\beamer@subsectionintoc {6}{6}{Results on all maps}{37}{0}{6}
+\beamer@sectionintoc {7}{Parallel A*}{40}{0}{7}
+\beamer@subsectionintoc {7}{1}{HDA*}{42}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{1}{The hash function}{44}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{2}{Work distribution on BAY map}{45}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{3}{Distributed termination condition}{46}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{4}{Duplicate nodes}{47}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{5}{Communication methodology}{48}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{6}{Shared Address Space (SAS)}{49}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{7}{SAS pseudocode}{50}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{8}{Results}{54}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{9}{Comments and overall results}{58}{0}{7}
+\beamer@subsectionintoc {7}{2}{PNBA*}{63}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{1}{NBA*}{63}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{2}{PNBA*}{65}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{3}{PNBA* pseudocode}{66}{0}{7}
+\beamer@sectionintoc {8}{Conclusions}{73}{0}{8}
+\beamer@sectionintoc {9}{Computing Facilities Platform}{76}{0}{9}
+\beamer@sectionintoc {10}{Future Works}{78}{0}{10}
+\beamer@sectionintoc {11}{References}{80}{0}{11}
