@@ -218,20 +218,6 @@ the format:
     \item N following lines: nodes appearing as $(index[int], longitude[double], latidue[double])$
     \item E following lines (with E unknown): edges appearing as $(x[int], y[int], weight[double])$
 \end{itemize}
-\paragraph{Random test graph} We have tested the designed algorithms also on a random generated graph that
-is built starting from these information: 
-\begin{itemize}
-  \item Which path we want to find: given the couple (source, destination) it is generated a graph of
-        $max(source, destination) + 1$ nodes.
-  \item How many paths at most have to be generated from source to destination.
-  \item The maximum length (number of nodes) of these paths (that will be randomly chosen for each path).
-\end{itemize}
-In this way we have ad-hoc files to stress the algorithm having the guarantee that more than one path
-exists from source to destination (other more standart approaches exist for random graph generation but we
-have implemented this custom one for this reason). To be consistent with benchmark files also these
-random graphs represent geographic points identified by longitude and latitude. We didn't put much focus on random graphs
-infact only a small one (about 100 nodes) was generated in particular to test one variant of HDA* algorithm
-(more details after).
 \paragraph{DIMACS benchmark} 
 The benchmark files we have used come from the DIMACS benchmark. Here each geographic map is described by:
 \begin{itemize}
@@ -251,11 +237,6 @@ To analyze the performance of the different versions of A* algorithms we have us
 		\hline
 		\textit{Nodes} & \textit{Edges} & \textit{Source} & \textit{Dest} \\ 
     \hline
-		\multicolumn{4}{ |c| }{\bf{Random map (RND)}} \\
-		\hline
-		\multirow{1}{*}{}
-		 101& - & 0 & 100\\
-		\hline
 		\multicolumn{4}{ |c| }{\bf{California(BAY)}} \\
 		\hline
 		\multirow{1}{*}{}
@@ -379,7 +360,6 @@ $openSet := \{(s, f[s])\}$\;
   \begin{tabular}{|l|l|l|l|l|l|}
   \hline
   \textbf{}    & \textbf{File Size} & \textbf{Reading} & \textbf{A*} & \textbf{Total} & \textbf{\begin{tabular}[c]{@{}l@{}}Reading \\ Impact\end{tabular}} \\ \hline
-  \textbf{RND} & 2876B                & 0.0011s           & 0.0519s      & 0.0530s          & 2.1\%                                                           \\ \hline
   \textbf{BAY} & 20.51MB              & 0.9538s           & 0.2197s      & 1.1735s          & 81.3\%                                                         \\ \hline
   \textbf{FLA} & 69.09MB              & 3.1551s           & 0.7174s      & 3.8725s          & 81.5\%                                                           \\ \hline
   \textbf{W}   & 394.26MB             & 18.3065s          & 2.5890s      & 20.8955s         & 87.6\%                                                           \\ \hline
@@ -404,7 +384,6 @@ Dijkstra algorithm on the same graph comparing the number of expanded nodes by t
   \begin{tabular}{|l|l|l|}
   \hline
   \textbf{} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
-  \textbf{RND}            & 15 of 101           & 13 of 101         \\ \hline
   \textbf{BAY}            & 318725 of 321270    & 157137 of 321270  \\ \hline
   \textbf{FLA}            & 996956 of 1070376   & 592480 of 1070376 \\ \hline
   \textbf{W}              & 5470394 of 1070376  & 1600083 of 1070376 \\ \hline
@@ -699,14 +678,16 @@ What it differentiates the algorithms we have implemented is not only
 the distributed termination condition (B or SF) but also the way how the threads
 communicate with each other. This can be done using a shared address space (SAS) approach (that will
 need to cope with mutual exclusion) or a message passing (MP) model.
-\subsubsection{Message Passing Model}
-One way of achieving the communication among threads is message passing. This mechanism is based
+\subsubsection{Message Passing Model (Using Message Queues) - MPMQ}
+One way of achieving the communication among threads is message passing. In this first attempt we will rely
 on Message Queues: when thread $t_i$ expands a node and computes(through the hash function) 
 its owner $t_j$ a message is sent from $t_i$ to $t_j$. Since the message
 queue is unique for all the threads each thread needs to be able to process
-only messages directed to it. Each thread mantains all the data structures as private (\textit{open set},
+only messages directed to itself.  The termination condition that has been implemented in this case is the Barrier Method (B).
+\paragraph{Data structures sharing}
+Each thread mantains all the data structures as private (\textit{open set},
 \textit{parentVertex}, \textit{costToCome}) and the only way it has communicate with other threads
-is via message passing. The termination condition that has been implemented in this case is the Barrier Method (B).
+is via message passing.
 \paragraph{Message Structure} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
 \begin{itemize}
   \item Message id: the identifier of the owner thread $t_j$
@@ -726,6 +707,34 @@ from the destination's thread owner $t_d$. What happens is that $t_d$ sends a me
 the owner of $parentVertex_d[dest]$ (abbreviated as $pV_d[dest]$) that we call $t_k$. Immediately after $t_k$ will send a message
 to $pV_k[pV_d[dest]]$ and so on and so forth till we have reached the first node of the path (the one with $pV_x[source] = -1$ where
 $t_x$ is the owner of $source$).
+\paragraph{Technical Issues}
+Due to the fact that Message Queues have a limited size that is not enough to support any of our
+selected benchmark graphs we have implemented the code but we weren't able to correctly test it. The
+measures that will be reported next will only regard the MP model that exploits shared memory. 
+\subsubsection{Message Passing Model (Using Shared Memory) - MPSM}
+The Message Passing model that exploits Message Queues has been designed to work under the assumption 
+that any data structure can be shared among threads. We are now going to relax this constraint by 
+keeping some data structures shared among threads (like $parentVertex$ so that
+the path reconstruction can happen in the standard way) and the exchange of messages will be based on Shared Memory.
+\paragraph{Data structures sharing}
+Each thread mantains some data structures as private (\textit{open set}...TODO) and the way how
+a thread $t_i$ can send a node to be processed to its owner $t_j$ is by writing on Shared Memory. This
+has the big advantage of minimizing the resource contention among threads (something that will strongly penalize the SAS model explained after).
+\paragraph{Message Passing} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
+\begin{itemize}
+  \item The index of the node $n$
+  \item The parent node of $n$ (the one expanded from the \textit{open set} of $t_i$)
+  \item The value of $g(n)$ according to $t_i$
+\end{itemize}
+The way how messages are read and written by the different threads is via \textit{Readers and Writers}
+model where:
+\begin{itemize}
+  \item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $p_G$.
+  \item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $p_j$. The reading
+        of messages terminates when $p_j == p_G$.
+\end{itemize}
+\paragraph{Message Based Path Reconstruction}
+Since the data structure $parentVertex$ is shared we no longer need message based path reconstruction.
 \subsubsection{Shared Address Space Model}
 This approach applies the explained concepts of HDA* by using a communication method
 among threads that exploits the shared address space (SAS). There is:
@@ -834,8 +843,7 @@ These are the troubles found during implementation and testing:
   \item The SAS-MP variant of HDA* is not scalable. This is due to the fact that we
         have used Linux Message Queues that have a limited size (few bytes) and when
         the communication overhead becomes huge the queue gets full causing a impressive
-        slowdown. For the sake of completeness we have decided to report the results on the
-        RND map. (RND map was indeed used almost only to show the SAS-MP performaces).
+        slowdown.
   \item The SAS HDA* that exploits the Barrier termination condition (SAS-B) is more scalable
         than SAS-MP but the termination condition is not well-performing in large graphs. This 
         happens because a thread has no way to shortcut the barrier if it's receiving work from
@@ -948,12 +956,6 @@ There are $33$ storage workers equipped with:
 (Possible improvements)
 
 \section{Complete Results}
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[width=1\linewidth]{hda/rnd.png}
-  \caption{HDA* on RND map (only time performance)}
-  \label{hdarnd}
-\end{figure}
 \begin{center}
   \begin{figure}[ht!]
     \centering

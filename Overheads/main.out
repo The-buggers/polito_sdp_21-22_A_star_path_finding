@@ -6,26 +6,25 @@
 \BOOKMARK [3][]{Outline0.2.2.13}{Problem-specific heuristic function}{Outline0.2}% 6
 \BOOKMARK [2][]{Outline0.3}{Graph file structure}{}% 7
 \BOOKMARK [3][]{Outline0.3.1.15}{File input format}{Outline0.3}% 8
-\BOOKMARK [3][]{Outline0.3.2.16}{Random graph}{Outline0.3}% 9
-\BOOKMARK [3][]{Outline0.3.3.17}{DIMACS benchmark}{Outline0.3}% 10
-\BOOKMARK [3][]{Outline0.3.4.18}{Selected benchmark paths}{Outline0.3}% 11
-\BOOKMARK [2][]{Outline0.4}{A* sequential algorithm}{}% 12
-\BOOKMARK [3][]{Outline0.4.1.20}{Data structures}{Outline0.4}% 13
-\BOOKMARK [3][]{Outline0.4.2.21}{Pseudocode}{Outline0.4}% 14
-\BOOKMARK [2][]{Outline0.5}{A* and Dijkstra}{}% 15
-\BOOKMARK [3][]{Outline0.5.1.26}{Expanded nodes}{Outline0.5}% 16
-\BOOKMARK [3][]{Outline0.5.2.29}{Time and resources comparison}{Outline0.5}% 17
-\BOOKMARK [2][]{Outline0.6}{Parallel input file reading}{}% 18
-\BOOKMARK [3][]{Outline0.6.1.32}{Approach 1 \(RA1\)}{Outline0.6}% 19
-\BOOKMARK [3][]{Outline0.6.2.33}{Results on FLA map}{Outline0.6}% 20
-\BOOKMARK [3][]{Outline0.6.3.34}{Approach 2 \(RA2\)}{Outline0.6}% 21
-\BOOKMARK [3][]{Outline0.6.4.35}{Results on FLA map}{Outline0.6}% 22
-\BOOKMARK [3][]{Outline0.6.5.36}{RA1 and RA2 on FLA map}{Outline0.6}% 23
-\BOOKMARK [3][]{Outline0.6.6.37}{Results on all maps}{Outline0.6}% 24
-\BOOKMARK [2][]{Outline0.7}{Parallel A*}{}% 25
-\BOOKMARK [3][]{Outline0.7.1.42}{HDA*}{Outline0.7}% 26
-\BOOKMARK [3][]{Outline0.7.2.63}{PNBA*}{Outline0.7}% 27
-\BOOKMARK [2][]{Outline0.8}{Conclusions}{}% 28
-\BOOKMARK [2][]{Outline0.9}{Computing Facilities Platform}{}% 29
-\BOOKMARK [2][]{Outline0.10}{Future Works}{}% 30
-\BOOKMARK [2][]{Outline0.11}{References}{}% 31
+\BOOKMARK [3][]{Outline0.3.2.16}{DIMACS benchmark}{Outline0.3}% 9
+\BOOKMARK [3][]{Outline0.3.3.17}{Selected benchmark paths}{Outline0.3}% 10
+\BOOKMARK [2][]{Outline0.4}{A* sequential algorithm}{}% 11
+\BOOKMARK [3][]{Outline0.4.1.19}{Data structures}{Outline0.4}% 12
+\BOOKMARK [3][]{Outline0.4.2.20}{Pseudocode}{Outline0.4}% 13
+\BOOKMARK [2][]{Outline0.5}{A* and Dijkstra}{}% 14
+\BOOKMARK [3][]{Outline0.5.1.25}{Expanded nodes}{Outline0.5}% 15
+\BOOKMARK [3][]{Outline0.5.2.28}{Time and resources comparison}{Outline0.5}% 16
+\BOOKMARK [2][]{Outline0.6}{Parallel input file reading}{}% 17
+\BOOKMARK [3][]{Outline0.6.1.31}{Approach 1 \(RA1\)}{Outline0.6}% 18
+\BOOKMARK [3][]{Outline0.6.2.32}{Results on FLA map}{Outline0.6}% 19
+\BOOKMARK [3][]{Outline0.6.3.33}{Approach 2 \(RA2\)}{Outline0.6}% 20
+\BOOKMARK [3][]{Outline0.6.4.34}{Results on FLA map}{Outline0.6}% 21
+\BOOKMARK [3][]{Outline0.6.5.35}{RA1 and RA2 on FLA map}{Outline0.6}% 22
+\BOOKMARK [3][]{Outline0.6.6.36}{Results on all maps}{Outline0.6}% 23
+\BOOKMARK [2][]{Outline0.7}{Parallel A*}{}% 24
+\BOOKMARK [3][]{Outline0.7.1.41}{HDA*}{Outline0.7}% 25
+\BOOKMARK [3][]{Outline0.7.2.65}{PNBA*}{Outline0.7}% 26
+\BOOKMARK [2][]{Outline0.8}{Conclusions}{}% 27
+\BOOKMARK [2][]{Outline0.9}{Computing Facilities Platform}{}% 28
+\BOOKMARK [2][]{Outline0.10}{Future Works}{}% 29
+\BOOKMARK [2][]{Outline0.11}{References}{}% 30
