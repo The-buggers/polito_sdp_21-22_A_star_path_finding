@@ -12,12 +12,13 @@
 \BOOKMARK [2][-]{subsection.6.3}{Final results}{section.6}% 12
 \BOOKMARK [1][-]{section.7}{Parallel A*}{}% 13
 \BOOKMARK [2][-]{subsection.7.1}{HDA*}{section.7}% 14
-\BOOKMARK [3][-]{subsubsection.7.1.1}{Message Passing Model}{subsection.7.1}% 15
-\BOOKMARK [3][-]{subsubsection.7.1.2}{Shared Address Space Model}{subsection.7.1}% 16
-\BOOKMARK [2][-]{subsection.7.2}{Results}{section.7}% 17
-\BOOKMARK [2][-]{subsection.7.3}{New Bidirectional A*\(NBA*\)}{section.7}% 18
-\BOOKMARK [2][-]{subsection.7.4}{Parallel New Bidirectional A*\(PNBA*\)}{section.7}% 19
-\BOOKMARK [3][-]{subsubsection.7.4.1}{Results}{subsection.7.4}% 20
-\BOOKMARK [1][-]{section.8}{Computing Facilities Platform}{}% 21
-\BOOKMARK [1][-]{section.9}{Future Work}{}% 22
-\BOOKMARK [1][-]{section.10}{Complete Results}{}% 23
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Message Passing Model \(Using Message Queues\) - MPMQ}{subsection.7.1}% 15
+\BOOKMARK [3][-]{subsubsection.7.1.2}{Message Passing Model \(Using Shared Memory\) - MPSM}{subsection.7.1}% 16
+\BOOKMARK [3][-]{subsubsection.7.1.3}{Shared Address Space Model}{subsection.7.1}% 17
+\BOOKMARK [2][-]{subsection.7.2}{Results}{section.7}% 18
+\BOOKMARK [2][-]{subsection.7.3}{New Bidirectional A*\(NBA*\)}{section.7}% 19
+\BOOKMARK [2][-]{subsection.7.4}{Parallel New Bidirectional A*\(PNBA*\)}{section.7}% 20
+\BOOKMARK [3][-]{subsubsection.7.4.1}{Results}{subsection.7.4}% 21
+\BOOKMARK [1][-]{section.8}{Computing Facilities Platform}{}% 22
+\BOOKMARK [1][-]{section.9}{Future Work}{}% 23
+\BOOKMARK [1][-]{section.10}{Complete Results}{}% 24

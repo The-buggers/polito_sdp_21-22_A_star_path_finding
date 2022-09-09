@@ -128,19 +128,6 @@
 			\item E following lines (with E unknown): edges appearing as $(x[int], y[int], weight[double])$
 		\end{itemize}
 	\end{frame}
-	\subsection{Random graph}
-	\begin{frame}{\secname}
-		\framesubtitle{\subsecname}
-		We have tested the designed algorithms also on a random generated graph that
-		is built starting from: 
-		\begin{itemize}
-		\item Which path we want to find: given the indices of $source$ and $dest$ it is generated a graph of
-				$max(source, dest) + 1$ nodes.
-		\item How many paths at most have to be generated from $source$ to $dest$
-		\item The maximum length of these paths (that will be randomly chosen for each path)
-		\end{itemize}
-		To be consistent with benchmark files also these random graphs represents geographic points with longitude and latitude.
-	\end{frame}
 	\subsection{DIMACS benchmark}
 	\begin{frame}{\secname}
 		\framesubtitle{\subsecname}
@@ -239,7 +226,6 @@
 			\begin{tabular}{|l|l|l|l|l|l|}
 			\hline
 			\textbf{}    & \textbf{File Size} & \textbf{Reading} & \textbf{A*} & \textbf{Total} & \textbf{\begin{tabular}[c]{@{}l@{}}Reading \\ Impact\end{tabular}} \\ \hline
-			\textbf{RND} & 2876B                & 0.0011s           & 0.0519s      & 0.0530s          & 2.1\%                                                           \\ \hline
 			\textbf{BAY} & 20.51MB              & 0.9538s           & 0.2197s      & 1.1735s          & 81.3\%                                                         \\ \hline
 			\textbf{FLA} & 69.09MB              & 3.1551s           & 0.7174s      & 3.8725s          & 81.5\%                                                           \\ \hline
 			\textbf{W}   & 394.26MB             & 18.3065s          & 2.5890s      & 20.8955s         & 87.6\%                                                           \\ \hline
@@ -260,7 +246,6 @@
 			\begin{tabular}{|l|l|l|}
 			\hline
 			\textbf{} & \textbf{Dijkstra} & \textbf{Sequential A*}       \\ \hline
-			\textbf{RND}            & 15 of 101           & 13 of 101         \\ \hline
 			\textbf{BAY}            & 318725 of 321270    & 157137 of 321270  \\ \hline
 			\textbf{FLA}            & 996956 of 1070376   & 592480 of 1070376 \\ \hline
 			\textbf{W}              & 5470394 of 1070376  & 1600083 of 1070376 \\ \hline
@@ -509,9 +494,45 @@
 		\begin{itemize}
 			\item \textbf{Shared Address Space (SAS)}: threads share pointers to common data structures (we need
 			to cope with mutual exclusion)
-			\item \textbf{Message Passing (MP)}: threads can communicate only through messages and don't share any
-				   data structure
+			\item \textbf{Message Passing (MP)}: threads can communicate only through messages via:
+			\begin{itemize}
+				\item Message Queues
+				\item Shared Memory
+			\end{itemize}
 		\end{itemize}
+	\end{frame}
+	\subsubsection{Message Passing Model (MP)}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{MP using Shared Memory (MPSM)}
+		We don't report here all the details regarding Message Passing implemented using Linux Message Queues
+		because of its lack of scalability. Aobut MPSM:
+		\begin{itemize}
+			\item Some data structures are shared: TODO
+			\item The exchange of information about discovered nodes that have to be explored is done
+				  using Linux Shared Memory.
+			\item This has the great advantage of minimizing the resource contention among threads 
+			      (something that will strongly penalize the SAS model).
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{MP using Shared Memory (MPSM)}
+		Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
+		\begin{itemize}
+			\item The index of the node $n$
+			\item The parent node of $n$ (the one expanded from the \textit{open set} of $t_i$)
+			\item The value of $g(n)$ according to $t_i$
+		\end{itemize}
+		The way how messages are read and written by the different threads is done adopting the \textit{Readers \& Writers}
+		model where:
+		\begin{itemize}
+		\item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $p_G$.
+		\item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $p_j$. The reading
+				of messages terminates when $p_j == p_G$.
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{MPSM pseudocode}
+		TODO
 	\end{frame}
 	\subsubsection{Shared Address Space (SAS)}
 	\begin{frame}{\secname : \subsecname}
