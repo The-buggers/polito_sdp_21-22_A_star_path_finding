@@ -17,7 +17,7 @@ extern int errno;
 // MP utility functions
 static key_t get_key();
 static int get_msgqid(key_t key);
-static void *astar_thread(void *arg);
+static void *hda_mp_mq(void *arg);
 struct msg_s {
     long msg_type;
     char msg_payload[L];
@@ -128,9 +128,9 @@ struct thread_arg_s {
     int *expanded_nodes;
 #endif
 };
-void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
-                           int num_threads) {
-    printf("## MP A* [heuristic: %c] from %d to %d ##\n", heuristic_type,
+void ASTARshortest_path_hda_mp_mq(Graph G, int source, int dest,
+                                  char heuristic_type, int num_threads) {
+    printf("## HDA* MP-MQ [heuristic: %c] from %d to %d ##\n", heuristic_type,
            source, dest);
 
     pthread_t *threads;
@@ -220,8 +220,7 @@ void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
 #if COLLECT_STAT
         threads_arg[i].expanded_nodes = expanded_nodes;
 #endif
-        pthread_create(&threads[i], NULL, astar_thread,
-                       (void *)&threads_arg[i]);
+        pthread_create(&threads[i], NULL, hda_mp_mq, (void *)&threads_arg[i]);
     }
     // Join threads
     for (i = 0; i < num_threads; i++) {
@@ -241,7 +240,7 @@ void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
 #if COLLECT_STAT
     int n = 0;
     int tot = 0;
-    FILE *fp = fopen("./stats/stat_astar_mp.txt", "w+");
+    FILE *fp = fopen("./stats/stat_astar_hda_mp_mq.txt", "w+");
     for (int v = 0; v < V; v++) {
         if (expanded_nodes[v] != 0) {
             n++;
@@ -265,7 +264,7 @@ void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
     return;
 }
 
-static void *astar_thread(void *arg) {
+static void *hda_mp_mq(void *arg) {
     struct thread_arg_s *targ = (struct thread_arg_s *)arg;
     key_t key;
     int msgqid;

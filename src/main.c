@@ -120,8 +120,12 @@ int main(int argc, char* argv[]) {
         ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);
     } else if (strcmp(algo_type, "b") == 0) {
         ASTARshortest_path_sas_b(G, source, dest, heuristic_type, num_threads);
-    } else if (strcmp(algo_type, "hda") == 0) {
-        ASTARshortest_path_hda(G, source, dest, heuristic_type, num_threads);
+    } else if (strcmp(algo_type, "sm") == 0) {
+        ASTARshortest_path_hda_mp_sm(G, source, dest, heuristic_type,
+                                     num_threads);
+    } else if (strcmp(algo_type, "mq") == 0) {
+        ASTARshortest_path_hda_mp_mq(G, source, dest, heuristic_type,
+                                     num_threads);
     } else if (strcmp(algo_type, "pnba") == 0) {
         ASTARshortest_path_ab_ba(G, R, source, dest, heuristic_type);
     }

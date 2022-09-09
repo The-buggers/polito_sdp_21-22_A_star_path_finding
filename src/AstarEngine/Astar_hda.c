@@ -43,9 +43,9 @@ struct mess_t {
     int prev;
 };
 
-static void *hda(void *arg);
+static void *hda_mp_sm(void *arg);
 
-static void *hda(void *arg) {
+static void *hda_mp_sm(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, a, b, n, k, count;
     double g_b, f_b, a_b_wt;
@@ -65,7 +65,6 @@ static void *hda(void *arg) {
         fvalues[i] = maxWT;
     }
 
-    // Modify gvalues[source], t_fvalues[index][source], open_list[index]
     if (hash_function2(args->source, args->num_threads, args->V) ==
         args->index) {
         gvalues[args->source] = 0;
@@ -114,7 +113,6 @@ static void *hda(void *arg) {
 
         if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
             args->open_set_empty[args->index] = 1;
-            // If all the threads have the message queue empty terminate
             for (i = 0, count = 0; i < args->num_threads; i++)
                 count += args->open_set_empty[i];
             if (count == args->num_threads) break;
@@ -147,7 +145,6 @@ static void *hda(void *arg) {
                 g_b = gvalues[a] + a_b_wt;
 
                 if (g_b < gvalues[b]) {
-                    // Send a message to b's owner thread
                     k = hash_function2(b, args->num_threads, args->V);
 
                     if (k == args->index) {
@@ -192,10 +189,10 @@ static void *hda(void *arg) {
     pthread_exit(NULL);
 }
 
-void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
-                            int num_threads) {
-    printf("## HDA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
-           dest);
+void ASTARshortest_path_hda_mp_sm(Graph G, int source, int dest,
+                                  char heuristic_type, int num_threads) {
+    printf("## HDA* MP-SM [heuristic: %c] from %d to %d ##\n", heuristic_type,
+           source, dest);
     int V = GRAPHget_num_nodes(G);
     int i, j, shmid, *open_set_empty, nR = 0, nW = 0;
     pthread_t *threads;
@@ -267,7 +264,7 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
-        pthread_create(&threads[i], NULL, hda, (void *)&args[i]);
+        pthread_create(&threads[i], NULL, hda_mp_sm, (void *)&args[i]);
     }
     for (i = 0; i < num_threads; i++) pthread_join(threads[i], NULL);
 
@@ -278,7 +275,7 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
 #if COLLECT_STAT
     int n = 0;
     int tot = 0;
-    FILE *fp = fopen("./stats/stat_astar_sas_b.txt", "w+");
+    FILE *fp = fopen("./stats/stat_astar_hda_mp_sm.txt", "w+");
     for (i = 0; i < V; i++) {
         if (expanded_nodes[i] != 0) {
             n++;

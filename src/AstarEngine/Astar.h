@@ -9,16 +9,16 @@ void ASTARshortest_path_sequential(Graph G, int source, int dest,
                                    char heuristic_type);
 void ASTARshortest_path_sas_b(Graph G, int source, int dest,
                               char heuristic_type, int num_threads);
-void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
-                            int num_threads);
+void ASTARshortest_path_hda_mp_sm(Graph G, int source, int dest,
+                                  char heuristic_type, int num_threads);
 void ASTARshortest_path_sas_sf(Graph G, int source, int dest,
                                char heuristic_type, int num_threads);
 void ASTARshortest_path_nps(Graph G, int source, int dest, char heuristic_type);
 void ASTARshortest_path_phs(Graph G, int source, int dest, char heuristic_type);
 void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
                               char heuristic_type);
-void ASTARshortest_path_mp(Graph G, int source, int dest, char heuristic_type,
-                           int num_threads);
+void ASTARshortest_path_hda_mp_mq(Graph G, int source, int dest,
+                                  char heuristic_type, int num_threads);
 // Utility functions
 double heuristic_haversine(Position source, Position dest);
 double heuristic(Position p1, Position p2, char heuristic_type);
