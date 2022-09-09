@@ -25,9 +25,12 @@ struct arg_t {
     double *costToCome;
     int *parentVertex;
     sem_t *m;
-    sem_t *w;
+    sem_t *r;
     sem_t *meR;
     int *nR;
+    sem_t *w;
+    sem_t *meW;
+    int *nW;
 #if COLLECT_STAT
     int *expanded_nodes;
 #endif
@@ -73,10 +76,12 @@ static void *hda(void *arg) {
     // Start HDA*
     while (1) {
         while (data != (*args->data)) {
+            sem_wait(args->r);
             sem_wait(args->meR);
             (*args->nR)++;
             if (*(args->nR) == 1) sem_wait(args->w);
             sem_post(args->meR);
+            sem_post(args->r);
 
             if (hash_function2(data->n, args->num_threads, args->V) ==
                 args->index) {
@@ -160,6 +165,10 @@ static void *hda(void *arg) {
                         printf("T: %d PQ Insert: %d\n", args->index, b);
 #endif
                     } else {
+                        sem_wait(args->meW);
+                        (*args->nW)++;
+                        if (*(args->nW) == 1) sem_wait(args->r);
+                        sem_post(args->meW);
                         sem_wait(args->w);
                         (*args->data)->n = b;
                         (*args->data)->g = g_b;
@@ -167,6 +176,10 @@ static void *hda(void *arg) {
                         (*args->data)->prev = a;
                         (*args->data)++;
                         sem_post(args->w);
+                        sem_wait(args->meW);
+                        (*args->nW)--;
+                        if (*(args->nW) == 0) sem_post(args->r);
+                        sem_post(args->meW);
 #if DEBUG_ASTAR
                         printf("T: %d Buff Insert: %d\n", args->index, b);
 #endif
@@ -183,7 +196,7 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     printf("## HDA* [heuristic: %c] from %d to %d ##\n", heuristic_type, source,
            dest);
     int V = GRAPHget_num_nodes(G);
-    int i, j, shmid, *open_set_empty, nR = 0;
+    int i, j, shmid, *open_set_empty, nR = 0, nW = 0;
     pthread_t *threads;
     struct arg_t *args;
     Position pos_dest = GRAPHget_node_position(G, dest);
@@ -193,8 +206,8 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     double *hvalues, *costToCome, best_dest_cost = maxWT;
     int *parentVertex;
     sem_t m;
-    sem_t meR;
-    sem_t w;
+    sem_t meW, meR;
+    sem_t w, r;
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
     args = (struct arg_t *)malloc(num_threads * sizeof(struct arg_t));
@@ -218,7 +231,9 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
 
     sem_init(&m, 0, 1);
     sem_init(&meR, 0, 1);
+    sem_init(&r, 0, 1);
     sem_init(&w, 0, 1);
+    sem_init(&meW, 0, 1);
 
     for (i = 0; i < V; i++) {
         parentVertex[i] = -1;
@@ -233,9 +248,12 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
         args[i].V = V;
         args[i].G = G;
         args[i].m = &m;
+        args[i].r = &r;
         args[i].w = &w;
         args[i].meR = &meR;
+        args[i].meW = &meW;
         args[i].nR = &nR;
+        args[i].nW = &nW;
         args[i].hvalues = hvalues;
         args[i].costToCome = costToCome;
         args[i].parentVertex = parentVertex;
