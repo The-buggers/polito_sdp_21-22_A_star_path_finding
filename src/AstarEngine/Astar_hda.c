@@ -124,12 +124,11 @@ static void *hda(void *arg) {
             args->open_set_empty[args->index] = 0;
             // POP the node with min f(n)
             a = PQextractMin(open_list, fvalues);
-#if DEBUG_ASTAR
-            printf("T: %d PQ Extract: %d\n", args->index, a);
-#endif
-            // Add to closed set
 #if COLLECT_STAT
             args->expanded_nodes[a]++;
+#endif
+#if DEBUG_ASTAR
+            printf("T: %d PQ Extract: %d\n", args->index, a);
 #endif
             if (a == args->dest) {
                 sem_wait(args->m);
@@ -170,11 +169,13 @@ static void *hda(void *arg) {
                         if (*(args->nW) == 1) sem_wait(args->r);
                         sem_post(args->meW);
                         sem_wait(args->w);
+
                         (*args->data)->n = b;
                         (*args->data)->g = g_b;
                         (*args->data)->a_b_wt = a_b_wt;
                         (*args->data)->prev = a;
                         (*args->data)++;
+
                         sem_post(args->w);
                         sem_wait(args->meW);
                         (*args->nW)--;

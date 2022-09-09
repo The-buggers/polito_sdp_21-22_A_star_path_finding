@@ -62,9 +62,6 @@ static void *nba(void *arg) {
         args->gvalues[v] = maxWT;
         fvalues[v] = maxWT;
     }
-#if COLLECT_STAT
-    int *expanded_nodes = (int *)calloc(args->V, sizeof(int));
-#endif
     fvalues[args->source] =
         compute_f(args->hvalues[args->source], 0);  // g(n) = 0 for n == source
     args->gvalues[args->source] = 0;
@@ -161,6 +158,9 @@ void ASTARshortest_path_ab_ba(Graph G, Graph R, int source, int dest,
     M = (int *)malloc(V * sizeof(int));
 #if COLLECT_STAT
     int *expanded_nodes = (int *)calloc(V, sizeof(int));
+    if (expanded_nodes == NULL) {
+        return NULL;
+    }
 #endif
     if ((parentVertexG == NULL) || (parentVertexR == NULL) ||
         (costToComeG == NULL) || (costToComeR == NULL) || (gvaluesG == NULL) ||
