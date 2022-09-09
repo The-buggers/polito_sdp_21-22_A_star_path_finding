@@ -24,9 +24,9 @@ struct arg_t {
     double *hvalues;
     double *costToCome;
     int *parentVertex;
-    pthread_spinlock_t *m;
+    sem_t *m;
     sem_t *w;
-    pthread_mutex_t *meR;
+    sem_t *meR;
     int *nR;
 #if COLLECT_STAT
     int *expanded_nodes;
@@ -73,10 +73,10 @@ static void *hda(void *arg) {
     // Start HDA*
     while (1) {
         while (data != (*args->data)) {
-            pthread_mutex_lock(args->meR);
+            sem_wait(args->meR);
             (*args->nR)++;
             if (*(args->nR) == 1) sem_wait(args->w);
-            pthread_mutex_unlock(args->meR);
+            sem_post(args->meR);
 
             if (hash_function2(data->n, args->num_threads, args->V) ==
                 args->index) {
@@ -101,10 +101,10 @@ static void *hda(void *arg) {
             }
             data++;
 
-            pthread_mutex_lock(args->meR);
+            sem_wait(args->meR);
             (*args->nR)--;
             if (*(args->nR) == 0) sem_post(args->w);
-            pthread_mutex_unlock(args->meR);
+            sem_post(args->meR);
         }
 
         if (PQempty(open_list) && (*args->best_dest_cost) < maxWT) {
@@ -127,10 +127,10 @@ static void *hda(void *arg) {
             args->expanded_nodes[a]++;
 #endif
             if (a == args->dest) {
-                pthread_spin_lock(args->m);
+                sem_wait(args->m);
                 if (gvalues[a] < *(args->best_dest_cost))
                     *(args->best_dest_cost) = gvalues[a];
-                pthread_spin_unlock(args->m);
+                sem_post(args->m);
             }
 
             // For each successor 'b' of node 'a':
@@ -192,8 +192,8 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     struct mess_t *data;
     double *hvalues, *costToCome, best_dest_cost = maxWT;
     int *parentVertex;
-    pthread_spinlock_t m;
-    pthread_mutex_t meR;
+    sem_t m;
+    sem_t meR;
     sem_t w;
 
     threads = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
@@ -216,8 +216,8 @@ void ASTARshortest_path_hda(Graph G, int source, int dest, char heuristic_type,
     if ((shmid = shmget(key, SHMEM_SIZE, 0644 | IPC_CREAT)) == -1) return;
     data = (struct mess_t *)shmat(shmid, NULL, 0);
 
-    pthread_spin_init(&m, PTHREAD_PROCESS_PRIVATE);
-    pthread_mutex_init(&meR, NULL);
+    sem_init(&m, 0, 1);
+    sem_init(&meR, 0, 1);
     sem_init(&w, 0, 1);
 
     for (i = 0; i < V; i++) {
