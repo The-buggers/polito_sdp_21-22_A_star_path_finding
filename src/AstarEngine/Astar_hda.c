@@ -90,10 +90,10 @@ static void *hda(void *arg) {
                     args->parentVertex[data->n] = data->prev;
                     args->costToCome[data->n] = data->a_b_wt;
 
-                    // if (PQsearch(open_list, data->n) == -1)
-                    PQinsert(open_list, fvalues, data->n);
-                    // else
-                    //     PQchange(open_list, fvalues, data->n);
+                    if (PQsearch(open_list, data->n) == -1)
+                        PQinsert(open_list, fvalues, data->n);
+                    else
+                        PQchange(open_list, fvalues, data->n);
 #if DEBUG_ASTAR
                     printf("T: %d PQ Insert: %d\n", args->index, data->n);
 #endif
@@ -152,10 +152,10 @@ static void *hda(void *arg) {
                         args->parentVertex[b] = a;
                         args->costToCome[b] = a_b_wt;
 
-                        // if (PQsearch(open_list, b) == -1)
-                        PQinsert(open_list, fvalues, b);
-                        // else
-                        //     PQchange(open_list, fvalues, b);
+                        if (PQsearch(open_list, b) == -1)
+                            PQinsert(open_list, fvalues, b);
+                        else
+                            PQchange(open_list, fvalues, b);
 #if DEBUG_ASTAR
                         printf("T: %d PQ Insert: %d\n", args->index, b);
 #endif
