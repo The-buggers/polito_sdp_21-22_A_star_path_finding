@@ -752,7 +752,7 @@ These are the troubles found during implementation and testing:
         than MP-MQ but the termination condition is not well-performing on large graphs. This 
         happens because a thread has no way to shortcut the barrier if it's receiving work from
         another thread but it has to wait until all the threads have reached the barrier. Despite
-        the fact that we notice an improvement when the number of threads increases the execution
+        the fact that we noticed an improvement when the number of threads increases the execution
         time degenerates when using maps W and USA.
   \item The SAS HDA* that exploits the Sum-Flag termination condition (SAS-SF) behaves overall better.
         Despite the fact that on maps BAY, FLA, W it is difficult to notice the improvements when
@@ -760,8 +760,8 @@ These are the troubles found during implementation and testing:
         better compared to the SAS-B algorithm and this is confirmed as the most well-performing
         distributed termination condition.
   \item About the resources consumption both SAS-B and SAS-SF are more expensive in terms on CPU and 
-        memory used w.r.t the sequential algorithm. The resource used increase as the number of threads
-        increase. This is not valid for MP-SM where the consumption of resources is lower.
+        memory used w.r.t the sequential algorithm. This is not valid for MP-SM where the consumption of resources is lower
+        in terms of CPU usage(because of the lower degree of concurrency).
         The Shared Memory mechanism that we have adopted tries to speed-up the algorithm
         but has the drawback of being worse in terms of memory used (and not fully scalable in this version).
 \end{itemize}
@@ -780,7 +780,7 @@ results by observing that:
   \item Resource contention is another important element. We have proved by using MP-SM that when the number of shared resources
         is minimum and thus the need of mutual exclusion access to data structures is almost absent threads work
         better (sometimes achieving better results w.r.t the sequential algorithm). On the other hand this forces
-        threads to use communication method like Shared Memory that can be quite resource expensive and not fully
+        threads to use communication method like Shared Memory that can be quite memory expensive and not fully
         scalable.
 \end{itemize}
 \subsection{New Bidirectional A*(NBA*)}
