@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
             th_edges = atoi(argv[6]);
             strcpy(algo_type, argv[7]);
             if (strcmp(algo_type, "seq") != 0 &&
-                strcmp(algo_type, "dijkstra") != 0 &&
+                strcmp(algo_type, "dijk") != 0 &&
                 strcmp(algo_type, "pnba") != 0) {
                 num_threads = atoi(argv[8]);
                 source = atoi(argv[9]);
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
             // sequential reading
             strcpy(algo_type, argv[3]);
             if (strcmp(algo_type, "seq") != 0 &&
-                strcmp(algo_type, "dijkstra") != 0 &&
+                strcmp(algo_type, "dijk") != 0 &&
                 strcmp(algo_type, "pnba") != 0) {
                 num_threads = atoi(argv[4]);
                 source = atoi(argv[5]);
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
             reading_threads = atoi(argv[3]);
             strcpy(algo_type, argv[4]);
             if (strcmp(algo_type, "seq") != 0 &&
-                strcmp(algo_type, "dijkstra") != 0 &&
+                strcmp(algo_type, "dijk") != 0 &&
                 strcmp(algo_type, "pnba") != 0) {
                 num_threads = atoi(argv[5]);
                 source = atoi(argv[6]);
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
             reading_threads = atoi(argv[3]);
             strcpy(algo_type, argv[4]);
             if (strcmp(algo_type, "seq") != 0 &&
-                strcmp(algo_type, "dijkstra") != 0 &&
+                strcmp(algo_type, "dijk") != 0 &&
                 strcmp(algo_type, "pnba") != 0) {
                 num_threads = atoi(argv[5]);
                 source = atoi(argv[6]);
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
     start_timer(&begin);
     if (strcmp(algo_type, "seq") == 0) {
         ASTARshortest_path_sequential(G, source, dest, heuristic_type);
-    } else if (strcmp(algo_type, "dijkstra") == 0) {
+    } else if (strcmp(algo_type, "dijk") == 0) {
         DIJKSTRA_shortest_path_sequential(G, source, dest);
     } else if (strcmp(algo_type, "sf") == 0) {
         ASTARshortest_path_sas_sf(G, source, dest, heuristic_type, num_threads);

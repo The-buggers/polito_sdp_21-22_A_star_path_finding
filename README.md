@@ -65,8 +65,31 @@ make target
 ```
 3. Launch program
 ```sh
-./build/graphtest [input_file] [read_type] [threads read] [algo_type] [threads algo] [source] [dest] [heuristic]
+./build/graphtest input_file read_type read_threads algo_type [algo_threads] source dest heuristic
 ```
+#### Input file
+- Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA (benchmark path 14130775 - 810300)
+- Benchmark/DIMACS_custom_format/binarydUSA-road-dW (benchmark path 1523755 - 1953083)
+- Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA (benchmark path 0 - 103585)
+- Benchmark/DIMACS_custom_format/binarydUSA-road-dBAY (benchmark path 321269 - 263446)
+
+#### Read type
+- 1: Parallel read 1 (with shared memory)
+- 2: Parallel read 2 (read of graph and its inverse)
+- 3: Parallel read 3
+
+#### Algorithms
+- "seq": Sequential A*
+- "dijk": Sequential Dijkstra
+- "fa": Parallel First Attempt A*
+- "sf": HDA* SAS SF
+- "b": HDA* SAS B
+- "sf2": HDA* SAS SF-V2
+- "mp": HDA* Message Passing [Only for Random Graph 101 nodes]
+- "pnba": PNBA*
+
+#### Heuristic
+- "h": Great Circle Distance using Haversine Formula
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -74,11 +97,14 @@ make target
 ## Usage
 
 ```sh
-./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 14130775 810300
-./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dW 1523755 1953083
-./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dBAY 321269 263446
-./build/graphtest ./../Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 0 103585
-./build/graphtest ./../Benchmark/binaryd-random-V100 0 1
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 1 2 'seq' 14130775 810300 'h'  # Read 2(2 threads) - Sequential A*
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dW 1 4 'dijk' 1523755 1953083 'h'   # Read 2(2 threads) - Sequential Dijkstra
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 2 2 'fa' 2 14130775 810300 'h' # Read 2(2 threads) - Parallel A* - FA(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dW 2 4 'sf' 2 1523755 1953083 'h'   # Read 2(2 threads) - Parallel A* - HDA* - SF(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 1 5 'sf2' 2 0 103585 'h'       # Read 2(2 threads) - Parallel A* - HDA* - SFv2(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 3 2 'b' 2 0 103585 'h'         # Read 2(2 threads) - Parallel A* - HDA* - B(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-BAY 3 3 'mp' 2 321269 263446 'h'    # Read 2(2 threads) - Parallel A* - HDA* - MP(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 2 7 'pnba' 14130775 810300 'h' # Read 4(2 threads) - Parallel A* - PNBA*
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -151,7 +177,7 @@ It contains the main function ```DIJKSTRA_shortest_path_sequential``` that imple
 
 #### Graph.c
 
-It contains all the functions to load a graph in different ways such ```GRAPHload_sequential```, ```GRAPHload_parallel1```, ```GRAPHload_parallel2``` and ```GRAPHload_parallel3```. There are also different functions to work on graph like ```GRAPHinsertE``` to insert an edge and ```LINKget_wt``` to get the weight of a link. Struct like _node_ or _graph_ are first-class ADT, so they completly hide their content to other files. 
+It contains all the functions to load a graph in different ways such ```GRAPHload_sequential```, ```GRAPHload_parallel1```, ```GRAPHload_parallel2``` and ```GRAPHload_parallel3```. There are also different functions to work on graph like ```GRAPHinsertE``` to insert an edge and ```LINKget_wt``` to get the weight of a link. Graph need a symbol table and a linked list, and struct like _node_ or _graph_ are first-class ADT, so they completly hide their content to other files. 
 
 #### PQ.c
 
