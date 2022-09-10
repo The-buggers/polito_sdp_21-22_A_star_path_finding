@@ -76,7 +76,6 @@ make target
 #### Read type
 - 1: Parallel read 1 (with shared memory)
 - 2: Parallel read 2 (read of graph and its inverse)
-- 3: Parallel read 3
 
 #### Algorithms
 - "seq": Sequential A*
