@@ -622,9 +622,6 @@
         				\State $a \gets openSet.POP()$\;
         				\State $UNLOCK(mutex\_threads[index])$\;
       				\EndWhile
-      			\If{$a$ is duplicate}
-        			\State continue\;
-      			\EndIf
       		    \For{neighbor $b$ of $a$}
         			\State $wt \gets weight(a, b)$\;
         			\State $tentativeScore \gets g[a] + wt$\;
@@ -632,9 +629,6 @@
           				\State $owner\_a \gets hash_2(a,N,V)$\;
           				\State $owner\_b \gets hash_2(b,N,V)$\;
 					\EndIf
-          			\If{$b$ is duplicate}
-            			\State continue\;
-          			\EndIf
           			\State $tentativeScore \gets g[a] + wt$\;
 
           			\State LOCK($mutex\_nodes[b]$)\;

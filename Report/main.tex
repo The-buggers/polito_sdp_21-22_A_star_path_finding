@@ -746,8 +746,7 @@ These are the troubles found during implementation and testing:
   \item Better performances are achieved by the MP-SM variant. On BAY and FLA it achieves very
         good results w.r.t SAS-SF and also w.r.t. the sequential algorithm. The working mechanism
         makes the algorithm not properly working on larger graphs obtaing bad performances. Both
-        the size of the graph and the increasing number of threads require too much memory(more
-        than the available one).
+        the size of the graph and the increasing number of threads require too much memory.
   \item The SAS HDA* that exploits the Barrier termination condition (SAS-B) is more scalable
         than MP-MQ but the termination condition is not well-performing on large graphs. This 
         happens because a thread has no way to shortcut the barrier if it's receiving work from
@@ -915,7 +914,7 @@ Features improvements could be realated to:
         will be proportional to the ones observed in BAY and FLA.
   \item Other techniques starting from PNBA* can be explored: for instance make it working with more than 2
         threads. This could happen by splitting the path from $source$ to $dest$ in more sections and then
-        applying PNAB* on each section. This could also be combined with a trade-off between performance and
+        applying PNBA* on each section. This could also be combined with a trade-off between performance and
         cost of the path found(accepting to find not optimal paths but in a very small time).
   \item In terms of performance measuring we will look for more stable and detailed way to inspect CPU usage
         and memory usage (using instrumentes like \textit{Valgrind}).

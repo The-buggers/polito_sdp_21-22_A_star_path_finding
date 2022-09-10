@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  10 SEP 2022 15:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  10 SEP 2022 16:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1213,7 +1213,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/baytime.png, id=1850, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/baytime.png Graphic file (type png)
 <use ../Report/Pictures/hda/baytime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/baytime.png  used on input line 669.
+Package pdftex.def Info: ../Report/Pictures/hda/baytime.png  used on input line 663.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1226,7 +1226,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/baycpumem.png, id=1879, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/baycpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/baycpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/baycpumem.png  used on input line 677.
+Package pdftex.def Info: ../Report/Pictures/hda/baycpumem.png  used on input line 671.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1239,7 +1239,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/flatime.png, id=1908, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/flatime.png Graphic file (type png)
 <use ../Report/Pictures/hda/flatime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/flatime.png  used on input line 686.
+Package pdftex.def Info: ../Report/Pictures/hda/flatime.png  used on input line 680.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1252,7 +1252,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/flacpumem.png, id=1937, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/flacpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/flacpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/flacpumem.png  used on input line 694.
+Package pdftex.def Info: ../Report/Pictures/hda/flacpumem.png  used on input line 688.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1265,7 +1265,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/wtime.png, id=1965, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/wtime.png Graphic file (type png)
 <use ../Report/Pictures/hda/wtime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/wtime.png  used on input line 703.
+Package pdftex.def Info: ../Report/Pictures/hda/wtime.png  used on input line 697.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1278,7 +1278,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/wcpumem.png, id=1993, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/wcpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/wcpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/wcpumem.png  used on input line 711.
+Package pdftex.def Info: ../Report/Pictures/hda/wcpumem.png  used on input line 705.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1291,7 +1291,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/usatime.png, id=2022, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/usatime.png Graphic file (type png)
 <use ../Report/Pictures/hda/usatime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/usatime.png  used on input line 720.
+Package pdftex.def Info: ../Report/Pictures/hda/usatime.png  used on input line 714.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1304,7 +1304,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/usacpumem.png, id=2050, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/usacpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/usacpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/usacpumem.png  used on input line 728.
+Package pdftex.def Info: ../Report/Pictures/hda/usacpumem.png  used on input line 722.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1317,7 +1317,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/seq_sf_time.png, id=2078, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/seq_sf_time.png Graphic file (type png)
 <use ../Report/Pictures/hda/seq_sf_time.png>
-Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_time.png  used on input line 737.
+Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_time.png  used on input line 731.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1330,7 +1330,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/seq_sf_cpumem.png, id=2107, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/seq_sf_cpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/seq_sf_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_cpumem.png  used on input line 745.
+Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_cpumem.png  used on input line 739.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1343,7 +1343,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/seq_mpsm_time.png, id=2136, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/seq_mpsm_time.png Graphic file (type png)
 <use ../Report/Pictures/hda/seq_mpsm_time.png>
-Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_time.png  used on input line 754.
+Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_time.png  used on input line 748.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1356,7 +1356,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/hda/seq_mpsm_cpumem.png, id=2164, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/hda/seq_mpsm_cpumem.png Graphic file (type png)
 <use ../Report/Pictures/hda/seq_mpsm_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_cpumem.png  used on input line 762.
+Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_cpumem.png  used on input line 756.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1411,7 +1411,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/pnba/pnbamap.png, id=2351, 620.3175pt x 330.23375pt>
 File: ../Report/Pictures/pnba/pnbamap.png Graphic file (type png)
 <use ../Report/Pictures/pnba/pnbamap.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnbamap.png  used on input line 882.
+Package pdftex.def Info: ../Report/Pictures/pnba/pnbamap.png  used on input line 876.
 (pdftex.def)             Requested size: 238.48587pt x 126.96149pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1461,7 +1461,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/pnba/pnba_time.png, id=2513, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/pnba/pnba_time.png Graphic file (type png)
 <use ../Report/Pictures/pnba/pnba_time.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnba_time.png  used on input line 957.
+Package pdftex.def Info: ../Report/Pictures/pnba/pnba_time.png  used on input line 951.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1474,7 +1474,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/pnba/pnba_cpumem.png, id=2541, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/pnba/pnba_cpumem.png Graphic file (type png)
 <use ../Report/Pictures/pnba/pnba_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnba_cpumem.png  used on input line 965.
+Package pdftex.def Info: ../Report/Pictures/pnba/pnba_cpumem.png  used on input line 959.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1494,7 +1494,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/others/all_algo_time.png, id=2606, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/others/all_algo_time.png Graphic file (type png)
 <use ../Report/Pictures/others/all_algo_time.png>
-Package pdftex.def Info: ../Report/Pictures/others/all_algo_time.png  used on input line 976.
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_time.png  used on input line 970.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1507,7 +1507,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/others/all_algo_time_log.png, id=2634, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/others/all_algo_time_log.png Graphic file (type png)
 <use ../Report/Pictures/others/all_algo_time_log.png>
-Package pdftex.def Info: ../Report/Pictures/others/all_algo_time_log.png  used on input line 983.
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_time_log.png  used on input line 977.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1520,7 +1520,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 <../Report/Pictures/others/all_algo_cpumem.png, id=2663, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/others/all_algo_cpumem.png Graphic file (type png)
 <use ../Report/Pictures/others/all_algo_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/others/all_algo_cpumem.png  used on input line 990.
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_cpumem.png  used on input line 984.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1568,11 +1568,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `main.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1020.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1020.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1014.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1014.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1020.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1020.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1014.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1014.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 93A5903A489466EA721E62DD0A30AFEA;1797.
 
@@ -1589,7 +1589,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  58i,15n,70p,945b,941s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (92 pages, 4397497 bytes).
+Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (92 pages, 4397221 bytes).
 PDF statistics:
  2924 PDF objects out of 2984 (max. 8388607)
  2715 compressed objects within 28 object streams
