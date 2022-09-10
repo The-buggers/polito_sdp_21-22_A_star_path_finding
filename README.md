@@ -84,8 +84,8 @@ make target
 - "fa": Parallel First Attempt A*
 - "sf": HDA* SAS SF
 - "b": HDA* SAS B
-- "sf2": HDA* SAS SF-V2
-- "mp": HDA* Message Passing [Only for Random Graph 101 nodes]
+- "mpsm": HDA* MP-SM
+- "mpmq": HDA* MP-MQ
 - "pnba": PNBA*
 
 #### Heuristic
@@ -101,9 +101,9 @@ src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 1 2 'seq
 src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dW 1 4 'dijk' 1523755 1953083 'h'   # Read 2(2 threads) - Sequential Dijkstra
 src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 2 2 'fa' 2 14130775 810300 'h' # Read 2(2 threads) - Parallel A* - FA(2 threads)
 src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dW 2 4 'sf' 2 1523755 1953083 'h'   # Read 2(2 threads) - Parallel A* - HDA* - SF(2 threads)
-src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 1 5 'sf2' 2 0 103585 'h'       # Read 2(2 threads) - Parallel A* - HDA* - SFv2(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 1 5 'mpsm' 2 0 103585 'h'       # Read 2(2 threads) - Parallel A* - HDA* - SFv2(2 threads)
 src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dFLA 3 2 'b' 2 0 103585 'h'         # Read 2(2 threads) - Parallel A* - HDA* - B(2 threads)
-src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-BAY 3 3 'mp' 2 321269 263446 'h'    # Read 2(2 threads) - Parallel A* - HDA* - MP(2 threads)
+src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-BAY 3 3 'mpmq' 2 321269 263446 'h'    # Read 2(2 threads) - Parallel A* - HDA* - MP(2 threads)
 src/build/graphtest Benchmark/DIMACS_custom_format/binarydUSA-road-dUSA 2 7 'pnba' 14130775 810300 'h' # Read 4(2 threads) - Parallel A* - PNBA*
 ```
 
