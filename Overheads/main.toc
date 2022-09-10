@@ -26,18 +26,15 @@
 \beamer@subsubsectionintoc {7}{1}{1}{The hash function}{43}{0}{7}
 \beamer@subsubsectionintoc {7}{1}{2}{Work distribution on BAY map}{44}{0}{7}
 \beamer@subsubsectionintoc {7}{1}{3}{Distributed termination condition}{45}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{4}{Duplicate nodes}{46}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{5}{Communication methodology}{47}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{6}{Message Passing Model (MP)}{48}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{7}{Shared Address Space (SAS)}{56}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{8}{SAS pseudocode}{57}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{9}{Results}{61}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{10}{Comments and overall results}{65}{0}{7}
-\beamer@subsectionintoc {7}{2}{PNBA*}{70}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{1}{NBA*}{70}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{2}{PNBA*}{72}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{3}{PNBA* pseudocode}{73}{0}{7}
-\beamer@sectionintoc {8}{Conclusions}{80}{0}{8}
-\beamer@sectionintoc {9}{Computing Facilities Platform}{83}{0}{9}
-\beamer@sectionintoc {10}{Future Works}{85}{0}{10}
-\beamer@sectionintoc {11}{References}{87}{0}{11}
+\beamer@subsubsectionintoc {7}{1}{4}{Communication methodology}{46}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{5}{Message Passing Model (MP)}{47}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{6}{Shared Address Space (SAS)}{55}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{7}{SAS pseudocode}{56}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{8}{Results}{59}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{9}{Comments and overall results}{71}{0}{7}
+\beamer@subsectionintoc {7}{2}{PNBA*}{75}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{1}{NBA*}{75}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{2}{PNBA*}{77}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{3}{PNBA* pseudocode}{78}{0}{7}
+\beamer@sectionintoc {8}{Conclusions}{85}{0}{8}
+\beamer@sectionintoc {9}{References}{90}{0}{9}

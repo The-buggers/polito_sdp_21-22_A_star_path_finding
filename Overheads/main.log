@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  10 SEP 2022 01:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.28)  10 SEP 2022 15:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -810,7 +810,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [16
 
 ]
-<../Report/Pictures/others/google_maps.png, id=701, 715.67375pt x 606.265pt>
+<../Report/Pictures/others/google_maps.png, id=678, 715.67375pt x 606.265pt>
 File: ../Report/Pictures/others/google_maps.png Graphic file (type png)
 <use ../Report/Pictures/others/google_maps.png>
 Package pdftex.def Info: ../Report/Pictures/others/google_maps.png  used on input line 152.
@@ -894,7 +894,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [25
 
 ]
-<../Report/Pictures/astar_dijkstra/expanded_nodes.png, id=969, 878.28125pt x 542.025pt>
+<../Report/Pictures/astar_dijkstra/expanded_nodes.png, id=939, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/astar_dijkstra/expanded_nodes.png Graphic file (type png)
 <use ../Report/Pictures/astar_dijkstra/expanded_nodes.png>
 Package pdftex.def Info: ../Report/Pictures/astar_dijkstra/expanded_nodes.png  used on input line 265.
@@ -911,7 +911,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [26
 
  </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/astar_dijkstra/expanded_nodes.png>]
-<../Report/Pictures/astar_dijkstra/dijkstra_astar.png, id=997, 703.62875pt x 386.44376pt>
+<../Report/Pictures/astar_dijkstra/dijkstra_astar.png, id=968, 703.62875pt x 386.44376pt>
 File: ../Report/Pictures/astar_dijkstra/dijkstra_astar.png Graphic file (type png)
 <use ../Report/Pictures/astar_dijkstra/dijkstra_astar.png>
 Package pdftex.def Info: ../Report/Pictures/astar_dijkstra/dijkstra_astar.png  used on input line 274.
@@ -924,7 +924,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [27
 
  </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/astar_dijkstra/dijkstra_astar.png>]
-<../Report/Pictures/astar_dijkstra/execution_time.png, id=1025, 878.28125pt x 542.025pt>
+<../Report/Pictures/astar_dijkstra/execution_time.png, id=996, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/astar_dijkstra/execution_time.png Graphic file (type png)
 <use ../Report/Pictures/astar_dijkstra/execution_time.png>
 Package pdftex.def Info: ../Report/Pictures/astar_dijkstra/execution_time.png  used on input line 284.
@@ -937,7 +937,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [28
 
  </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/astar_dijkstra/execution_time.png>]
-<../Report/Pictures/astar_dijkstra/cpumem.png, id=1053, 878.28125pt x 542.025pt>
+<../Report/Pictures/astar_dijkstra/cpumem.png, id=1024, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/astar_dijkstra/cpumem.png Graphic file (type png)
 <use ../Report/Pictures/astar_dijkstra/cpumem.png>
 Package pdftex.def Info: ../Report/Pictures/astar_dijkstra/cpumem.png  used on input line 293.
@@ -964,15 +964,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [31
 
 ]
-<../Report/Pictures/read/par_read_1_time.png, id=1147, 878.28125pt x 542.025pt>
+<../Report/Pictures/read/par_read_1_time.png, id=1115, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/read/par_read_1_time.png Graphic file (type png)
 <use ../Report/Pictures/read/par_read_1_time.png>
-Package pdftex.def Info: ../Report/Pictures/read/par_read_1_time.png  used on input line 318.
+Package pdftex.def Info: ../Report/Pictures/read/par_read_1_time.png  used on input line 324.
 (pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
-
-Overfull \vbox (13.89807pt too high) detected at line 318
- []
-
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -988,10 +984,10 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [33
 
 ]
-<../Report/Pictures/read/par_read_2_time.png, id=1201, 878.28125pt x 542.025pt>
+<../Report/Pictures/read/par_read_2_time.png, id=1169, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/read/par_read_2_time.png Graphic file (type png)
 <use ../Report/Pictures/read/par_read_2_time.png>
-Package pdftex.def Info: ../Report/Pictures/read/par_read_2_time.png  used on input line 342.
+Package pdftex.def Info: ../Report/Pictures/read/par_read_2_time.png  used on input line 343.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1001,13 +997,13 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [34
 
  </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/read/par_read_2_time.png>]
-<../Report/Pictures/read/par_read_all_time.png, id=1229, 878.28125pt x 542.025pt>
+<../Report/Pictures/read/par_read_all_time.png, id=1197, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/read/par_read_all_time.png Graphic file (type png)
 <use ../Report/Pictures/read/par_read_all_time.png>
-Package pdftex.def Info: ../Report/Pictures/read/par_read_all_time.png  used on input line 352.
+Package pdftex.def Info: ../Report/Pictures/read/par_read_all_time.png  used on input line 353.
 (pdftex.def)             Requested size: 340.6956pt x 210.26408pt.
 
-Overfull \vbox (29.21724pt too high) detected at line 352
+Overfull \vbox (29.21724pt too high) detected at line 353
  []
 
 
@@ -1027,7 +1023,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 ]pdfTeX warning (ext4): destination with the same identifier (name{readresultsfinal}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.385 	\end{frame}
+l.386 	\end{frame}
                   
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -1036,13 +1032,13 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [37
 
 ]
-<../Report/Pictures/read/parread_cpumem.png, id=1311, 878.28125pt x 542.025pt>
+<../Report/Pictures/read/parread_cpumem.png, id=1279, 878.28125pt x 542.025pt>
 File: ../Report/Pictures/read/parread_cpumem.png Graphic file (type png)
 <use ../Report/Pictures/read/parread_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/read/parread_cpumem.png  used on input line 394.
+Package pdftex.def Info: ../Report/Pictures/read/parread_cpumem.png  used on input line 395.
 (pdftex.def)             Requested size: 340.6956pt x 210.26408pt.
 
-Overfull \vbox (41.30893pt too high) detected at line 394
+Overfull \vbox (41.30893pt too high) detected at line 395
  []
 
 
@@ -1088,10 +1084,10 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [43
 
 ]
-<../Report/Pictures/hda/hda_work_BAY.png, id=1486, 551.05875pt x 328.22626pt>
+<../Report/Pictures/hda/hda_work_BAY.png, id=1450, 551.05875pt x 328.22626pt>
 File: ../Report/Pictures/hda/hda_work_BAY.png Graphic file (type png)
 <use ../Report/Pictures/hda/hda_work_BAY.png>
-Package pdftex.def Info: ../Report/Pictures/hda/hda_work_BAY.png  used on input line 461.
+Package pdftex.def Info: ../Report/Pictures/hda/hda_work_BAY.png  used on input line 462.
 (pdftex.def)             Requested size: 272.55751pt x 162.3498pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1136,6 +1132,15 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [49
 
 ]
+
+LaTeX Font Warning: Font shape `OT1/cmss/m/sc' in size <8> not available
+(Font)              Font shape `OT1/cmr/m/sc' tried instead on input line 597.
+
+
+LaTeX Font Warning: Font shape `OT1/cmss/m/sc' in size <6> not available
+(Font)              Font shape `OT1/cmr/m/sc' tried instead on input line 597.
+
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1143,20 +1148,12 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [50
 
 ]
-
-LaTeX Font Warning: Font shape `OT1/cmss/m/sc' in size <8> not available
-(Font)              Font shape `OT1/cmr/m/sc' tried instead on input line 611.
-
-
-LaTeX Font Warning: Font shape `OT1/cmss/m/sc' in size <6> not available
-(Font)              Font shape `OT1/cmr/m/sc' tried instead on input line 611.
-
-
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [51
+
 
 ]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1189,7 +1186,6 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [55
 
-
 ]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -1204,6 +1200,7 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [57
 
+
 ]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -1213,26 +1210,36 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 
 ]
+<../Report/Pictures/hda/baytime.png, id=1850, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/baytime.png Graphic file (type png)
+<use ../Report/Pictures/hda/baytime.png>
+Package pdftex.def Info: ../Report/Pictures/hda/baytime.png  used on input line 669.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [59
 
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/baytime.png>]
+<../Report/Pictures/hda/baycpumem.png, id=1879, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/baycpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/baycpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/baycpumem.png  used on input line 677.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
-]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [60
 
-
-]
-<../Report/Pictures/hda/baytime.png, id=1938, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/baytime.png Graphic file (type png)
-<use ../Report/Pictures/hda/baytime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/baytime.png  used on input line 699.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/baycpumem.png>]
+<../Report/Pictures/hda/flatime.png, id=1908, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/flatime.png Graphic file (type png)
+<use ../Report/Pictures/hda/flatime.png>
+Package pdftex.def Info: ../Report/Pictures/hda/flatime.png  used on input line 686.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1241,11 +1248,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [61
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/baytime.png>]
-<../Report/Pictures/hda/baycpumem.png, id=1968, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/baycpumem.png Graphic file (type png)
-<use ../Report/Pictures/hda/baycpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/baycpumem.png  used on input line 707.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/flatime.png>]
+<../Report/Pictures/hda/flacpumem.png, id=1937, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/flacpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/flacpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/flacpumem.png  used on input line 694.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1254,11 +1261,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [62
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/baycpumem.png>]
-<../Report/Pictures/hda/usatime.png, id=1997, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/usatime.png Graphic file (type png)
-<use ../Report/Pictures/hda/usatime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/usatime.png  used on input line 715.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/flacpumem.png>]
+<../Report/Pictures/hda/wtime.png, id=1965, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/wtime.png Graphic file (type png)
+<use ../Report/Pictures/hda/wtime.png>
+Package pdftex.def Info: ../Report/Pictures/hda/wtime.png  used on input line 703.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1267,11 +1274,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [63
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/usatime.png>]
-<../Report/Pictures/hda/usacpumem.png, id=2025, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/usacpumem.png Graphic file (type png)
-<use ../Report/Pictures/hda/usacpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/usacpumem.png  used on input line 723.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/wtime.png>]
+<../Report/Pictures/hda/wcpumem.png, id=1993, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/wcpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/wcpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/wcpumem.png  used on input line 711.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1280,25 +1287,37 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [64
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/usacpumem.png>]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/wcpumem.png>]
+<../Report/Pictures/hda/usatime.png, id=2022, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/usatime.png Graphic file (type png)
+<use ../Report/Pictures/hda/usatime.png>
+Package pdftex.def Info: ../Report/Pictures/hda/usatime.png  used on input line 720.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [65
 
-]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/usatime.png>]
+<../Report/Pictures/hda/usacpumem.png, id=2050, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/usacpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/usacpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/usacpumem.png  used on input line 728.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [66
 
-]
-<../Report/Pictures/hda/tottime.png, id=2107, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/tottime.png Graphic file (type png)
-<use ../Report/Pictures/hda/tottime.png>
-Package pdftex.def Info: ../Report/Pictures/hda/tottime.png  used on input line 765.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/usacpumem.png>]
+<../Report/Pictures/hda/seq_sf_time.png, id=2078, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/seq_sf_time.png Graphic file (type png)
+<use ../Report/Pictures/hda/seq_sf_time.png>
+Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_time.png  used on input line 737.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1307,11 +1326,11 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [67
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/tottime.png>]
-<../Report/Pictures/hda/totcpumem.png, id=2136, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/hda/totcpumem.png Graphic file (type png)
-<use ../Report/Pictures/hda/totcpumem.png>
-Package pdftex.def Info: ../Report/Pictures/hda/totcpumem.png  used on input line 773.
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/seq_sf_time.png>]
+<../Report/Pictures/hda/seq_sf_cpumem.png, id=2107, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/seq_sf_cpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/seq_sf_cpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/seq_sf_cpumem.png  used on input line 745.
 (pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
 
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1320,21 +1339,33 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [68
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/totcpumem.png>]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/seq_sf_cpumem.png>]
+<../Report/Pictures/hda/seq_mpsm_time.png, id=2136, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/seq_mpsm_time.png Graphic file (type png)
+<use ../Report/Pictures/hda/seq_mpsm_time.png>
+Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_time.png  used on input line 754.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [69
 
-]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/seq_mpsm_time.png>]
+<../Report/Pictures/hda/seq_mpsm_cpumem.png, id=2164, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/hda/seq_mpsm_cpumem.png Graphic file (type png)
+<use ../Report/Pictures/hda/seq_mpsm_cpumem.png>
+Package pdftex.def Info: ../Report/Pictures/hda/seq_mpsm_cpumem.png  used on input line 762.
+(pdftex.def)             Requested size: 272.55751pt x 168.20796pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [70
 
-]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/hda/seq_mpsm_cpumem.png>]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1342,19 +1373,13 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [71
 
 ]
-<../Report/Pictures/pnba/pnbamap.png, id=2241, 620.3175pt x 330.23375pt>
-File: ../Report/Pictures/pnba/pnbamap.png Graphic file (type png)
-<use ../Report/Pictures/pnba/pnbamap.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnbamap.png  used on input line 844.
-(pdftex.def)             Requested size: 238.48587pt x 126.96149pt.
-
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [72
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnbamap.png>]
+]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1368,14 +1393,12 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 
 [74
 
-
 ]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [75
-
 
 ]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
@@ -1385,86 +1408,82 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [76
 
 ]
+<../Report/Pictures/pnba/pnbamap.png, id=2351, 620.3175pt x 330.23375pt>
+File: ../Report/Pictures/pnba/pnbamap.png Graphic file (type png)
+<use ../Report/Pictures/pnba/pnbamap.png>
+Package pdftex.def Info: ../Report/Pictures/pnba/pnbamap.png  used on input line 882.
+(pdftex.def)             Requested size: 238.48587pt x 126.96149pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [77
 
-]
-<../Report/Pictures/pnba/pnba_time.png, id=2403, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/pnba/pnba_time.png Graphic file (type png)
-<use ../Report/Pictures/pnba/pnba_time.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnba_time.png  used on input line 919.
-(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
-
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnbamap.png>]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [78
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnba_time.png>]
-<../Report/Pictures/pnba/pnba_cpumem.png, id=2431, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/pnba/pnba_cpumem.png Graphic file (type png)
-<use ../Report/Pictures/pnba/pnba_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/pnba/pnba_cpumem.png  used on input line 927.
-(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
-
+]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [79
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnba_cpumem.png>] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
+
+]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [80
 
-]
-<../Report/Pictures/others/allalgo_time.png, id=2499, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/others/allalgo_time.png Graphic file (type png)
-<use ../Report/Pictures/others/allalgo_time.png>
-Package pdftex.def Info: ../Report/Pictures/others/allalgo_time.png  used on input line 938.
-(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
 
+]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [81
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/others/allalgo_time.png>]
-<../Report/Pictures/others/allalgo_cpumem.png, id=2526, 878.28125pt x 542.025pt>
-File: ../Report/Pictures/others/allalgo_cpumem.png Graphic file (type png)
-<use ../Report/Pictures/others/allalgo_cpumem.png>
-Package pdftex.def Info: ../Report/Pictures/others/allalgo_cpumem.png  used on input line 945.
-(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
-
+]
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [82
 
- </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/others/allalgo_cpumem.png>] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
+]
+<../Report/Pictures/pnba/pnba_time.png, id=2513, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/pnba/pnba_time.png Graphic file (type png)
+<use ../Report/Pictures/pnba/pnba_time.png>
+Package pdftex.def Info: ../Report/Pictures/pnba/pnba_time.png  used on input line 957.
+(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [83
 
-]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnba_time.png>]
+<../Report/Pictures/pnba/pnba_cpumem.png, id=2541, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/pnba/pnba_cpumem.png Graphic file (type png)
+<use ../Report/Pictures/pnba/pnba_cpumem.png>
+Package pdftex.def Info: ../Report/Pictures/pnba/pnba_cpumem.png  used on input line 965.
+(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [84
 
-] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/pnba/pnba_cpumem.png>] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1472,25 +1491,72 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 [85
 
 ]
+<../Report/Pictures/others/all_algo_time.png, id=2606, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/others/all_algo_time.png Graphic file (type png)
+<use ../Report/Pictures/others/all_algo_time.png>
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_time.png  used on input line 976.
+(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [86
 
-] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/others/all_algo_time.png>]
+<../Report/Pictures/others/all_algo_time_log.png, id=2634, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/others/all_algo_time_log.png Graphic file (type png)
+<use ../Report/Pictures/others/all_algo_time_log.png>
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_time_log.png  used on input line 983.
+(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [87
 
-]
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/others/all_algo_time_log.png>]
+<../Report/Pictures/others/all_algo_cpumem.png, id=2663, 878.28125pt x 542.025pt>
+File: ../Report/Pictures/others/all_algo_cpumem.png Graphic file (type png)
+<use ../Report/Pictures/others/all_algo_cpumem.png>
+Package pdftex.def Info: ../Report/Pictures/others/all_algo_cpumem.png  used on input line 990.
+(pdftex.def)             Requested size: 289.59334pt x 178.71992pt.
+
 Overfull \hbox (59.03473pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [88
+
+ </Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/../Report/Pictures/others/all_algo_cpumem.png>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[89
+
+] (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc) (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.toc)
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[90
+
+]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[91
+
+ </usr/local/texlive/2020/texmf-dist/tex/latex/beamer/beamericonarticle.pdf>]
+Overfull \hbox (59.03473pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[92
+
 
 ]
 \tf@nav=\write6
@@ -1502,31 +1568,31 @@ Overfull \hbox (59.03473pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `main.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 975.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 975.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1020.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1020.
  (/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 975.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 975.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1020.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1020.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 0F25F4C7115317470E62937C5ABBA143;1912.
+(rerunfilecheck)             Checksum: 93A5903A489466EA721E62DD0A30AFEA;1797.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 19427 strings out of 480608
- 380346 string characters out of 5903629
- 618086 words of memory out of 5000000
- 34545 multiletter control sequences out of 15000+600000
+ 19501 strings out of 480608
+ 381548 string characters out of 5903629
+ 616787 words of memory out of 5000000
+ 34609 multiletter control sequences out of 15000+600000
  543071 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  58i,15n,70p,945b,941s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb>
-Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (88 pages, 4128101 bytes).
+Output written on "/Users/mattiarosso/Desktop/LM-I anno-II semestre/System_and_device_programming/Quer/Project/GitHub/polito_sdp_21-22_A_star_path_finding/Overheads/main.pdf" (92 pages, 4397497 bytes).
 PDF statistics:
- 2846 PDF objects out of 2984 (max. 8388607)
- 2659 compressed objects within 27 object streams
- 234 named destinations out of 1000 (max. 500000)
- 436 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2924 PDF objects out of 2984 (max. 8388607)
+ 2715 compressed objects within 28 object streams
+ 245 named destinations out of 1000 (max. 500000)
+ 455 words of extra memory for PDF output out of 10000 (max. 10000000)
 

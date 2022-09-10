@@ -298,17 +298,23 @@
 	\subsection{Approach 1 (RA1)}
 	\begin{frame}{\secname}
 		\framesubtitle{\subsecname}
-		In this first approach we have implemeted a solution on which:
+		This reading approach is based on:
 		\begin{itemize}
-			\item The input file is memory-mapped before being read
-			\item $N$ threads runs freely to read the entire file (array in RAM)
-			\item TODO quanti lock ci sono? Quanta concorrenza?
+			\item Memory mapping of the input file
+			\item Concurrent reading of the memory mapped data structure
+		\end{itemize}
+		The reading of the input file in a parallel way happens using $N$ threads that concurrently access
+		the pointer to the memory mapped file. While the reading of the input file can happen in whatever order
+		and concurrency doesn't represent a problem the loading of Graph data structures must happen in
+		mutual exclusion and this is why two locks are used:
+		\begin{itemize}
+			\item One lock to protect the loading of the nodes in the Graph (to fill the Symbol Table)
+			\item One lock to protect the loading of the edges in the Linked List data structure of the Graph
 		\end{itemize}
 	\end{frame}
 	\subsection{Results on FLA map}
 	\begin{frame}{\secname}
 		\framesubtitle{\subsecname}
-		TODO inserire Sequenziale x2
 		\begin{figure}[ht!]
 			\centering
 			\includegraphics[width=0.85\linewidth]{read/par_read_1_time.png}
@@ -320,14 +326,9 @@
 	\begin{frame}{\secname}
 		\framesubtitle{\subsecname}
 		This is not properly a different approach of parallel reading but simply a version
-		of the \textit{RA1} needed when the \textit{PNBA*} algorithm will be applied:
-		\begin{itemize}
-			\item The input file is memory-mapped before being read
-			\item $N$ threads runs freely to read the entire file (array in RAM)
-			\item Two different graphs are loaded: $G$ and the reversed graph $R$
-		\end{itemize}
+		of the \textit{RA1} needed when the \textit{PNBA*} algorithm will be applied.
 		Since we are loading two graphs data structures at the same time the performances will
-		compared with the sequential reading as if it was run twice (the first time to read $G$ and
+		be compared with the sequential reading as if it was run twice (the first time to read $G$ and
 		the second time to read $R$)
 	\end{frame}
 	\subsection{Results on FLA map}
@@ -477,19 +478,6 @@
 			all the threads can correctly terminate.
 		\end{itemize}
 	\end{frame}
-	\subsubsection{Duplicate nodes}
-	\begin{frame}{\secname : \subsecname}
-		\framesubtitle{Duplicate nodes}
-		We also need to check whether the cost associated to an expanded node 
-		when it was previously added to the \textit{closed set} is less or equal to the cost computed at the time $n$ is re-expanded. 
-		This is called duplicate checking so, a node $n$ is a duplicate of node $m$ if:
-		\begin{itemize} 
-			\item $n$ is equal to $m$
-			\item $closedSet$ of thread $t_i$ contains the node $m$
-			\item $g(m) \le g(n)$
-		\end{itemize}
-		A duplicate node can be discarded.
-	\end{frame}
 	\subsubsection{Communication methodology}
 	\begin{frame}{\secname : \subsecname}
 		\framesubtitle{Communication methodology}
@@ -557,7 +545,7 @@
 							\State $wait(w)$\;
 						\EndIf
 						\State $post(meR)$\;
-						\If{$hash(index, N, V) == index$}
+						\If{$hash_2(index, N, V) == index$}
 							\If{$smp_L.g < g[smp_L.n]$}
 								\State $g[smp_L.n] \gets smp_L.g$\;
 								\State $f[smp_L.n] \gets g[smp_L.n]+h[smp_L.n]$\;
@@ -580,27 +568,25 @@
 					\If{$!openSet.EMPTY()$}
 						\State $a \gets openSet.POP()$\;
 						\If{$a == dest$}
-							\State $LOCK(mutex)$\;
+							\State $LOCK$\;
 							\State $globalDestCost \gets g[a]$
-							\State $UNLOCK(mutex)$\;
+							\State $UNLOCK$\;
 						\EndIf
 						\For{neighbor $b$ of $a$}
 							\State $owner\_b \gets hash_2(b, N, V)$\;
 							\If{$owner\_b  ==  index$}
-								\State $LOCK(mutex)$\;
 								\State $parentVertex[b] \gets a$\;
 								\State $costToCome[b] \gets weight(a, b)$\;
-								\State $UNLOCK(mutex)$\;
 								\State $g[b] \gets g[b] + weight(a, b)$\;
 								\State $f[b] \gets g[b] + h[b]$\;
 								\State $openSet.PUSH((b, f[owner\_b][b]))$\;
 							\Else
 								\State $wait(w)$
-								\State $smp_L.n \gets b$\;
-								\State $smp_L.g \gets g[b]$\;
-								\State $smp_L.wt \gets weight(a, b)$\;
-								\State $smp_L.previous \gets a$\;
-								\State $smp_L++$\;
+								\State $smp_G.n \gets b$\;
+								\State $smp_G.g \gets g[b]$\;
+								\State $smp_G.wt \gets weight(a, b)$\;
+								\State $smp_G.previous \gets a$\;
+								\State $smp_G++$\;
 								\State $post(w)$
 							\EndIf
 						\EndFor
@@ -629,20 +615,6 @@
 	\begin{frame}[allowframebreaks]{\secname : \subsecname}
 		\framesubtitle{SAS pseudocode}
 		\begin{algorithmic}[1]
-			\Function{$astar$}{$G, source, dest, h$}
-				\State $g[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
-				\State $h[i] \gets heuristic(i, dest) \; \forall i \in V$\;
-				\State $parentVertex[i] \gets -1 \; \forall i \in V$\;
-				\State $t\_owner \gets hash(source, num\_threads)$\;
-				\State $f[t\_owner][source] \gets h[s]$\;
-				\State $g[source] \gets 0$\;
-				\State $openSet[t\_owner] := \{(source, f[t\_owner][source])\}$\;
-				\State Initialize $N$ $mutex\_threads$\;
-				\State Initialize $V$ $mutex\_nodes$\;
-				\State Launch $N$ threads\;
-				\State Join $N$ threads\;
-				\State $reconstructPath()$\;
-			\EndFunction
 			\Function{$hda\_sas$}{}
 				\While{$1$}
       				\While{$!openSet[index].EMPTY()$}
@@ -663,9 +635,7 @@
           			\If{$b$ is duplicate}
             			\State continue\;
           			\EndIf
-          			\State LOCK($mutex\_nodes[a]$)\;
           			\State $tentativeScore \gets g[a] + wt$\;
-          			\State UNLOCK($mutex\_nodes[a]$)\;
 
           			\State LOCK($mutex\_nodes[b]$)\;
           			\If{$tentativeScore$ is less than $g[b]$}
@@ -694,7 +664,7 @@
 		\begin{figure}[ht!]
 			\centering
 			\includegraphics[width=0.8\linewidth]{hda/baytime.png}
-			\caption{HDA* on BAY map}
+			\caption{HDA* on BAY map - time}
 		\end{figure}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
@@ -702,15 +672,50 @@
 		\begin{figure}[ht!]
 			\centering
 			\includegraphics[width=0.8\linewidth]{hda/baycpumem.png}
-			\caption{HDA* on BAY map}
+			\caption{HDA* on BAY map - resources}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/flatime.png}
+			\caption{HDA* on FLA map - time}
 		\end{figure}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
 		\framesubtitle{Results}
 		\begin{figure}[ht!]
 			\centering
+			\includegraphics[width=0.8\linewidth]{hda/flacpumem.png}
+			\caption{HDA* on FLA map - resources}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/wtime.png}
+			\caption{HDA* on W map - time}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/wcpumem.png}
+			\caption{HDA* on W map - resources}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
 			\includegraphics[width=0.8\linewidth]{hda/usatime.png}
-			\caption{HDA* on USA map}
+			\caption{HDA* on USA map - time}
 		\end{figure}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
@@ -718,76 +723,109 @@
 		\begin{figure}[ht!]
 			\centering
 			\includegraphics[width=0.8\linewidth]{hda/usacpumem.png}
-			\caption{HDA* on USA map}
+			\caption{HDA* on USA map - resources}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/seq_sf_time.png}
+			\caption{HDA* SAS-SF vs Sequential A* on all maps - time}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/seq_sf_cpumem.png}
+			\caption{HDA* SAS-SF vs Sequential A* on all maps - resources }
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/seq_mpsm_time.png}
+			\caption{HDA* MP-SM vs Sequential A* on all maps - time}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Results}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.8\linewidth]{hda/seq_mpsm_cpumem.png}
+			\caption{HDA* MP-SM vs Sequential A* on all maps - resources}
 		\end{figure}
 	\end{frame}
 	\subsubsection{Comments and overall results}
 	\begin{frame}{\secname : \subsecname}
-		\framesubtitle{Comments and overall results}
-		\begin{itemize}
-		\item The SAS-MP variant of HDA* is not scalable.
-		\item The SAS-B is more scalable
-				than SAS-MP but the termination condition is not well-performing on large graphs.
-		\item The SAS-SF behaves overall better.
-				Despite the fact that on maps BAY, FLA, W it is difficult to notice the improvements when
-				the number of threads increases this is more evident on USA map. Performances are always
-				better compared to the SAS-B algorithm.
-		\item About the resource consumption both SAS-B and SAS-SF are more expensive in terms on CPU and 
-				memory used w.r.t the sequential algorithm. The resource used increase as the number of threads
-				increase.
-		\end{itemize}
-	\end{frame}
-	\begin{frame}{\secname : \subsecname}
-		\framesubtitle{Comments and overall results}
-		Here we only write the performances of SAS-SF that is the only one able to achieve reasonable results
-		on all the benchmark graphs:
+		\framesubtitle{Results}
 		\begin{table}[ht!]
 			\centering
 			\caption{SAS-SF with best number of threads time performances}
 			\begin{tabular}{|l|l|l|l|l|}
 			\hline
-			\textbf{}    & \textbf{Threads} & \textbf{SAS-SF} & \textbf{Sequential A*} & \textbf{Slow-Down}\\ \hline
-			\textbf{BAY} & 5        & 0.5097s                & 0.2647s  &92.6\%          \\ \hline
-			\textbf{FLA} & 7        & 1.6383s                & 0.7174s  & 128.3\%          \\ \hline
-			\textbf{W}   & 7        & 10.8626s                & 2.5890s &319.6\%           \\ \hline
-			\textbf{USA} & 7         & 30.5655s               & 13.6716 &123.6\%           \\ \hline
+			\textbf{}    & \textbf{Threads} & \textbf{SAS-SF} & \textbf{Sequential A*} & \textbf{Perf.}\\ \hline
+			\textbf{BAY} & 5        & 0.5097s                & 0.2647s  &-92.6\%          \\ \hline
+			\textbf{FLA} & 7        & 1.6383s                & 0.7174s  &-128.3\%          \\ \hline
+			\textbf{W}   & 7        & 10.8626s                & 2.5890s &-319.6\%           \\ \hline
+			\textbf{USA} & 7         & 30.5655s               & 13.6716 &-123.6\%           \\ \hline
 			\end{tabular}
 			\label{tablesas}
 		  \end{table}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
-		\framesubtitle{Comments and overall results}
-		\begin{figure}[ht!]
+		\framesubtitle{Results}
+		\begin{table}[ht!]
 			\centering
-			\includegraphics[width=0.8\linewidth]{hda/tottime.png}
-			\caption{HDA* overall performances}
-		\end{figure}
+			\caption{MP-SM with best number of threads time performances}
+			\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			\textbf{}    & \textbf{Threads} & \textbf{MPSM} & \textbf{Sequential A*} & \textbf{Perf.}\\ \hline
+			\textbf{BAY} & 5        & 0.1770s                & 0.2647s  &+33.1\%          \\ \hline
+			\textbf{FLA} & 3        & 0.4922s                & 0.7174s  &+31.4\%          \\ \hline
+			\textbf{W}   & 2        & 11.1136s                & 2.5890s &-329.3\%           \\ \hline
+			\textbf{USA} & -         & -                      & 13.6716 &-           \\ \hline
+			\end{tabular}
+			\label{tablempsm}
+		  \end{table}
 	\end{frame}
-	\begin{frame}{\secname : \subsecname}
-		\framesubtitle{Comments and overall results}
-		\begin{figure}[ht!]
-			\centering
-			\includegraphics[width=0.8\linewidth]{hda/totcpumem.png}
-			\caption{HDA* ooverall performances}
-		\end{figure}
-	\end{frame}
-	\begin{frame}{\secname : \subsecname}
+	\begin{frame}[allowframebreaks]{\secname : \subsecname}
 		\framesubtitle{Comments and overall results}
 		\begin{itemize}
+			\item The MP-MQ variant of HDA* is not scalable.
+	  		\item Better performances are achieved by the MP-SM variant. On BAY and FLA it achieves very
+				  good results w.r.t SAS-SF and also w.r.t. the sequential algorithm. But not
+				  fully scalability
+	  		\item SAS-B termination condition is not well-performing on large graphs. This 
+					happens because a thread has no way to shortcut the barrier if it's receiving work from
+					another thread but it has to wait until all the threads have reached the barrier.
+	  		\item SAS-SF behaves overall better. Performances are always
+					better compared to the SAS-B algorithm and this is confirmed as the most well-performing
+					distributed termination condition.
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{Comments and overall results}
+		HDA* is not performing really well on our problem. Some reasons could be:
+		\begin{itemize}
 			\item The hash function has an important impact on the performances of A* algorithm. The one that
-				  we have used is probably not optimal. Using a more efficient one could lead to obtain better performances but we
-				  suppose that the sequential algorithm would still be the "best case" instead of being the "worst case"
-				  in terms of execution time. 
+			we have used is probably not the optimal.
 			\item The termination condition is clearly a bottleneck, in particular if the Barrier method
-				  is used. This can be less evident with small maps but we can appreciate it on bigger graphs.
-			\item By increasing the number of threads both SAS-SF and SAS-B perform better in terms of execution time (even if
-				  the resource consumption increases) but this is not enough: the performance scalability
-				  and improvements that should have been obtained with large graphs have not been verified.
+					is used.
+			\item Resource contention is another important element. We have proved by using MP-SM that when the number of shared resources
+					is minimum and thus the need of mutual exclusion access to data structures is almost absent threads work
+					better (sometimes achieving better results w.r.t the sequential algorithm). On the other hand this forces
+					threads to use communication method like Shared Memory that can be quite resource expensive and not fully
+					scalable.
 		  \end{itemize}
 	\end{frame}
-	%% %%%%%%%%%%%%%%%%%%%%%% %%
-	%% CHAPTER 7: PARALLEL A* %%
-	%% %%%%%%%%%%%%%%%%%%%%%% %%
+	%% %%%%%%%%%%%%%%%%%% %%
+	%% CHAPTER 7: PNBA A* %%
+	%% %%%%%%%%%%%%%%%%%% %%
 	\subsection{PNBA*}
 	\subsubsection{NBA*}
 	\begin{frame}{\secname : \subsecname}
@@ -932,44 +970,51 @@
 	\begin{frame}{\secname}
 		\begin{figure}[ht!]
 			\centering
-			\includegraphics[width=0.85\linewidth]{others/allalgo_time.png}
-			\caption{Parallel A* overall performances - resources}
+			\includegraphics[width=0.85\linewidth]{others/all_algo_time.png}
+			\caption{Parallel A* overall performances - time}
 		\end{figure}
 	\end{frame}
 	\begin{frame}{\secname}
 		\begin{figure}[ht!]
 			\centering
-			\includegraphics[width=0.85\linewidth]{others/allalgo_cpumem.png}
-			\caption{Parallel A* overall performances}
+			\includegraphics[width=0.85\linewidth]{others/all_algo_time_log.png}
+			\caption{Parallel A* overall performances - time (log. scale)}
 		\end{figure}
 	\end{frame}
-	%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%
-	%% CHAPTER 9: COMPUTING FACILITIES %%
-	%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%
-	\section{Computing Facilities Platform}
 	\begin{frame}{\secname}
-		We have tested all our work on the \textit{SmartData@PoliTO} Cluster.
-		There are $33$ storage workers equipped with:
-		\begin{itemize}
-			\item 216 TB of raw disk storage
-			\item 384 GB of RAM
-			\item Two CPUs with 18 cores/36 threads each
-			\item Two 25 GbE network interfaces
-			\item More than 50 GB/s of data reading and processing speed
-		\end{itemize}
+		\begin{figure}[ht!]
+			\centering
+			\includegraphics[width=0.85\linewidth]{others/all_algo_cpumem.png}
+			\caption{Parallel A* overall performances - resources}
+		\end{figure}
 	\end{frame}
-	%% %%%%%%%%%%%%%%%%%%%%%%%% %%
-	%% CHAPTER 10: FUTURE WORKS %%
-	%% %%%%%%%%%%%%%%%%%%%%%%%% %%
-	\section{Future Works}
 	\begin{frame}{\secname}
-		TODO
+		\begin{itemize}
+			\item HDA* with SAS-SF is the one that achieves worst results in terms of execution time and CPU usage.
+			\item HDA* with MP-SM (using SF termination condition) is the one that behaves better in terms of execution
+				  time both on BAy and FLA but it's not fully scalable. Moreover good results are achieved in terms of
+				  CPU because of the limited resource contention among threads.
+			\item PNBA* is the more scalable one and the only one that was proved to achive better results in terms of
+				  execution time on all the benchmark maps we have used. Also reasonable performances are achived in terms
+				  of CPU and memory usage.
+		  \end{itemize}
 	\end{frame}
 	%% %%%%%%%%%%%%%%%%%%%%%% %%
 	%% CHAPTER 11: REFERENCES %%
 	%% %%%%%%%%%%%%%%%%%%%%%% %%
 	\section{References}
-	\begin{frame}{\secname}
-		TODO
+	\begin{frame}[allowframebreaks]{\secname}
+		\begin{thebibliography}{9}
+			\bibitem{Enia} A parallel bidirectional heuristic search algorithm. (n.d.). Retrieved September 7, 2022, 
+			from \url{https://homepages.dcc.ufmg.br/~chaimo/public/ENIA11.pdf}
+			\bibitem{mit} Parallel A* graph search - massachusetts institute of technology. (n.d.). Retrieved September 7, 2022, from 
+			\url{https://people.csail.mit.edu/rholladay/docs/parallel_search_report.pdf}
+			\bibitem{stanford}Heuristics. (n.d.). Retrieved September 7, 2022, from 
+			\url{http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html}
+			\bibitem{wikipedia}Wikimedia Foundation. (2022, August 18). A* search algorithm. Wikipedia. Retrieved September 7, 2022, 
+			from \url{https://en.wikipedia.org/wiki/A*_search_algorithm}
+			\bibitem{ijcai}Proceedings of the twenty-second international joint conference - IJCAI. (n.d.). Retrieved September 7, 2022, 
+			from \url{https://www.ijcai.org/Proceedings/11/Papers/105.pdf}
+		  \end{thebibliography}
 	\end{frame}
 \end{document}

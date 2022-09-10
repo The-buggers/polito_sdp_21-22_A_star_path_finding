@@ -16,7 +16,7 @@
 \graphicspath{ {./Pictures/} }
 %% Bibliography options
 \usepackage[numbers,square]{natbib}
-\bibliographystyle{unsrtnat}
+\bibliographystyle{plainnat}
 %\usepackage{natbib}
 %\bibliographystyle{Geology}
 %% General packages
@@ -78,11 +78,11 @@
 % Add watermark with submission status
 \usepackage{xwatermark}
 % Left watermark
-\newwatermark[firstpage,color=gray!60,angle=90,scale=0.32, xpos=-4.05in,ypos=0]{\href{https://doi.org/}{\color{gray}{Publication doi}}}
+%\newwatermark[firstpage,color=gray!60,angle=90,scale=0.32, xpos=-4.05in,ypos=0]{\href{https://doi.org/}{\color{gray}{Publication doi}}}
 % Right watermark
-\newwatermark[firstpage,color=gray!60,angle=90,scale=0.32, xpos=3.9in,ypos=0]{\href{https://doi.org/}{\color{gray}{Preprint doi}}}
+%\newwatermark[firstpage,color=gray!60,angle=90,scale=0.32, xpos=3.9in,ypos=0]{\href{https://doi.org/}{\color{gray}{Preprint doi}}}
 % Bottom watermark
-\newwatermark[firstpage,color=gray!90,angle=0,scale=0.28, xpos=0in,ypos=-5in]{*correspondence: \texttt{email@institution.edu}}
+%\newwatermark[firstpage,color=gray!90,angle=0,scale=0.28, xpos=0in,ypos=-5in]{*correspondence: \texttt{email@institution.edu}}
 
 %%%%%%%%%%%%%%%  Author list  %%%%%%%%%%%%%%%
 \usepackage{authblk}
@@ -98,7 +98,7 @@
 \maketitle
 
 \begin{abstract}
-This project is part of System And Device Programming Exam (year 2022, Politecnico di Torino). The
+This project is part of the \textit{System And Device Programming Exam (year 2022, Politecnico di Torino)}. The
 goal was to implement one or more parallelized versions of the famous path searching A* (A star) algorithm.
 It was requested us firstly to analyze the behaviour of the sequential version of A* with respect to the Dijkstra algorithm 
 and secondly to implement a parallel version of A* to obtain results in terms of execution time, cpu usage and
@@ -144,7 +144,7 @@ we have about the cost of the path from every node (source included) to the dest
   \item If we have not this prior information($h(n) = 0 \;\forall n \in V$) we are turning the A* algorithm into
         Dijkstra (this is why A* can be considered as a more general case of Dijkstra algorithm) but we always
         have the guarantee of finding the shortest path. 
-  \item \textit{Admissible} Heuristic: if $h(n) < cost(n, dest) \;\forall n \in V$ (so the we never over-estimate the distance to
+  \item \textit{Admissible} Heuristic: if $h(n) < cost(n, dest) \;\forall n \in V$ (so the we never over-estimate the cost to
         get to the destination from a node $n$) A* will always find the shortest path and the heuristic
         function is called \textit{admissible}. The more inaccurate
         is the estimation the more nodes A* will need to expand (with the upper bound of expanded nodes
@@ -166,12 +166,12 @@ we have about the cost of the path from every node (source included) to the dest
 %% CHAPTER 2: APPLICATION %%
 %% %%%%%%%%%%%%%%%%%%%%%% %%
 \section{A* project application}
-\paragraph{Problem definition} Given a wide range of fields where the A* algorithm can be applied we have choosed the one of
+\paragraph{Problem definition} Given a wide range of fields where the A* algorithm can be applied we have choosen the one of
 optimal path searching in geographical areas where the goal is to find the minimum distance path from a 
 node source to a node destination.
 
 \paragraph{Notation} We work with a weighted oriented graph $G$ that is made of nodes $n \in V$ that represent
-road-realated points of interest and edges $(x,y) \in E$ represent unidirectional connections between these points.
+road-realated points of interest and edges $(x,y) \in E$ that represent unidirectional connections between these points.
 Each edge $(x, y)$ is associated to a weight that is the great-circle distance between $x$ and $y$ measured
 in meters.
 \paragraph{Benchmark} We will exploit the DIMACS benchmark to make robust estimates of the designed algortithms.
@@ -259,7 +259,7 @@ To analyze the performance of the different versions of A* algorithms we have us
 		\hline
 	\end{tabular}
 \end{table}
-These paths have been chosen ad-hoc to make the algorithms find a way that crosses from side to side each one
+They have been chosen ad-hoc to make the algorithms find a way that crosses from side to side each one
 of the these benchmark maps as showed in figure \ref{testpaths}.
 \begin{figure}[ht!]
   \centering
@@ -335,7 +335,7 @@ $openSet := \{(s, f[s])\}$\;
   \If{$a \in closedSet$}{
     CONTINUE
   }
-  $closedSet.PUSH(a)$
+  $closedSet.PUSH(a)$\;
   \ForEach{neighbor $b$ of $a$}{
     \If{$b \in closedSet$}{
       CONTINUE
@@ -366,7 +366,7 @@ $openSet := \{(s, f[s])\}$\;
   \textbf{USA} & 1292.40MB            & 56.9942s          & 13.6716s     & 70.6658s         & 80.6\%                                                           \\ \hline
   \end{tabular}
 \end{table}
-We can realize from table \ref{seqtimes} (despite for the random graph that is too small to appreciate this result) that the 
+We can realize from table \ref{seqtimes} that the 
 reading time has a very high impact on the overall execution time of the algorithm and in section 6
 we will investigate one technique for parallelizing the reading of the file. 
 % %%%%%%%%%%%%%%%%%%%%%%%%% %
@@ -428,102 +428,41 @@ the CPU usage inferior w.r.t Dijkstra algorithm in some cases.
 As we have previously observed the time spent by the algorithm to read the input graph
 (the input binary file) used by the A* algorithm is very high w.r.t. the total
 amount of time. This is the reason why we have decided to inspect different techniques of
-parallelization of the reading phase to speed it up (but only the explaied one prove
+parallelization of the reading phase to speed it up (but only the presented one proved
 to be really effective). The input file, as already discussed,
 is divided in two different sections (nodes and edges) so, in general, we need to take care of which
 section a given thread is working on because different data structures of the graph need to
 be loaded in the two sections (the symbol table when reading a \textit{node line} and the linked list when
 reading a \textit{edge line}).
-\begin{comment}
-  \subsection{Parallel Read: approach 1}
-In this first approach we have implemeted a solution on which:
-\begin{itemize}
-  \item $N$ threads runs freely to read the entire file
-  \item Only one file descriptor is shared among all the threads (this means that
-        when thread $t_i$ performs a \texttt{read} opearation all the other threads 
-        are waiting for it to finish)
-\end{itemize}
-This is the most trivial solution that can be adopted and the drawback is the really high
-resource contention that exists among all the threads (when N threads whant to access line
-$k$ of the file only $1$ can do it and others $N-1$ wait). The advantage is that the file
-will be read \textit{sequentially} but in a multithread fashion (line $k$ of the file
-is always read before line $k+1$) and this results in a easier implementation.
-\paragraph{Results on FLA}
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[width=1\linewidth]{par_read_1_time.png}
-  \caption{Performance of approach 1 for different number of threads}
-  \label{parread1time}
-\end{figure}
-\end{comment}
+
 \subsection{Parallel Read: approach 1 (RA1)}
-TODO how does it work
+This parallel reading techinique is based on:
+\begin{itemize}
+  \item Memory mapping of the input file
+  \item Concurrent reading of the memory mapped data structure
+\end{itemize}
+The reading of the input file in a parallel way happens using $N$ threads that concurrently access
+the pointer to the memory mapped file. While the reading of the input file can happen in whatever order
+and concurrency doesn't represent a problem the loading of Graph data structures must happen in
+mutual exclusion and this is why two locks are used:
+\begin{itemize}
+  \item One lock to protect the loading of the nodes in the Graph (to fill the Symbol Table)
+  \item One lock to protect the loading of the edges in the Linked List data structure of the Graph
+\end{itemize}
 \paragraph{Results on FLA} 
-As we can notice from figure \ref{parread2time} the most effective improvement comes probably from
+As we can notice from figure \ref{parread1time} the most effective improvement comes probably from
 the memory mapping. The increasing number of threads is infact not impacting well the reading time.
-TODO why it happens
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{read/par_read_1_time.png}
   \caption{Performance of RA1 for different number of threads on FLA}
   \label{parread1time}
 \end{figure}
-\begin{comment}
-\subsection{Parallel Read: approach 3}
-This is the approach is characterized by:
-\begin{itemize}
-  \item Letting threads differentiate among \textit{nodes section} and 
-        \textit{edges section} to be able to read them togheter.
-  \item Using a $(NP, NT)$ mechanism to read each section of the input file (where
-        $NP$ is the number of partitions the section is divided in and $NT$ is the number
-        of threads that have to read all the partitions).
-\end{itemize}
-\paragraph{The $(NP, NT)$ mechanism}
-We need to provide as input:
-\begin{itemize}
-  \item $NP-nodes$: the number of partitions of the \textit{nodes section}
-  \item $NP-edges$: the number of partitions of the \textit{edges section}
-  \item $NT-nodes$: the number of threads that have to read the \textit{nodes section}
-  \item $NT-edges$: the number of threads that have to read the \textit{edges section}
-\end{itemize}
-If the number of threads is equal to the number of partitions we have a simpler mechanism in
-which each thread will read only one partition and then terminates.
-As we can see in the example in figure \ref{parread3} threads will iterate over the partitions
-of the sections that have been statically allocated to them. This means that there is not a real
-contention of the reading phase since the partions are not overlapping and
-each partition will be read by one and only one thread (actually, the
-loading of the graph data structures after reading each line must be done in mutual exclusion so we will need a lock
-both for the \textit{nodes-threads} and for the \textit{edges-threads}).
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[width=1\linewidth]{read/par_read_3.png}
-  \caption{Example of parallel read - approach 3}
-  \label{parread3}
-\end{figure}
-Each thread terminates when it has no more partitions to read.\\
-\paragraph{Results on FLA}
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[width=1\linewidth]{read/par_read_3_time.png}
-  \caption{Performance of approach 3 for different number of threads and partitions on FLA}
-  \label{parread3time}
-\end{figure}
-We can realize from figure \ref{parread3time} that the number of partitions (setted equal
-both for \textit{nodes section} and \textit{edges section}) has not a high impact.
-What has more impact is the number of threads, an increasing number of threads gives increasing
-bad performances while with a small number of threads we are able to obtain better results
-w.r.t the first approach but worse result w.r.t the sequential reading. The reason of this
-behaviour could be due to the fact that there is not a completly parallel work of the threads
-since the access to Graph's data structure has to be done in mutual exclusion so we 
-have benefits in dividing the threads in \textit{edges} threads and \textit{nodes} threads (something
-that didn't happen in the first approach) but the mutual exclusion access to the Graph
-makes the overhead due to threads creation and management not being able to obtain good
-performances
-\end{comment}
+
 \subsection{Parallel Read: approach 2 (RA2)}
-This parallel read approach is simply a variant of RA1. The only difference is that
+This parallel read approach is simply an extension of RA1. The only difference is that
 instead of loading only the input graph $G$ it is also loaded the reversed graph $R$. This type of
-reading is indeed applied only for using the PNBA* algorithm (more details in section later).
+reading is indeed applied only for using the PNBA* algorithm.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{read/par_read_2_time.png}
@@ -540,12 +479,12 @@ reading is indeed applied only for using the PNBA* algorithm (more details in se
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=1\linewidth]{read/parread_cpumem.png}
-  \caption{RA(Read Approach) 1,2 compared with sequential reading on FLA - exploited resources}
+  \caption{RA(Read Approach) 1,2 compared with sequential reading on all maps - exploited resources}
   \label{parreadallcpumem}
 \end{figure}
 For the sake of completeness we have also test the most promising reading approach (RA1 and RA2 both with
 2 threads) on all the maps (BAY, FLA, W, USA) and the results are showed in table \ref{readresultsfinal}
-where the speed-up with respect to the sequential reading time is evident in particular for RA1.
+where the speed-up with respect to the sequential reading time is evident.
 \begin{table}[ht!]
   \centering
     \caption{RA1 results against sequential reading}
@@ -559,7 +498,6 @@ where the speed-up with respect to the sequential reading time is evident in par
     \end{tabular}
     \label{readresultsfinal}
 \end{table}
-
 \begin{table}[ht!]
   \centering
     \caption{RA2 results against sequential reading}
@@ -573,7 +511,8 @@ where the speed-up with respect to the sequential reading time is evident in par
     \end{tabular}
     \label{readresultsfinal}
 \end{table}
-
+Due to the Memory Mapping mechanism the resources exploited are higher in terms of memory usage and
+also CPU usage has been increased w.r.t the sequential file reading.
 \section{Parallel A*}
 The goal of the project was to find one or more parallel versions of the A* algorithm 
 and showing their performances w.r.t. the sequential version. We have choosen two approaches
@@ -617,7 +556,7 @@ to destination could be not the optimal one.
   \caption{HDA* work distribution among 3 threads in BAY map (using $hash_1$ function)}
   \label{hdawork1}
 \end{figure}
-What proved to be a better approach was to employee another hash function that works in a different way:
+What proved to be a better approach was to implement another hash function that works in a different way:
 \begin{center}
   $hash_2(node\_index, num\_threads, V) = i-1$\\[10pt]
   $i = min_i : \frac{V}{num\_threads}\cdot i > node\_index \;, i \in \{1,...,num\_threads\}$
@@ -645,12 +584,12 @@ the fact that the \textit{open set} could be not empty) in HDA* this is not vali
 is working on its \textit{open set} it is expanding nodes putting their neighbors in the
 \textit{open set} of another thread. When thread $t_i$ has its \textit{open set} empty it could think
 to have finished its work but this might not be true because another thread $t_j$ could be sending
-to $t_i$ some nodes that have to be be processed in the meanwhile. We have employed two
+to $t_i$ some nodes that have to be be processed in the meanwhile. We have adopted two
 different approaches for the distributed termination condition that are:
 \begin{itemize}
   \item \textbf{Barrier method (B)}: when a thread realizes that its \textit{open set} is
         empty a barrier is 
-        hitten and when all the threads have hitten the barrier
+        hit and when all the threads have hit the barrier
         each one makes a check to confirm(or not) that all the \textit{open sets} of all
         the threads are still empty. If this is not true it means that there are nodes
         that have still to be processed and the best path to $dest$ found so far could
@@ -661,23 +600,10 @@ different approaches for the distributed termination condition that are:
         or not. When no more nodes are inside it the flag is set and if $\sum_{i=1}^{N}flag[i] = N$
         all the threads can correctly terminate.
 \end{itemize}
-\paragraph{Duplicate node checking}
-The loose of guarantees explained before has also to do with the \textit{closed set} handling. In particular
-when a node $n$ is expanded by thread $t_i$ it is done a check wheter this node is inside the \textit{closed set}
-of thread $t_i$ or not. This is not sufficient: we also need to check whether the cost associated to that node 
-when it was previously added to the \textit{closed set} is less or equal to the cost computed at the time $n$ is re-expanded. 
-This is called duplicate checking so, a node $n$ is a duplicate of node $m$ if:
-\begin{itemize} 
-  \item $n$ is equal to $m$
-  \item $closedSet$ of thread $t_i$ contains the node $m$
-  \item $g(m) \le g(n)$
-\end{itemize}
-A duplicate node can be discarded.
 \paragraph{Communication methodology}
 What it differentiates the algorithms we have implemented is not only
 the distributed termination condition (B or SF) but also the way how the threads
-communicate with each other. This can be done using a shared address space (SAS) approach (that will
-need to cope with mutual exclusion) or a message passing (MP) model.
+communicate with each other. This can be done using a shared address space (SAS) approach or a message passing (MP) model.
 \subsubsection{Message Passing Model (Using Message Queues) - MPMQ}
 One way of achieving the communication among threads is message passing. In this first attempt we will rely
 on Message Queues: when thread $t_i$ expands a node and computes(through the hash function) 
@@ -710,142 +636,120 @@ $t_x$ is the owner of $source$).
 \paragraph{Technical Issues}
 Due to the fact that Message Queues have a limited size that is not enough to support any of our
 selected benchmark graphs we have implemented the code but we weren't able to correctly test it. The
-measures that will be reported next will only regard the MP model that exploits shared memory. 
+measures that will be reported next will only regard the MP model that exploits Shared Memory. 
 \subsubsection{Message Passing Model (Using Shared Memory) - MPSM}
 The Message Passing model that exploits Message Queues has been designed to work under the assumption 
 that any data structure can be shared among threads. We are now going to relax this constraint by 
 keeping some data structures shared among threads (like $parentVertex$ so that
 the path reconstruction can happen in the standard way) and the exchange of messages will be based on Shared Memory.
 \paragraph{Data structures sharing}
-Each thread mantains some data structures as private (\textit{open set}...TODO) and the way how
+Each thread mantains only some data structures as shared but the only way how
 a thread $t_i$ can send a node to be processed to its owner $t_j$ is by writing on Shared Memory. This
-has the big advantage of minimizing the resource contention among threads (something that will strongly penalize the SAS model explained after).
-\paragraph{Message Passing} Each message sent from $t_i$ to $t_j$ regarding node $n$ contains:
+buffering mechanism has the great advantage of minimizing the resource contention among threads (something that will strongly penalize the SAS model explained after).
+\paragraph{Message Passing} 
+Each message (data written on the Shared Memory) sent from $t_i$ to $t_j$ regarding node $n$ contains:
 \begin{itemize}
   \item The index of the node $n$
   \item The parent node of $n$ (the one expanded from the \textit{open set} of $t_i$)
-  \item The value of $g(n)$ according to $t_i$
+  \item The weight of the edge $(a, n)$ where $a$ is the parent of node $n$
+  \item The value of $g[n]$ according to thread $t_i$
 \end{itemize}
 The way how messages are read and written by the different threads is via \textit{Readers and Writers}
 model where:
 \begin{itemize}
-  \item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $p_G$.
-  \item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $p_j$. The reading
-        of messages terminates when $p_j == p_G$.
+  \item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $smp_G$.
+  \item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $smp_j$. The reading
+        of messages terminates when $smp_j == smp_G$. Reading, in this context, means inseriting inside
+        the \textit{open set} all the nodes (and related information) received from other threads.
+  \item Nodes expansion from \textit{open set} is similar w.r.t the sequential algorithm but a node will
+        be either pushed insided $openSet_i$ of thread $t_i$ or written (as a message) on the Shared Memory
+        if $t_i$ is not its owner.
 \end{itemize}
 \paragraph{Message Based Path Reconstruction}
 Since the data structure $parentVertex$ is shared we no longer need message based path reconstruction.
 \subsubsection{Shared Address Space Model}
 This approach applies the explained concepts of HDA* by using a communication method
-among threads that exploits the shared address space (SAS). There is:
+among threads that exploits the shared address space (SAS). This means that every data structure
+is shared and this makes at the same time simpler the way how threads can communicate but more complex
+the concurrent access to the resources. There is:
 \begin{itemize}
-  \item A global array of \textit{open sets} that here we call $A$ where
-        $A[i]$ contains a pointer to the \textit{open set} of thread $t_i$ and the size
-        of $A$ is $N$ (the number of threads).
+  \item A global array of \textit{open sets} of size $N$ (number of threads)
+      where $openSet[i]$ contains a pointer to the \textit{open set} of thread $t_i$.
   \item The $parentVertex$ and $costToCome$ data structures are shared among all the threads.
 \end{itemize}
 This approach clearly requires locks so that the operations on the shared data structures
 can happen in mutual exclusion. In particular we need:
 \begin{itemize}
-  \item One lock $L1$ for each \textit{open set} so for each $A[i] \;\forall i \in \{1..N\}$.
-  \item One lock $L2$ for each node of the graph in order to correctly update $parentVertex$ and $costToCome$ data structures.
+  \item $N$ $mutex\_threads$ locks (one for each \textit{open set} so $N$ overall).
+  \item $V$ $mutex\_nodes$ locks (one for each node of the graph so $V$ overall)
 \end{itemize}
 With SAS both the barrier (B) and the sum-flag (SF) distributed termination conditions
 have been implemented to compare their performances.
-\begin{comment}
-\SetKwComment{Comment}{/* }{ */}
-\begin{algorithm*}[] 
-\caption{SAS-HDA*}\label{sas}
-\KwData{Graph G(V,E), Source s, Destination d, Heurstic h}
-\KwResult{Best path from s to d and relative cost}
-\SetKwFunction{FMain}{HDAWrapper}
-  \SetKwProg{Fn}{Function}{:}{}
-  \Fn{\FMain{$source$, $dest$, $N$, $heuristic$}}{
-        $g[i] \gets DOUBLE\_MAX \;\forall i \in V$\;
-        $h[i] \gets heuristic(i, dest) \; \forall i \in V$\;
-        $parentVertex[i] \gets -1 \; \forall i \in V$\;
-        $t\_owner \gets hash(source, num\_threads)$\;
-        $f[t\_owner][source] \gets h[s]$\;
-        $g[source] \gets 0$\;
-        $openSet[t\_owner] := \{(source, f[t\_owner][source])\}$\;
-        Initialize $N$ $mutex\_threads$\;
-        Initialize $V$ $mutex\_nodes$\;
-        Launch $N$ threads\;
-        Join $N$ threads\;
-        Reconstruct final path\;
-        \KwRet\;
-}
-\SetKwFunction{FHDA}{HDA}
-  \SetKwProg{Fn}{Function}{:}{}
-  \Fn{\FHDA{$index$, $dest$, $N$, $heuristic$}}{
-    \While{$1$}{
-      \While{$!openSet[index].EMPTY()$}{
-        LOCK($mutex\_threads[index]$)
-        $a \gets openSet.POP()$\;
-        UNLOCK($mutex\_threads[index]$)
-      }
-      \If($a$ is duplicate){
-        continue\;
-      }
-      \ForEach{neighbor $b$ of $a$}{
-        $wt \gets weight(a, b)$\;
-        $tentativeScore \gets g[a] + wt$\;
-        \If{$tentativeScore$ is less than $g[b]$}{
-          $owner\_a \gets hash(a,N)$\;
-          $owner\_b \gets hash(b,N)$\;
-          \If($b$ is duplicate){
-            continue\;
-          }
-          LOCK($mutex\_nodes[a]$)
-          $tentativeScore \gets g[a] + wt$\;
-          UNLOCK($mutex\_nodes[a]$)
 
-          LOCK($mutex\_nodes[b]$)
-          \If{$tentativeScore$ is less than $g[b]$}{
-            $parentVertex[b] \gets a$\;
-            $costToCome[b] \gets wt$\;
-            $g[b] \gets tentativeScore$\;
-            $f[b] \gets g[b] + h[b]$\;
-            LOCK($mutex\_threads[owner\_b]$)
-            $f[owner\_b][b] \gets f[b]$\;
-            $openSet.PUSH((b, f[b]))$\;
-            UNLOCK($mutex\_threads[owner\_b]$)
-          }
-          UNLOCK($mutex\_nodes[a]$)
-        }
-      }
-
-      \If{$openSet[index].EMPTY()$ and $parentVertex[b] != -1$}{
-        Terminate according to B or SF\;
-      }
-    }
-        \KwRet\;
-}
-\end{algorithm*}
-\end{comment}
 \subsection{Results}
-In table \ref{tablesas} we have only inserted data related to SAS method with SF termination condition.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/seq_sf_time.png}
+  \caption{HDA* - SAS-SF - time}
+  \label{hdabaysassftime}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/seq_sf_cpumem.png}
+  \caption{HDA* - SAS-SF - resources}
+  \label{hdabaysassfcpumem}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/seq_mpsm_time.png}
+  \caption{HDA* - MPSM - time}
+  \label{hdabaympsmtime}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/seq_mpsm_cpumem.png}
+  \caption{HDA* - MPSM - resources}
+  \label{hdabaympsmcpumem}
+\end{figure}
 \begin{table}[ht!]
   \centering
   \caption{SAS-SF with best number of threads time performances}
   \begin{tabular}{|l|l|l|l|l|}
   \hline
-  \textbf{}    & \textbf{Threads} & \textbf{SAS-SF} & \textbf{Sequential A*} & \textbf{Slow-Down}\\ \hline
-  \textbf{BAY} & 5        & 0.5097s                & 0.2647s  &92.6\%          \\ \hline
-  \textbf{FLA} & 7        & 1.6383s                & 0.7174s  & 128.3\%          \\ \hline
-  \textbf{W}   & 7        & 10.8626s                & 2.5890s &319.6\%           \\ \hline
-  \textbf{USA} & 7         & 30.5655s               & 13.6716 &123.6\%           \\ \hline
+  \textbf{}    & \textbf{Threads} & \textbf{SAS-SF} & \textbf{Sequential A*} & \textbf{Perf.}\\ \hline
+  \textbf{BAY} & 5        & 0.5097s                & 0.2647s  &-92.6\%          \\ \hline
+  \textbf{FLA} & 7        & 1.6383s                & 0.7174s  &-128.3\%          \\ \hline
+  \textbf{W}   & 7        & 10.8626s                & 2.5890s &-319.6\%           \\ \hline
+  \textbf{USA} & 7         & 30.5655s               & 13.6716 &-123.6\%           \\ \hline
   \end{tabular}
   \label{tablesas}
 \end{table}
+\begin{table}[ht!]
+  \centering
+  \caption{MP-SM with best number of threads time performances}
+  \begin{tabular}{|l|l|l|l|l|}
+  \hline
+  \textbf{}    & \textbf{Threads} & \textbf{MPSM} & \textbf{Sequential A*} & \textbf{Perf.}\\ \hline
+  \textbf{BAY} & 5        & 0.1770s                & 0.2647s  &+33.1\%          \\ \hline
+  \textbf{FLA} & 3        & 0.4922s                & 0.7174s  &+31.4\%          \\ \hline
+  \textbf{W}   & 2        & 11.1136s                & 2.5890s &-329.3\%           \\ \hline
+  \textbf{USA} & -         & -                      & 13.6716 &-           \\ \hline
+  \end{tabular}
+  \label{tablempsm}
+\end{table}
 These are the troubles found during implementation and testing:
 \begin{itemize}
-  \item The SAS-MP variant of HDA* is not scalable. This is due to the fact that we
+  \item The MP-MQ variant of HDA* is not scalable. This is due to the fact that we
         have used Linux Message Queues that have a limited size (few bytes) and when
         the communication overhead becomes huge the queue gets full causing a impressive
         slowdown.
+  \item Better performances are achieved by the MP-SM variant. On BAY and FLA it achieves very
+        good results w.r.t SAS-SF and also w.r.t. the sequential algorithm. The working mechanism
+        makes the algorithm not properly working on larger graphs obtaing bad performances. Both
+        the size of the graph and the increasing number of threads require too much memory(more
+        than the available one).
   \item The SAS HDA* that exploits the Barrier termination condition (SAS-B) is more scalable
-        than SAS-MP but the termination condition is not well-performing in large graphs. This 
+        than MP-MQ but the termination condition is not well-performing on large graphs. This 
         happens because a thread has no way to shortcut the barrier if it's receiving work from
         another thread but it has to wait until all the threads have reached the barrier. Despite
         the fact that we notice an improvement when the number of threads increases the execution
@@ -853,25 +757,31 @@ These are the troubles found during implementation and testing:
   \item The SAS HDA* that exploits the Sum-Flag termination condition (SAS-SF) behaves overall better.
         Despite the fact that on maps BAY, FLA, W it is difficult to notice the improvements when
         the number of threads increases this is more evident on USA map. Performances are always
-        better compared to the SAS-B algorithm.
-  \item About the resource consumption both SAS-B and SAS-SF are more expensive in terms on CPU and 
+        better compared to the SAS-B algorithm and this is confirmed as the most well-performing
+        distributed termination condition.
+  \item About the resources consumption both SAS-B and SAS-SF are more expensive in terms on CPU and 
         memory used w.r.t the sequential algorithm. The resource used increase as the number of threads
-        increase.
+        increase. This is not valid for MP-SM where the consumption of resources is lower.
+        The Shared Memory mechanism that we have adopted tries to speed-up the algorithm
+        but has the drawback of being worse in terms of memory used (and not fully scalable in this version).
 \end{itemize}
-HDA* has been proven not to work well in our application. We have tried to explain these 
+HDA* has been proven not to work very well in general in our application. We have tried to explain these 
 results by observing that:
 \begin{itemize}
   \item The hash function has an important impact on the performances of A* algorithm. The one that
         we have used is probably not the optimal(for instance tring to assign near nodes
         to the same threads maybe by pre-clustering the nodes of the map in a number of clusters
-        equal to the number of threads could be a better option). This could lead to obtain better performances but we
-        suppose that the sequential algorithm would still be the "best case" instead of being the "worst case"
-        in terms of execution time. 
+        equal to the number of threads could be a better option).
   \item The termination condition is clearly a bottleneck, in particular if the Barrier method
         is used. This can be less evident with small maps but we can appreciate it on bigger graphs.
         By increasing the number of threads both SAS-SF and SAS-B perform better in terms of execution time even if
         the resource consumption increases but this is not enough and the performances scalability
         and improvements that should have been obtained with large graphs were not proved.
+  \item Resource contention is another important element. We have proved by using MP-SM that when the number of shared resources
+        is minimum and thus the need of mutual exclusion access to data structures is almost absent threads work
+        better (sometimes achieving better results w.r.t the sequential algorithm). On the other hand this forces
+        threads to use communication method like Shared Memory that can be quite resource expensive and not fully
+        scalable.
 \end{itemize}
 \subsection{New Bidirectional A*(NBA*)}
 The NBA* algorithm is a version of  the bidirectional search that uses a data
@@ -920,6 +830,18 @@ parallel and not in a alternate mode. This requires to cope with mutual exclusio
 In figure \ref{pnbamap} we realize that the work distribution is not equal and changes 
 at each iteration (depending on which is the common node found).
 \subsubsection{Results}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{pnba/pnba_time.png}
+  \caption{PNBA* performances - time}
+  \label{pnbatime}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{pnba/pnba_cpumem.png}
+  \caption{PNBA* performances - resources}
+  \label{pnbacpumem}
+\end{figure}
 \begin{table}[ht!]
   \centering
   \caption{PNBA* - time performances}
@@ -941,6 +863,35 @@ at each iteration (depending on which is the common node found).
   \item Resource consumption is almost 2x w.r.t. the sequential algorithm and this is reasonable considering
         that it is like running two sequential algorithm in concurrency
 \end{itemize}
+\section{Conclusions}
+By observing figures \ref{allalgotime} and \ref{allalgocpumem} that shows performances achived by the
+different algorithms (for each map the best number of threads for each algorithm):
+\begin{itemize}
+  \item HDA* with SAS-SF is the one that achives worst results in terms of execution time and CPU usage.
+  \item HDA* with MP-SM (using SF termination condition) is the one that behaves better in terms of execution
+        time both on BAY and FLA but it's not fully scalable. Moreover good results are achieved in terms of
+        CPU because of the limited resource contention among threads.
+  \item PNBA* is the more scalable one and the only one that was proved to achive better results in terms of
+        execution time on all the benchmark maps we have used. Also reasonable performances are achived in terms
+        of CPU and memory usage.
+\end{itemize}
+To conclude, among all the different approaches we have implemented to parallelize A*, PNBA* seems to be the more
+promising one. Despite the fact that HDA* using MP-SM model behaves better in terms of execution time on BAY and FLA
+graphs it is not fully scalable in this version. We can say that, probably, for these type of problem where A* can
+be applied (geographical path searching) the techniques that deserve to be more deeply investigated are the ones
+that could come from variants and improvements of PNBA* algorithm.
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{others/all_algo_time_log.png}
+  \caption{A* algorithms comparison - time (log. scale)}
+  \label{allalgotime}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{others/all_algo_cpumem.png}
+  \caption{A* algorithms comparison - resources}
+  \label{allalgocpumem}
+\end{figure}
 \section{Computing Facilities Platform}
 We have tested all our work on the \textit{SmartData@PoliTO} Cluster.
 There are $33$ storage workers equipped with:
@@ -953,68 +904,88 @@ There are $33$ storage workers equipped with:
 \end{itemize}
 
 \section{Future Work}
-(Possible improvements)
+Features improvements could be realated to:
+\begin{itemize}
+  \item Investigate more techniques of parallel file reading to achieve results that improves when the 
+        number of threads increases. This could be done by directly modifing the functions of the graph 
+        that are in charge of loading all its data structures. This could bring to a higher degree of
+        parallelism.
+  \item Updating the current version of HDA* with MP-SM by handling the Shared Memory in a more sophisticate
+        way to make it more scalable. This could bring to optimal results if the performances 
+        will be proportional to the ones observed in BAY and FLA.
+  \item Other techniques starting from PNBA* can be explored: for instance make it working with more than 2
+        threads. This could happen by splitting the path from $source$ to $dest$ in more sections and then
+        applying PNAB* on each section. This could also be combined with a trade-off between performance and
+        cost of the path found(accepting to find not optimal paths but in a very small time).
+  \item In terms of performance measuring we will look for more stable and detailed way to inspect CPU usage
+        and memory usage (using instrumentes like \textit{Valgrind}).
+\end{itemize}
 
 \section{Complete Results}
-\begin{center}
-  \begin{figure}[ht!]
-    \centering
-    \includegraphics[width=1\linewidth]{hda/bay.png}
-    \caption{HDA* on BAY map}
-    \label{hdabay}
-  \end{figure}
-\end{center}
+Here also detailed results obtained on each map by HDA* algorithms are showed.
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\linewidth]{hda/fla.png}
-  \caption{HDA* on FLA map}
-  \label{hdafla}
+  \includegraphics[width=1\linewidth]{hda/baytime.png}
+  \caption{HDA* on BAY map - time}
+  \label{cmpbaytime}
 \end{figure}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\linewidth]{hda/w.png}
-  \caption{HDA* on W map}
-  \label{hdaw}
+  \includegraphics[width=1\linewidth]{hda/baycpumem.png}
+  \caption{HDA* on BAY map - resources}
+  \label{cmpbaycpumem}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/flatime.png}
+  \caption{HDA* on FLA map - time}
+  \label{cmpflatime}
 \end{figure}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\linewidth]{hda/usa.png}
-  \caption{HDA* on USA map}
-  \label{hdausa}
+  \includegraphics[width=1\linewidth]{hda/flacpumem.png}
+  \caption{HDA* on FLA map - resources}
+  \label{cmpflacpumem}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/wtime.png}
+  \caption{HDA* on W map - time}
+  \label{cmpwtime}
 \end{figure}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\linewidth]{hda/tot.png}
-  \caption{HDA* overall performances}
-  \label{hdatot}
+  \includegraphics[width=1\linewidth]{hda/wcpumem.png}
+  \caption{HDA* on W map - resources}
+  \label{cmpwcpumem}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=1\linewidth]{hda/usatime.png}
+  \caption{HDA* on USA map - time}
+  \label{cmpusatime}
 \end{figure}
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=1\linewidth]{pnba/pnba.png}
-  \caption{PNBA* overall performances}
-  \label{pnbatot}
+  \includegraphics[width=1\linewidth]{hda/usacpumem.png}
+  \caption{HDA* on USA map - resources}
+  \label{cmpusacpumem}
 \end{figure}
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[width=1\linewidth]{others/allalgo.png}
-  \caption{Parallel A* overall performances}
-  \label{allalgo}
-\end{figure}
-\normalsize
-\newpage  
+\newpage
 \begin{thebibliography}{9}
-  \bibitem{texbook}
-  PNBA*: A parallel bidirectional heuristic search algorithm. (n.d.). Retrieved September 7, 2022, from https://homepages.dcc.ufmg.br/~chaimo/public/ENIA11.pdf
-  \bibitem{texbook}
-  %Parallel A* graph search - massachusetts institute of technology. (n.d.). Retrieved September 7, 2022, from https://people.csail.mit.edu/rholladay/docs/parallel_search_report.pdf
-  \bibitem{texbook}
-  %Heuristics. (n.d.). Retrieved September 7, 2022, from http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
-  \bibitem{texbook}
-  %Wikimedia Foundation. (2022, August 18). A* search algorithm. Wikipedia. Retrieved September 7, 2022, from [https://en.wikipedia.org/wiki/A*_search_algorithm]
-  \bibitem{texbook}
-  %Proceedings of the twenty-second international joint conference ... - IJCAI. (n.d.). Retrieved September 7, 2022, from https://www.ijcai.org/Proceedings/11/Papers/105.pdf
-%%%%%%%%%%%%  Supplementary Figures  %%%%%%%%%%%%
-%\clearpage
+  \bibitem{Enia} A parallel bidirectional heuristic search algorithm. (n.d.). Retrieved September 7, 2022, 
+  from \url{https://homepages.dcc.ufmg.br/~chaimo/public/ENIA11.pdf}
+  \bibitem{mit} Parallel A* graph search - massachusetts institute of technology. (n.d.). Retrieved September 7, 2022, from 
+  \url{https://people.csail.mit.edu/rholladay/docs/parallel_search_report.pdf}
+  \bibitem{stanford}Heuristics. (n.d.). Retrieved September 7, 2022, from 
+  \url{http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html}
+  \bibitem{wikipedia}Wikimedia Foundation. (2022, August 18). A* search algorithm. Wikipedia. Retrieved September 7, 2022, 
+  from \url{https://en.wikipedia.org/wiki/A*_search_algorithm}
+  \bibitem{ijcai}Proceedings of the twenty-second international joint conference - IJCAI. (n.d.). Retrieved September 7, 2022, 
+  from \url{https://www.ijcai.org/Proceedings/11/Papers/105.pdf}
 \end{thebibliography}
 %%%%%%%%%%%%%%%%   End   %%%%%%%%%%%%%%%%
 %\end{multicols}  % Method B for two-column formatting (doesn't play well with line numbers), comment out if using method A
