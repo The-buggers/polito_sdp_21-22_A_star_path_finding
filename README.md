@@ -30,7 +30,6 @@
     <li><a href="#files-content">Files' Content</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -93,6 +92,8 @@ It contains all the A* functions and algorithms.
 
 - Astar_ab_ba.c
 - Astar_sas_b.c
+- Astar_hda_mp_mq.c
+- Astar_hda_mp_sf.c
 - Astar_sas_sf.c
 - Astar_seq.c
 - Astar.h
@@ -122,15 +123,23 @@ It contains both functions related to priority queue and graphs.
 
 #### Astar_ab_ba.c
 
-It contains the main function ```ASTARshortest_path_ab_ba``` responsible to create threads and to call function ```nba```. This function implements Parallel New Bidirectional A* algorithm.
+It contains the main function ```ASTARshortest_path_ab_ba``` responsible to create threads and to call function ```nba```. This function implements Parallel New Bidirectional A* algorithm with two threads that take two "opposite" graphs as input, where "opposite" means with reversed edges. In this algorithm threads setup their own data structure and we use a barrier to mantain the synchronization, we also use a spin lock to guarantee mutual exclusion for the only one shared and writable variable _L_. A closed set and _PQchange_ function are also used to speed-up the algorithms and to avoid useless expansion of nodes alredy in the queue or already analyzed. 
 
 #### Astar_sas_b.c
 
-It contains the main function ```ASTARshortest_path_sas_b``` responsible to create threads and to call function ```hba```. This function implements Hash DIstributed A* algorithm with barrier termination.
+It contains the main function ```ASTARshortest_path_sas_b``` responsible to create threads and to call function ```sas_b```. This function implements Hash DIstributed A* algorithm with barrier termination. Synchronization is implemented with two arrays of mutexes, one _num\_threads_ and the other _V_ long. In this algorithm we implement a double barrier with a proper mutex, a counter and a semaphore, the algorithm stops when all threads hit the barrier twice and they have empty priority queue. 
 
 #### Astar_sas_sf.c
 
-It contains the main function ```ASTARshortest_path_sas_sf```  responsible to create threads and to call function ```hba```. This function implements Hash DIstributed A* algorithm with sum flags termination.
+It contains the main function ```ASTARshortest_path_sas_sf``` responsible to create threads and to call function ```sas_sf```. This function implements Hash DIstributed A* algorithm with sum flags termination. Synchronization is implemented with two arrays of mutexes, one _num\_threads_ and the other _V_ long. For the termination condition we implement sum flags method, every time a thread has an empty priority queue it sets _open\_set\_empty_ and it checks if also the other threads done it, if yes it stops.
+
+#### Astar_hda_mp_mq.c
+
+It contains the main function ```ASTARshortest_path_hda_mp_mq``` responsible to create threads and to call function ```hda_mp_mq```. This function implements Hash DIstributed A* algorithm with message passing with message queue as structure. In this algorithm we implement a double barrier with a proper mutex, a counter and a semaphore, the algorithm stops when all threads hit the barrier twice and they have empty message queue.
+
+#### Astar_hda_mp_sm.c
+
+It contains the main function ```ASTARshortest_path_hda_mp_sf```  responsible to create threads and to call function ```hda_mp_sf```. This function implements Hash DIstributed A* algorithm with sum flags termination. This algorithm implements message passing through shared memory, 1GB of memory of the system is allocated and shared with threads, through the readers and writers paradigm every thread can write with global pointer to memory and read with a local one only the node of interest (based on hashing). For the termination condition we implement sum flags method, every time a thread has an empty priority queue it sets _open\_set\_empty_ and it checks if also the other threads done it, if yes it stops.
 
 #### Astar_seq.c
 
@@ -142,11 +151,11 @@ It contains the main function ```DIJKSTRA_shortest_path_sequential``` that imple
 
 #### Graph.c
 
-It contains all the functions to load a graph in different ways such ```GRAPHload_sequential```, ```GRAPHload_parallel1```, ```GRAPHload_parallel2``` and ```GRAPHload_parallel3```. There are also different functions to work on graph like ```GRAPHinsertE``` to insert an edge and ```LINKget_wt``` to get the weight of a link.
+It contains all the functions to load a graph in different ways such ```GRAPHload_sequential```, ```GRAPHload_parallel1```, ```GRAPHload_parallel2``` and ```GRAPHload_parallel3```. There are also different functions to work on graph like ```GRAPHinsertE``` to insert an edge and ```LINKget_wt``` to get the weight of a link. Struct like _node_ or _graph_ are first-class ADT, so they completly hide their content to other files. 
 
 #### PQ.c
 
-It contains functions to operate on priority queue such ```PQinsert``` to insert a new element, ```PQinsert``` to change its priority, ```PQextractMin``` to extract the element with lowest priority and ```PQsearch``` to check if an element is already present. 
+It contains functions to operate on priority queue such ```PQinsert``` to insert a new element, ```PQinsert``` to change its priority, ```PQextractMin``` to extract the element with lowest priority and ```PQsearch``` to check if an element is already present.  Struct _pqueue_ is first-class ADT, so it completly hides its content to other files.
 
 #### ST.c
 
@@ -169,21 +178,5 @@ Lorenzo Ippolito - [Linkedin](https://www.linkedin.com/in/lorenzo-ippolito-72312
 Mattia Rosso - [Linkedin](https://www.linkedin.com/in/mattia-rosso) - mattiarosso99@gmail.com
 
 Fabio Orazio Mirto - [Linkedin](https://www.linkedin.com/in/fabio-orazio-mirto-359b53182) - fabioorazio.mirto@gmail.com
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

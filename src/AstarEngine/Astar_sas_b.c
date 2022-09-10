@@ -36,9 +36,9 @@ struct arg_t {
     int *expanded_nodes;
 #endif
 };
-static void *hda(void *arg);
+static void *sas_b(void *arg);
 
-static void *hda(void *arg) {
+static void *sas_b(void *arg) {
     struct arg_t *args = (struct arg_t *)arg;
     int i, v, a, b, k_a, k_b;
     Position p;
@@ -146,7 +146,6 @@ static void *hda(void *arg) {
             pthread_mutex_unlock(&bar->mutex);
             sem_wait(&bar->sem2);
 
-            // If all the threads have the message queue empty terminate
             int count = 0;
             for (i = 0; i < args->num_threads; i++) {
                 count += open_set_empty[i];
@@ -258,7 +257,7 @@ void ASTARshortest_path_sas_b(Graph G, int source, int dest,
 #if COLLECT_STAT
         args[i].expanded_nodes = expanded_nodes;
 #endif
-        pthread_create(&threads[i], NULL, hda, (void *)&args[i]);
+        pthread_create(&threads[i], NULL, sas_b, (void *)&args[i]);
     }
     for (i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
