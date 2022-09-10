@@ -29,15 +29,15 @@
 \beamer@subsubsectionintoc {7}{1}{4}{Duplicate nodes}{46}{0}{7}
 \beamer@subsubsectionintoc {7}{1}{5}{Communication methodology}{47}{0}{7}
 \beamer@subsubsectionintoc {7}{1}{6}{Message Passing Model (MP)}{48}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{7}{Shared Address Space (SAS)}{51}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{8}{SAS pseudocode}{52}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{9}{Results}{56}{0}{7}
-\beamer@subsubsectionintoc {7}{1}{10}{Comments and overall results}{60}{0}{7}
-\beamer@subsectionintoc {7}{2}{PNBA*}{65}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{1}{NBA*}{65}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{2}{PNBA*}{67}{0}{7}
-\beamer@subsubsectionintoc {7}{2}{3}{PNBA* pseudocode}{68}{0}{7}
-\beamer@sectionintoc {8}{Conclusions}{75}{0}{8}
-\beamer@sectionintoc {9}{Computing Facilities Platform}{78}{0}{9}
-\beamer@sectionintoc {10}{Future Works}{80}{0}{10}
-\beamer@sectionintoc {11}{References}{82}{0}{11}
+\beamer@subsubsectionintoc {7}{1}{7}{Shared Address Space (SAS)}{56}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{8}{SAS pseudocode}{57}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{9}{Results}{61}{0}{7}
+\beamer@subsubsectionintoc {7}{1}{10}{Comments and overall results}{65}{0}{7}
+\beamer@subsectionintoc {7}{2}{PNBA*}{70}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{1}{NBA*}{70}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{2}{PNBA*}{72}{0}{7}
+\beamer@subsubsectionintoc {7}{2}{3}{PNBA* pseudocode}{73}{0}{7}
+\beamer@sectionintoc {8}{Conclusions}{80}{0}{8}
+\beamer@sectionintoc {9}{Computing Facilities Platform}{83}{0}{9}
+\beamer@sectionintoc {10}{Future Works}{85}{0}{10}
+\beamer@sectionintoc {11}{References}{87}{0}{11}

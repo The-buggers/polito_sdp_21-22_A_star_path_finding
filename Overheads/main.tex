@@ -302,11 +302,13 @@
 		\begin{itemize}
 			\item The input file is memory-mapped before being read
 			\item $N$ threads runs freely to read the entire file (array in RAM)
+			\item TODO quanti lock ci sono? Quanta concorrenza?
 		\end{itemize}
 	\end{frame}
 	\subsection{Results on FLA map}
 	\begin{frame}{\secname}
 		\framesubtitle{\subsecname}
+		TODO inserire Sequenziale x2
 		\begin{figure}[ht!]
 			\centering
 			\includegraphics[width=0.85\linewidth]{read/par_read_1_time.png}
@@ -521,35 +523,106 @@
 		\begin{itemize}
 			\item The index of the node $n$
 			\item The parent node of $n$ (the one expanded from the \textit{open set} of $t_i$)
-			\item The value of $g(n)$ according to $t_i$
+			\item The weight of the edge $(a, n)$ where $a$ is the parent node of $n$
+			\item The value of $g[n]$ according to thread $t_i$
 		\end{itemize}
 		The way how messages are read and written by the different threads is done adopting the \textit{Readers \& Writers}
 		model where:
 		\begin{itemize}
-		\item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $p_G$.
-		\item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $p_j$. The reading
-				of messages terminates when $p_j == p_G$.
+		\item Thread writer $t_i$ writes on Shared Memory increasing a global pointer $smp_G$.
+		\item Thread reader $t_j$ reads from the Shared Memory by increasing a local pointer $smp_j$. The reading
+				of messages terminates when $smp_j == smp_G$.
 		\end{itemize}
 	\end{frame}
 	\begin{frame}{\secname : \subsecname}
+		\framesubtitle{MP using Shared Memory (MPSM)}
+		The termination condition we have implemented is Sum-Flag method.
+		\begin{itemize}
+			\item A $globalDestCost$ variable is combined with the distributed
+				  termination condition in order to know wheter threads can correctly stop (an
+				  alternative was to check wheter $parentVertex[dest]==-1$).
+			\item \textit{Readers \& Writers} mechanism was iplemented by using Linux Semaphores.
+		\end{itemize}
+	\end{frame}
+	\begin{frame}[allowframebreaks]{\secname : \subsecname}
 		\framesubtitle{MPSM pseudocode}
-		TODO
+		\begin{algorithmic}[1]
+			\Function{$hda\_mp\_sm$}{}
+				\State $smp_L \gets smp_G$\;
+				\While{$1$}
+					\While{$smp_L \neq  smp_G$}
+						\State $wait(meR)$\;
+						\State $nR++$\;
+						\If{$nR == 1$}
+							\State $wait(w)$\;
+						\EndIf
+						\State $post(meR)$\;
+						\If{$hash(index, N, V) == index$}
+							\If{$smp_L.g < g[smp_L.n]$}
+								\State $g[smp_L.n] \gets smp_L.g$\;
+								\State $f[smp_L.n] \gets g[smp_L.n]+h[smp_L.n]$\;
+								\State $parentVertex[smp_L.n] \gets smp_L.previous$\;
+								\State $costToCome[smp_L.n] \gets smp_L.wt$\;
+								\State $openSet.PUSH(\{f[smp_L.n], smp_L.n\}$)\;
+							\EndIf
+						\EndIf
+						\State $smp_L++$\;
+						\State $wait(meR)$\;
+						\State $nR--$\;
+						\If{$nR == 0$}
+							\State $post(w)$\;
+						\EndIf
+						\State $post(meR)$\;
+					\EndWhile
+					\If{$openSet.EMPTY()$ and $globalDestCost < \infty$}
+        				\State Terminate according to SF\;
+      				\EndIf
+					\If{$!openSet.EMPTY()$}
+						\State $a \gets openSet.POP()$\;
+						\If{$a == dest$}
+							\State $LOCK(mutex)$\;
+							\State $globalDestCost \gets g[a]$
+							\State $UNLOCK(mutex)$\;
+						\EndIf
+						\For{neighbor $b$ of $a$}
+							\State $owner\_b \gets hash_2(b, N, V)$\;
+							\If{$owner\_b  ==  index$}
+								\State $LOCK(mutex)$\;
+								\State $parentVertex[b] \gets a$\;
+								\State $costToCome[b] \gets weight(a, b)$\;
+								\State $UNLOCK(mutex)$\;
+								\State $g[b] \gets g[b] + weight(a, b)$\;
+								\State $f[b] \gets g[b] + h[b]$\;
+								\State $openSet.PUSH((b, f[owner\_b][b]))$\;
+							\Else
+								\State $wait(w)$
+								\State $smp_L.n \gets b$\;
+								\State $smp_L.g \gets g[b]$\;
+								\State $smp_L.wt \gets weight(a, b)$\;
+								\State $smp_L.previous \gets a$\;
+								\State $smp_L++$\;
+								\State $post(w)$
+							\EndIf
+						\EndFor
+					\EndIf
+				\EndWhile
+		  \EndFunction
+		  \end{algorithmic}
 	\end{frame}
 	\subsubsection{Shared Address Space (SAS)}
 	\begin{frame}{\secname : \subsecname}
 		\framesubtitle{Shared Address Space (SAS)}
 		The shared data structures are:
 		\begin{itemize}
-			\item A global array of \textit{open sets} that here we call $A$ where
-				  $A[i]$ contains a pointer to the \textit{open set} of thread $t_i$ and the size
-				  of $A$ is $N$ (the number of threads).
+			\item A global array of \textit{open sets} of size $N$ (number of threads)
+				  where $openSet[i]$ contains a pointer to the \textit{open set} of thread $t_i$.
 			\item The $parentVertex$ and $costToCome$ data structures are shared among all the threads.
 		\end{itemize}
 		This approach clearly requires locks so that the operations on the shared data structures
 		can happen in mutual exclusion. In particular we need:
 		\begin{itemize}
-			\item One lock $L1$ for each \textit{open set} so for each $A[i] \;\forall i \in \{1..N\}$.
-			\item One lock $L2$ for each node of the graph in order to correctly update $parentVertex$ and $costToCome$ data structures.
+			\item $N$ $mutex\_threads$ locks (one for each \textit{open set} so $N$ overall).
+			\item $V$ $mutex\_nodes$ locks (one for each node of the graph)
 		\end{itemize}
 	\end{frame}
 	\subsubsection{SAS pseudocode}
@@ -573,9 +646,9 @@
 			\Function{$hda\_sas$}{}
 				\While{$1$}
       				\While{$!openSet[index].EMPTY()$}
-        				\State LOCK($mutex\_threads[index]$)\;
+        				\State $LOCK(mutex\_threads[index])$\;
         				\State $a \gets openSet.POP()$\;
-        				\State UNLOCK($mutex\_threads[index]$)\;
+        				\State $UNLOCK(mutex\_threads[index])$\;
       				\EndWhile
       			\If{$a$ is duplicate}
         			\State continue\;
@@ -583,9 +656,9 @@
       		    \For{neighbor $b$ of $a$}
         			\State $wt \gets weight(a, b)$\;
         			\State $tentativeScore \gets g[a] + wt$\;
-        			\If{$tentativeScore$ is less than $g[b]$}
-          				\State $owner\_a \gets hash(a,N)$\;
-          				\State $owner\_b \gets hash(b,N)$\;
+        			\If{$tentativeScore < g[b]$}
+          				\State $owner\_a \gets hash_2(a,N,V)$\;
+          				\State $owner\_b \gets hash_2(b,N,V)$\;
 					\EndIf
           			\If{$b$ is duplicate}
             			\State continue\;
@@ -600,16 +673,16 @@
             			\State $costToCome[b] \gets wt$\;
             			\State $g[b] \gets tentativeScore$\;
             			\State $f[b] \gets g[b] + h[b]$\;
-            			\State LOCK($mutex\_threads[owner\_b]$)\;
+            			\State $LOCK(mutex\_threads[owner\_b])$\;
             			\State $f[owner\_b][b] \gets f[b]$\;
-            			\State $openSet.PUSH((b, f[owner\_b][b]))$\;
-            			\State UNLOCK($mutex\_threads[owner\_b]$)\;
+            			\State $openSet.PUSH(\{b, f[owner\_b][b]\})$\;
+            			\State $UNLOCK(mutex\_threads[owner\_b])$\;
           			\EndIf
-          			\State UNLOCK($mutex\_nodes[b]$)\;
+          			\State $UNLOCK(mutex\_nodes[b])$\;
         		\EndFor
 				\EndWhile
 
-      		\If{$openSet[index].EMPTY()$ and $parentVertex[dest] != -1$}
+      		\If{$openSet[index].EMPTY()$ and $parentVertex[dest] \neq -1$}
         		\State Terminate according to B or SF\;
       		\EndIf
 		  \EndFunction
