@@ -1,4 +1,4 @@
-# polito_sdp_21-22_A_star_path_finding
+# A star path finding
 
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a name="readme-top"></a>
